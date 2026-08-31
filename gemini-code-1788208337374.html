@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2027 Architect | Elite OS</title>
+<style>
+  :root {
+    --bg: #020617; --surface: #0f172a; --surface-border: #1e293b;
+    --accent: #10b981; --accent-glow: rgba(16, 185, 129, 0.3);
+    --text-main: #f8fafc; --text-muted: #94a3b8; --danger: #ef4444; --warning: #f59e0b;
+    --info: #3b82f6; --kanban-bg: rgba(0,0,0,0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+  body { background: var(--bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 1rem; padding-top: 2rem; line-height: 1.5; min-height: 100vh; overflow-x: hidden;}
+
+  /* Layout & Tabs */
+  .nav-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: var(--surface); padding: 0.5rem; border-radius: 12px; border: 1px solid var(--surface-border); width: 100%; max-width: 1000px; overflow-x: auto; scrollbar-width: none;}
+  .nav-tab { flex: 1; padding: 0.75rem; background: transparent; border: none; color: var(--text-muted); font-weight: 600; cursor: pointer; border-radius: 8px; transition: 0.2s; white-space: nowrap; font-size: 0.85rem;}
+  .nav-tab.active { background: #1e293b; color: var(--accent); }
+  .view-section { display: none; width: 100%; max-width: 1000px; grid-template-columns: 1fr; gap: 1.5rem; }
+  .view-section.active { display: grid; }
+  @media (min-width: 768px) { .view-section.active { grid-template-columns: 1fr 1fr; } .full-width { grid-column: 1 / -1; } }
+
+  .card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; position: relative;}
+  .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--surface-border); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;}
+  .header-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; }
+  
+  .text-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; transition: 0.2s;}
+  .text-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.05);} 
+  .text-btn.danger { color: var(--danger); } 
+  .text-btn.success { color: var(--accent); } 
+  .text-btn.info { color: var(--info); }
+
+  /* Inputs & Buttons */
+  .input-css { width: 100%; padding: 0.8rem; background: #020617; border: 1px solid var(--surface-border); color: white; border-radius: 8px; margin-bottom: 1rem; outline: none; }
+  .input-css:focus { border-color: var(--accent); }
+  .btn { width: 100%; padding: 1rem; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px var(--accent-glow); }
+  .btn:hover { transform: translateY(-2px); } .btn.active { background: var(--danger); color: white; box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
+
+  /* Timer, Pedometer & Checklists */
+  .timer-display, .step-display { font-size: 4rem; font-weight: 800; text-align: center; margin: 0.5rem 0; font-variant-numeric: tabular-nums; color: var(--accent); letter-spacing: -2px;}
+  @media (max-width: 400px) { .timer-display, .step-display { font-size: 3.2rem; } }
+  .step-display { color: var(--info); }
+  .scroll-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 350px; overflow-y: auto; }
+  .list-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #1e293b; border-radius: 8px; font-size: 0.9rem;}
+  input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 6px; cursor: pointer; position: relative; flex-shrink: 0;}
+  input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+  input[type="checkbox"]:checked::after { content: '✔'; position: absolute; color: #000; font-size: 12px; font-weight: 800; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+  /* Kanban Board */
+  .kanban-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; overflow-x: auto; padding-bottom: 1rem; }
+  @media (max-width: 768px) { .kanban-wrapper { grid-template-columns: repeat(3, 260px); } }
+  .kanban-col { background: var(--kanban-bg); border-radius: 12px; padding: 1rem; border: 1px solid var(--surface-border); display: flex; flex-direction: column; gap: 0.75rem; min-height: 400px; }
+  .kanban-header { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center; border-bottom: 2px solid var(--surface-border); padding-bottom: 0.5rem; }
+  .task-card { background: var(--surface); padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border); cursor: grab; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.1s; }
+  .task-card:active { transform: scale(0.98); cursor: grabbing; border-color: var(--accent); }
+  .task-card.dragging { opacity: 0.5; border-style: dashed; }
+  .kanban-col.drag-over { background: rgba(16, 185, 129, 0.05); border-color: var(--accent); }
+
+  /* Content Calendar & Blueprint */
+  .blueprint-card { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--info); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;}
+  .blueprint-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem; }
+  @media (min-width: 768px) { .blueprint-grid { grid-template-columns: 1fr 1fr; } }
+  .blueprint-step { background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; font-size: 0.85rem;}
+  
+  .content-week { margin-bottom: 1.5rem; }
+  .content-week-title { font-size: 0.85rem; font-weight: 700; color: var(--info); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; border-bottom: 1px dashed var(--surface-border); padding-bottom: 0.25rem;}
+  details.content-card { background: rgba(0,0,0,0.2); border-left: 3px solid var(--info); border-radius: 0 8px 8px 0; margin-bottom: 0.75rem; }
+  summary.content-header { padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; list-style: none; outline: none; }
+  summary.content-header::-webkit-details-marker { display: none; }
+  .content-meta { font-size: 0.7rem; color: var(--info); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px;}
+  .content-title { font-size: 0.95rem; font-weight: 600; padding-right: 1rem;}
+  .content-title.done { text-decoration: line-through; color: var(--text-muted); }
+  .reel-script { padding: 0 1rem 1rem 1rem; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--surface-border); margin-top: 0.5rem; padding-top: 1rem; line-height: 1.6;}
+  .reel-script strong { color: var(--text-main); }
+  .reel-script .highlight { background: rgba(16, 185, 129, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; color: var(--accent);}
+
+  /* Analytics & Data Resilience */
+  .heatmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(14px, 1fr)); gap: 4px; margin-top: 1rem; }
+  .heat-box { width: 14px; height: 14px; background: #1e293b; border-radius: 3px; transition: 0.2s;}
+  .heat-box.active { background: var(--accent); box-shadow: 0 0 5px var(--accent-glow); }
+  
+  .burndown-bar { background: #1e293b; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 0.5rem; }
+  .burndown-fill { height: 100%; background: var(--warning); width: 0%; transition: 0.5s; }
+  .step-fill { height: 100%; background: var(--info); width: 0%; transition: 0.5s; }
+  
+  .hourly-chart { display: flex; align-items: flex-end; gap: 4px; height: 100px; margin-top: 1rem; padding-bottom: 20px; border-bottom: 1px solid var(--surface-border); position: relative;}
+  .hourly-bar { flex: 1; background: var(--info); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.5s; position: relative; }
+  .hourly-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 0.6rem; color: var(--text-muted); }
+
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+  .modal-content { background: var(--surface); padding: 2rem; border-radius: 16px; border: 1px solid var(--surface-border); width: 100%; max-width: 500px; }
+  #cmdInput { font-size: 1.2rem; background: transparent; border: none; border-bottom: 2px solid var(--accent); border-radius: 0; padding: 1rem 0; box-shadow: none; }
+</style>
+</head>
+<body>
+
+<!-- Modals -->
+<div class="modal-overlay" id="cmdModal">
+  <div class="modal-content" style="background: #020617;">
+    <h2 class="header-title">Developer Command Palette</h2>
+    <input type="text" id="cmdInput" class="input-css" placeholder="e.g., 'export', 'backup', 'log'" autocomplete="off">
+    <div class="cmd-hint">Press <b>Esc</b> to close. Type command and press <b>Enter</b>.</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="standupModal">
+  <div class="modal-content">
+    <h2 class="header-title" style="color: var(--accent); font-size: 1.2rem;">Daily EOD Commit</h2>
+    <label class="cmd-hint">What did you ship/accomplish today?</label>
+    <textarea id="standupWins" class="input-css" style="height: 60px; resize: none;"></textarea>
+    <label class="cmd-hint">Any blocks or distractions?</label>
+    <textarea id="standupBlocks" class="input-css" style="height: 60px; resize: none;"></textarea>
+    <label class="cmd-hint">Main focus for tomorrow?</label>
+    <textarea id="standupNext" class="input-css" style="height: 60px; resize: none;"></textarea>
+    <button class="btn" onclick="submitStandup()">Commit & Log Streak</button>
+    <button class="btn" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 0.5rem;" onclick="closeModal('standupModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('dashboard')">Execution Engine</button>
+  <button class="nav-tab" onclick="switchTab('kanban')">Project Board</button>
+  <button class="nav-tab" onclick="switchTab('content')">Content & Growth</button>
+  <button class="nav-tab" onclick="switchTab('analytics')">OS Telemetry</button>
+</div>
+
+<!-- ================= 1. DASHBOARD VIEW ================= -->
+<div id="dashboard" class="view-section active">
+  <div class="card full-width">
+    <div class="header-flex"><h2 class="header-title">Countdown: 2027</h2><span class="cmd-hint">Press Ctrl+K for Palette</span></div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center;">
+      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="days">00</div><div class="cmd-hint">DAYS</div></div>
+      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="hours">00</div><div class="cmd-hint">HRS</div></div>
+      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="minutes">00</div><div class="cmd-hint">MIN</div></div>
+      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="seconds">00</div><div class="cmd-hint">SEC</div></div>
+    </div>
+  </div>
+
+  <div class="card timer-card">
+    <div class="header-flex"><h2 class="header-title">Deep Work Terminal</h2></div>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 0.5rem; font-size: 0.85rem; flex-wrap: wrap;">
+      <label><input type="radio" name="timerMode" value="stopwatch" checked onchange="toggleMode()"> Stopwatch</label>
+      <label><input type="radio" name="timerMode" value="pomodoro" onchange="toggleMode()"> Pomodoro</label>
+    </div>
+
+    <input type="number" id="targetMinutes" class="input-css" style="display: none;" placeholder="Target (mins)" value="90">
+    <div class="timer-display" id="liveTimer">00:00:00</div>
+    
+    <select class="input-css" id="timerPillar" onchange="handleDropdownChange()">
+      <option value="💻 GSoC / Frontend Sprint">💻 GSoC / Frontend Sprint</option>
+      <option value="☕ Java DSA">☕ Java DSA</option>
+      <option value="👕 Gen AI T-Shirt Design">👕 Gen AI T-Shirt Design</option>
+      <option value="🎬 Content Creation">🎬 Content Creation</option>
+      <option value="📚 College Studies">📚 College Studies</option>
+      <option value="🏢 NEC Team KCites">🏢 NEC Team KCites</option>
+      <option value="🚀 E-Cell IITB Work">🚀 E-Cell IITB Work</option>
+      <option value="🌐 GSA Work">🌐 GSA Work</option>
+      <option value="custom" id="customOptionSelector">✍️ Custom Task...</option>
+    </select>
+    <input type="text" id="customInput" class="input-css" style="display: none;" placeholder="Enter custom task...">
+    <button class="btn" id="timerBtn" onclick="toggleTimer()">Initialize Session</button>
+  </div>
+
+  <div class="card">
+    <div class="header-flex">
+      <h2 class="header-title">Live Sensor Pedometer</h2>
+      <div>
+        <button class="text-btn success" id="startPedometerBtn" onclick="initPedometer()">Initialize Sensors</button>
+        <button class="text-btn info" onclick="debugStep()">+1 (Test)</button>
+      </div>
+    </div>
+    <div class="step-display" id="stepCountDisplay">0</div>
+    <div class="cmd-hint" style="text-align: center; margin-bottom: 1rem;">DAILY STEPS</div>
+    <div class="burndown-bar"><div class="step-fill" id="stepProgressBar" style="width: 0%;"></div></div>
+    <div style="text-align: right; font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">Goal: 10,000</div>
+  </div>
+
+  <div class="card full-width">
+    <div class="header-flex">
+      <h2 class="header-title">Winter Arc: <span id="streakDisplay" style="color: var(--accent);">0 Streak</span></h2>
+      <div>
+        <button class="text-btn success" style="margin-right: 10px;" onclick="initiateStandup()">Log Day</button>
+        <button class="text-btn danger" onclick="resetHabits()">Reset</button>
+      </div>
+    </div>
+    <div class="scroll-list" id="habitList">
+      <div class="list-item"><span>💧 1. 3L Water per day</span><input type="checkbox" data-id="wa1"></div>
+      <div class="list-item"><span>🍔 2. No junk food</span><input type="checkbox" data-id="wa2"></div>
+      <div class="list-item"><span>😴 3. 7-8 hours sleep</span><input type="checkbox" data-id="wa3"></div>
+      <div class="list-item"><span>🚶 4. 10k steps daily</span><input type="checkbox" data-id="wa6"></div>
+      <div class="list-item"><span>📵 5. No phone during meals</span><input type="checkbox" data-id="wa7"></div>
+      <div class="list-item"><span>🙏 6. Be grateful daily</span><input type="checkbox" data-id="wa9"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 2. KANBAN VIEW ================= -->
+<div id="kanban" class="view-section">
+  <div class="card full-width">
+    <div class="header-flex">
+      <h2 class="header-title">Project Sprint Board</h2>
+      <button class="text-btn success" onclick="addNewTask()">+ Add Task</button>
+    </div>
+    <div class="kanban-wrapper">
+      <div class="kanban-col" id="col-todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="kanban-header">To Do</div>
+      </div>
+      <div class="kanban-col" id="col-active" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="kanban-header" style="color: var(--warning);">Active</div>
+      </div>
+      <div class="kanban-col" id="col-done" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="kanban-header" style="color: var(--accent);">Shipped</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 3. CONTENT PIPELINE & GROWTH VIEW ================= -->
+<div id="content" class="view-section">
+  
+  <div class="blueprint-card full-width">
+    <h2 class="header-title" style="color: var(--info);">0 to 1,000 Followers Blueprint (30 Days)</h2>
+    <div class="blueprint-grid">
+      <div class="blueprint-step">
+        <strong style="color: #fff;">Phase 1: The Hook Test (Days 1-7)</strong><br>
+        Post 1x Reel daily. Focus strictly on broad tech concepts. Measure which hook format (Questions vs. Statements) retains viewers past 3 seconds.
+      </div>
+      <div class="blueprint-step">
+        <strong style="color: #fff;">Phase 2: Authority & Niche (Days 8-15)</strong><br>
+        Double down on the best-performing format. Introduce detailed carousels breaking down AI tools or DSA concepts. Provide pure value.
+      </div>
+      <div class="blueprint-step">
+        <strong style="color: #fff;">Phase 3: Viral Mechanics (Days 16-22)</strong><br>
+        Increase output. 1x Reel + 1x Story daily. Use trending tech audio. Implement "Tech vs Reality" or "How it actually works" comparison formats.
+      </div>
+      <div class="blueprint-step">
+        <strong style="color: #fff;">Phase 4: Community Building (Days 23-30)</strong><br>
+        Inject CTAs: "DM 'PROMPT' for my free AI design guide." Reply to every comment. Collaborate or tag larger tech pages to capture algorithmic overlap.
+      </div>
+    </div>
+  </div>
+
+  <div class="card full-width">
+    <div class="header-flex">
+      <h2 class="header-title">September Content Calendar</h2>
+      <span class="cmd-hint">Case Study Reels</span>
+    </div>
+    
+    <!-- Week 1: Meta -->
+    <div class="content-week">
+      <div class="content-week-title">Week 1: Meta & Consumer Internet Scalability</div>
+      
+      <details class="content-card">
+        <summary class="content-header">
+          <div><div class="content-meta">Reel 1 | M&A Strategy</div><div class="content-title" id="t-m1">How Zuckerberg Bought The Internet</div></div>
+          <input type="checkbox" data-content="m1" onchange="toggleContent('m1')" onclick="event.stopPropagation();">
+        </summary>
+        <div class="reel-script">
+          <strong>Hook:</strong> "Mark Zuckerberg didn't just build a social network; he bought out his entire competition."<br><br>
+          <strong>The Explanation:</strong> Facebook realized early that the shift to mobile was their biggest threat. Instead of building from scratch, they executed strategic acquisitions. They bought Instagram to dominate visual sharing, and WhatsApp to lock down global messaging. This created an impenetrable defensive moat in consumer internet.<br><br>
+          <strong>Call to Action:</strong> "What app do you think Meta will buy next? Let me know below."<br>
+          <strong>B-Roll:</strong> Screen recording of Instagram and WhatsApp icons merging into the Meta logo.
+        </div>
+      </details>
+
+      <details class="content-card">
+        <summary class="content-header">
+          <div><div class="content-meta">Reel 2 | Algorithms</div><div class="content-title" id="t-m2">The Secret Behind Meta's Targeted Ads</div></div>
+          <input type="checkbox" data-content="m2" onchange="toggleContent('m2')" onclick="event.stopPropagation();">
+        </summary>
+        <div class="reel-script">
+          <strong>Hook:</strong> "Ever feel like your phone is listening to your conversations? It’s not. The algorithm is just that terrifyingly good."<br><br>
+          <strong>The Explanation:</strong> Meta's ad algorithm is a masterpiece of predictive AI. It doesn't listen to your mic; it maps billions of data points—your scroll speed, the posts you hover over for 2 seconds, and the shared locations with your friends. It builds a psychological profile to predict your behavior before you even know what you want to buy.<br><br>
+          <strong>Call to Action:</strong> "Save this reel to remind yourself how the algorithm works."<br>
+          <strong>B-Roll:</strong> A complex network node animation connecting different user profiles.
+        </div>
+      </details>
+    </div>
+
+    <!-- Week 2: Gameskraft -->
+    <div class="content-week">
+      <div class="content-week-title">Week 2: Gameskraft & Indian Gaming</div>
+      
+      <details class="content-card">
+        <summary class="content-header">
+          <div><div class="content-meta">Reel 3 | Market Scale</div><div class="content-title" id="t-g1">How India Became a Mobile Gaming Giant</div></div>
+          <input type="checkbox" data-content="g1" onchange="toggleContent('g1')" onclick="event.stopPropagation();">
+        </summary>
+        <div class="reel-script">
+          <strong>Hook:</strong> "India is going through a massive online gaming revolution, and companies like Gameskraft are leading the charge."<br><br>
+          <strong>The Explanation:</strong> The secret to scaling consumer internet in India isn't just cheap data; it's localization. Gameskraft integrated regional languages and hyper-localized UX to penetrate Tier 2 and Tier 3 cities. Combine that with highly optimized backend engineering to handle millions of concurrent players on low-bandwidth networks, and you have a billion-dollar industry.<br><br>
+          <strong>Call to Action:</strong> "Follow for more breakdowns of Indian tech unicorns."<br>
+          <strong>B-Roll:</strong> Map of India lighting up with server connections, showing regional language text overlays.
+        </div>
+      </details>
+
+      <details class="content-card">
+        <summary class="content-header">
+          <div><div class="content-meta">Reel 4 | Tech Ops & Security</div><div class="content-title" id="t-g2">How Do You Stop Cheaters in Real-Money Games?</div></div>
+          <input type="checkbox" data-content="g2" onchange="toggleContent('g2')" onclick="event.stopPropagation();">
+        </summary>
+        <div class="reel-script">
+          <strong>Hook:</strong> "How do you prove an online game isn't rigged when real money is on the line?"<br><br>
+          <strong>The Explanation:</strong> It's all about cryptographic trust. Companies like Gameskraft use internationally certified Random Number Generators (RNG) to ensure every card dealt or dice rolled is mathematically unpredictable. Furthermore, they deploy AI-driven 'zero-bot' policies that analyze micro-movements to instantly ban automated scripts and ensure fair play.<br><br>
+          <strong>Call to Action:</strong> "Have you ever suspected a bot in your lobby? Drop a 🤖 in the comments."<br>
+          <strong>B-Roll:</strong> Screen recording of a code editor showing a randomizer algorithm, transitioning to a "Certified Fair Play" badge.
+        </div>
+      </details>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= 4. ANALYTICS & RESILIENCE VIEW ================= -->
+<div id="analytics" class="view-section">
+  <div class="card full-width">
+    <div class="header-flex">
+      <h2 class="header-title">Data Resilience & Backup</h2>
+      <div>
+        <input type="file" id="importJson" style="display:none" accept=".json" onchange="importData(event)">
+        <button class="text-btn info" onclick="document.getElementById('importJson').click()">⬆ Restore JSON</button>
+        <button class="text-btn success" style="margin-left:10px" onclick="exportData('json')">⬇ Backup OS State</button>
+        <button class="text-btn success" style="margin-left:10px" onclick="exportData('csv')">⬇ Export CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card full-width">
+    <div class="header-flex">
+      <h2 class="header-title">Hourly Focus Distribution (Peak Velocity)</h2>
+      <span class="cmd-hint" id="peakHourDisplay">Peak: --</span>
+    </div>
+    <div class="hourly-chart" id="hourlyChart"></div>
+  </div>
+
+  <div class="card">
+    <div class="header-flex"><h2 class="header-title">Sept-Dec 2026 Sprint Heatmap</h2></div>
+    <div class="heatmap-grid" id="heatmapGrid"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="header-title" style="margin-bottom: 1rem;">Macro Sprint Burndown</h2>
+    <div style="margin-bottom: 1rem;"><div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>💻 Frontend/Open Source (150h)</span><span id="burnFrontend">0%</span></div><div class="burndown-bar"><div class="burndown-fill" id="fillFrontend"></div></div></div>
+    <div style="margin-bottom: 1rem;"><div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>☕ Java DSA (100h)</span><span id="burnJava">0%</span></div><div class="burndown-bar"><div class="burndown-fill" id="fillJava"></div></div></div>
+    <div style="margin-bottom: 1rem;"><div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>👕 AI Design / T-Shirts (50h)</span><span id="burnDesign">0%</span></div><div class="burndown-bar"><div class="burndown-fill" id="fillDesign"></div></div></div>
+  </div>
+</div>
+
+<script>
+  /* ================= CORE OS ROUTING ================= */
+  function switchTab(tabId) {
+    document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+    if(tabId === 'analytics') generateAnalytics();
+  }
+  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+  /* ================= COUNTDOWN FIX ================= */
+  const targetDate = new Date("January 1, 2027 00:00:00").getTime();
+  
+  function updateCountdown() {
+    const diff = targetDate - Date.now();
+    if (diff <= 0) {
+      document.getElementById("days").innerText = "00";
+      document.getElementById("hours").innerText = "00";
+      document.getElementById("minutes").innerText = "00";
+      document.getElementById("seconds").innerText = "00";
+      return;
+    }
+    document.getElementById("days").innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+    document.getElementById("hours").innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+    document.getElementById("minutes").innerText = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
+    document.getElementById("seconds").innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+  }
+
+  updateCountdown(); 
+  setInterval(updateCountdown, 1000);
+
+  /* ================= Pedometer Logic (DeviceMotion API) ================= */
+  let steps = parseInt(localStorage.getItem('todaySteps')) || 0;
+  let lastAccel = 0; let lastStepTime = 0; const stepTarget = 10000;
+  
+  const todayDateStr = new Date().toDateString();
+  if (localStorage.getItem('stepDate') !== todayDateStr) {
+      steps = 0; localStorage.setItem('todaySteps', 0); localStorage.setItem('stepDate', todayDateStr);
+  }
+
+  document.getElementById('stepCountDisplay').innerText = steps; updateStepUI();
+
+  function updateStepUI() {
+      let pct = Math.min((steps / stepTarget) * 100, 100);
+      const bar = document.getElementById('stepProgressBar');
+      bar.style.width = pct + '%';
+      if(steps >= stepTarget) bar.style.background = 'var(--accent)';
+  }
+
+  function debugStep() {
+      steps++; localStorage.setItem('todaySteps', steps);
+      document.getElementById('stepCountDisplay').innerText = steps; updateStepUI();
+  }
+
+  function initPedometer() {
+      const btn = document.getElementById('startPedometerBtn');
+      
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+          alert("Error: Mobile sensors require the app to be hosted on HTTPS. Use the test button for local development.");
+          return;
+      }
+
+      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          DeviceMotionEvent.requestPermission().then(permissionState => {
+              if (permissionState === 'granted') {
+                  window.addEventListener('devicemotion', handleMotion);
+                  btn.innerText = "Sensors Active"; btn.style.color = "var(--accent)";
+              } else { alert("Sensor permission denied by user."); }
+          }).catch(err => {
+              alert("Permission request failed. Ensure you are on an HTTPS connection.");
+          });
+      } else if ('DeviceMotionEvent' in window) {
+          window.addEventListener('devicemotion', handleMotion);
+          btn.innerText = "Sensors Active"; btn.style.color = "var(--accent)";
+      } else { 
+          alert("DeviceMotionEvent API not supported on this browser/device."); 
+      }
+  }
+
+  function handleMotion(event) {
+      let acc = event.accelerationIncludingGravity || event.acceleration;
+      if(!acc || acc.x === null) return;
+      let mag = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
+      let delta = Math.abs(mag - lastAccel);
+      let now = Date.now();
+      
+      if (delta > 1.2 && (now - lastStepTime) > 300) {
+          steps++; localStorage.setItem('todaySteps', steps);
+          document.getElementById('stepCountDisplay').innerText = steps; updateStepUI();
+          lastStepTime = now;
+      }
+      lastAccel = mag;
+  }
+
+  /* ================= 2. MICRO-KANBAN BOARD ================= */
+  let kanbanTasks = JSON.parse(localStorage.getItem('kanbanState')) || { todo: [], active: [], done: [] };
+
+  function renderKanban() {
+    ['todo', 'active', 'done'].forEach(colId => {
+      const col = document.getElementById('col-' + colId);
+      col.innerHTML = col.firstElementChild.outerHTML; 
+      kanbanTasks[colId].forEach(task => {
+        const div = document.createElement('div'); div.className = 'task-card'; div.draggable = true;
+        div.innerText = task.text; div.id = task.id; div.ondragstart = drag; col.appendChild(div);
+      });
+    });
+  }
+
+  function addNewTask() { const text = prompt("Enter new task:"); if(text) { kanbanTasks.todo.push({ id: 'task_' + Date.now(), text: text }); saveKanban(); } }
+  function saveKanban() { localStorage.setItem('kanbanState', JSON.stringify(kanbanTasks)); renderKanban(); }
+  function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); ev.target.classList.add('dragging'); }
+  function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
+  
+  function drop(ev) {
+    ev.preventDefault(); document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+    const taskId = ev.dataTransfer.getData("text"); const targetCol = ev.currentTarget.id.replace('col-', '');
+    let movedTask = null;
+    ['todo', 'active', 'done'].forEach(c => {
+      const idx = kanbanTasks[c].findIndex(t => t.id === taskId);
+      if(idx > -1) { movedTask = kanbanTasks[c].splice(idx, 1)[0]; }
+    });
+    if(movedTask) { kanbanTasks[targetCol].push(movedTask); saveKanban(); }
+  }
+  renderKanban(); 
+
+  /* ================= 3. TIMER LOGIC ================= */
+  let interval = null, elapsedSeconds = 0, currentTask = ""; let isPomodoro = false;
+
+  function toggleMode() {
+    isPomodoro = document.querySelector('input[name="timerMode"]:checked').value === 'pomodoro';
+    document.getElementById('targetMinutes').style.display = isPomodoro ? 'block' : 'none';
+    if(!interval) document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
+  }
+
+  function handleDropdownChange() { document.getElementById('customInput').style.display = document.getElementById('timerPillar').value === 'custom' ? 'block' : 'none'; }
+  function formatTime(secs) {
+    if(isNaN(secs) || secs < 0) secs = 0;
+    return `${String(Math.floor(secs / 3600)).padStart(2, '0')}:${String(Math.floor((secs % 3600) / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
+  }
+
+  function toggleTimer() {
+    const btn = document.getElementById("timerBtn"); 
+    if (!interval) {
+      currentTask = document.getElementById('timerPillar').value === 'custom' ? document.getElementById('customInput').value.trim() : document.getElementById('timerPillar').value;
+      if (!currentTask) currentTask = "Terminal Execution"; elapsedSeconds = 0;
+      
+      let targetSecs = isPomodoro ? parseInt(document.getElementById('targetMinutes').value || 0) * 60 : 0;
+
+      interval = setInterval(() => {
+        elapsedSeconds++;
+        if(isPomodoro) {
+          let remaining = targetSecs - elapsedSeconds;
+          document.getElementById("liveTimer").innerText = formatTime(remaining);
+          if(remaining <= 0) { clearInterval(interval); saveSession(currentTask, elapsedSeconds); resetTimerUI(); alert("Target Complete!"); }
+        } else { document.getElementById("liveTimer").innerText = formatTime(elapsedSeconds); }
+      }, 1000);
+      btn.innerText = "End & Log Session"; btn.className = "btn active";
+    } else {
+      clearInterval(interval); if (elapsedSeconds > 5) saveSession(currentTask, elapsedSeconds); resetTimerUI();
+    }
+  }
+
+  function resetTimerUI() {
+    interval = null;
+    document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
+    document.getElementById("timerBtn").innerText = "Initialize Session"; document.getElementById("timerBtn").className = "btn";
+  }
+
+  function saveSession(task, seconds) {
+    let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
+    logs.unshift({ id: Date.now(), task: task, seconds: seconds, timeStr: formatTime(seconds), timestamp: new Date().toISOString() });
+    localStorage.setItem('enggLogs', JSON.stringify(logs));
+    
+    if(document.getElementById('timerPillar').value === 'custom' && task !== "Terminal Execution") {
+       let customCats = JSON.parse(localStorage.getItem('customCats')) || [];
+       if(!customCats.includes(task)) { customCats.push(task); localStorage.setItem('customCats', JSON.stringify(customCats)); const newOption = new Option("📌 " + task, task); document.getElementById('timerPillar').insertBefore(newOption, document.getElementById('customOptionSelector')); }
+       document.getElementById('timerPillar').value = task; document.getElementById('customInput').style.display = 'none'; document.getElementById('customInput').value = '';
+    }
+    if(document.getElementById('analytics').classList.contains('active')) generateAnalytics();
+  }
+
+  (function loadCustomCategories() {
+    let customCats = JSON.parse(localStorage.getItem('customCats')) || [];
+    const select = document.getElementById('timerPillar');
+    customCats.forEach(cat => { const newOption = new Option("📌 " + cat, cat); select.insertBefore(newOption, document.getElementById('customOptionSelector')); });
+  })();
+
+  /* ================= 4. AGILE STANDUP & STREAKS ================= */
+  const dailyCheckboxes = document.querySelectorAll('#habitList input[type="checkbox"]');
+  let currentStreak = parseInt(localStorage.getItem('arcStreak')) || 0;
+  let loggedDates = JSON.parse(localStorage.getItem('loggedDates')) || [];
+  document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
+
+  dailyCheckboxes.forEach(box => {
+    box.checked = localStorage.getItem(box.dataset.id) === 'true';
+    box.addEventListener('change', () => localStorage.setItem(box.dataset.id, box.checked));
+  });
+
+  function resetHabits() { dailyCheckboxes.forEach(box => { box.checked = false; localStorage.removeItem(box.dataset.id); }); }
+
+  function initiateStandup() {
+    if (!Array.from(dailyCheckboxes).every(box => box.checked)) { alert("Finish your daily tasks first."); return; }
+    const today = new Date().toDateString();
+    if (loggedDates.includes(today)) { alert("Day already logged!"); return; }
+    document.getElementById('standupModal').style.display = 'flex';
+  }
+
+  function submitStandup() {
+    const today = new Date().toDateString(); let standups = JSON.parse(localStorage.getItem('standupLogs')) || [];
+    standups.unshift({ date: today, wins: document.getElementById('standupWins').value, blocks: document.getElementById('standupBlocks').value, next: document.getElementById('standupNext').value });
+    localStorage.setItem('standupLogs', JSON.stringify(standups));
+    currentStreak++; loggedDates.push(today);
+    localStorage.setItem('arcStreak', currentStreak); localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
+    document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
+    closeModal('standupModal'); resetHabits();
+    document.getElementById('standupWins').value = ''; document.getElementById('standupBlocks').value = ''; document.getElementById('standupNext').value = '';
+    if(document.getElementById('analytics').classList.contains('active')) generateAnalytics();
+  }
+
+  /* ================= 5. TELEMETRY, BURNDOWN, & HEATMAP ================= */
+  function generateAnalytics() {
+    const grid = document.getElementById('heatmapGrid'); grid.innerHTML = ''; 
+    const sprintStart = new Date('2026-09-01T00:00:00');
+    const today = new Date();
+    
+    for(let i = 0; i < 122; i++) {
+      let d = new Date(sprintStart);
+      d.setDate(d.getDate() + i);
+      let isLogged = loggedDates.includes(d.toDateString());
+      let isFuture = d > today;
+      let opacityStyle = isFuture ? 'opacity: 0.1;' : '';
+      grid.innerHTML += `<div class="heat-box ${isLogged ? 'active' : ''}" style="${opacityStyle}" title="${d.toDateString()}"></div>`;
+    }
+
+    let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
+    let cats = { "💻 GSoC / Frontend Sprint": 0, "☕ Java DSA": 0, "👕 Gen AI T-Shirt Design": 0 };
+    let hourlyData = new Array(24).fill(0); let maxHourVal = 0;
+
+    logs.forEach(l => { 
+      if(cats[l.task] !== undefined) cats[l.task] += l.seconds; 
+      let hour = new Date(l.timestamp).getHours();
+      if(!isNaN(hour)) { hourlyData[hour] += l.seconds; if(hourlyData[hour] > maxHourVal) maxHourVal = hourlyData[hour]; }
+    });
+
+    const updateBar = (id, currentSecs, targetHours) => {
+      let pct = Math.min(((currentSecs / 3600) / targetHours) * 100, 100).toFixed(1);
+      document.getElementById('burn' + id).innerText = `${(currentSecs/3600).toFixed(1)}h / ${targetHours}h (${pct}%)`;
+      document.getElementById('fill' + id).style.width = pct + '%';
+    };
+    updateBar('Frontend', cats["💻 GSoC / Frontend Sprint"], 150); updateBar('Java', cats["☕ Java DSA"], 100); updateBar('Design', cats["👕 Gen AI T-Shirt Design"], 50);
+
+    const chart = document.getElementById('hourlyChart'); chart.innerHTML = ''; let peakHour = 0;
+    for(let i=0; i<24; i++) {
+      let heightPct = maxHourVal === 0 ? 0 : (hourlyData[i] / maxHourVal) * 100;
+      if(hourlyData[i] === maxHourVal && maxHourVal > 0) peakHour = i;
+      let label = (i%4===0) ? `<div class="hourly-label">${i}:00</div>` : '';
+      chart.innerHTML += `<div class="hourly-bar" style="height: ${heightPct}%;">${label}</div>`;
+    }
+    document.getElementById('peakHourDisplay').innerText = maxHourVal > 0 ? `Peak Focus: ${peakHour}:00` : `Peak: --`;
+  }
+
+  /* ================= 6. DATA RESILIENCE & CONTENT LOGIC ================= */
+  function exportData(format) {
+    const dataObj = { enggLogs: JSON.parse(localStorage.getItem('enggLogs') || '[]'), standupLogs: JSON.parse(localStorage.getItem('standupLogs') || '[]'), kanbanState: kanbanTasks, loggedDates: loggedDates, arcStreak: localStorage.getItem('arcStreak') || 0, todaySteps: steps };
+    if (format === 'json') {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
+      const link = document.createElement("a"); link.href = dataStr; link.download = `2027_OS_Backup_${new Date().toISOString().split('T')[0]}.json`; link.click();
+    } else if (format === 'csv') {
+      let csv = "ID,Task,Duration(Sec),Time,Timestamp\n"; dataObj.enggLogs.forEach(l => csv += `${l.id},"${l.task}",${l.seconds},${l.timeStr},"${l.timestamp}"\n`);
+      const link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "OS_Logs.csv"; link.click();
+    }
+  }
+
+  function importData(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const dataObj = JSON.parse(e.target.result);
+        if(dataObj.enggLogs) localStorage.setItem('enggLogs', JSON.stringify(dataObj.enggLogs));
+        if(dataObj.standupLogs) localStorage.setItem('standupLogs', JSON.stringify(dataObj.standupLogs));
+        if(dataObj.kanbanState) localStorage.setItem('kanbanState', JSON.stringify(dataObj.kanbanState));
+        if(dataObj.loggedDates) localStorage.setItem('loggedDates', JSON.stringify(dataObj.loggedDates));
+        if(dataObj.arcStreak) localStorage.setItem('arcStreak', dataObj.arcStreak);
+        alert("OS State Restored Successfully! Reloading..."); location.reload();
+      } catch (err) { alert("Invalid Backup File!"); }
+    };
+    reader.readAsText(file);
+  }
+
+  const contentBoxes = document.querySelectorAll('input[data-content]');
+  contentBoxes.forEach(box => {
+    const id = box.dataset.content; const isDone = localStorage.getItem('content_' + id) === 'true';
+    box.checked = isDone; if(isDone) document.getElementById('t-' + id).classList.add('done');
+  });
+
+  function toggleContent(id) {
+    const box = document.querySelector(`input[data-content="${id}"]`);
+    localStorage.setItem('content_' + id, box.checked);
+    document.getElementById('t-' + id).classList.toggle('done', box.checked);
+  }
+</script>
+</body>
+</html>
