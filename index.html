@@ -190,11 +190,12 @@
     </div>
     <div class="scroll-list" id="habitList">
       <div class="list-item"><span>💧 1. 3L Water per day</span><input type="checkbox" data-id="wa1"></div>
-      <div class="list-item"><span>🍔 2. No junk food</span><input type="checkbox" data-id="wa2"></div>
-      <div class="list-item"><span>😴 3. 7-8 hours sleep</span><input type="checkbox" data-id="wa3"></div>
-      <div class="list-item"><span>🚶 4. 10k steps daily</span><input type="checkbox" data-id="wa6"></div>
-      <div class="list-item"><span>📵 5. No phone during meals</span><input type="checkbox" data-id="wa7"></div>
-      <div class="list-item"><span>🙏 6. Be grateful daily</span><input type="checkbox" data-id="wa9"></div>
+      <div class="list-item"><span>🍔 2. Clean diet (No junk / sugar)</span><input type="checkbox" data-id="wa2"></div>
+      <div class="list-item"><span>😴 3. 7-8 hours quality sleep</span><input type="checkbox" data-id="wa3"></div>
+      <div class="list-item"><span>🏋️ 4. 45 min Workout / Gym</span><input type="checkbox" data-id="wa4"></div>
+      <div class="list-item"><span>🚶 5. 10,000 steps daily</span><input type="checkbox" data-id="wa5"></div>
+      <div class="list-item"><span>📵 6. No phone during meals / morning</span><input type="checkbox" data-id="wa6"></div>
+      <div class="list-item"><span>🙏 7. Daily Gratitude & Reflection</span><input type="checkbox" data-id="wa7"></div>
     </div>
   </div>
 </div>
@@ -332,6 +333,49 @@
 
   <div class="card full-width">
     <div class="header-flex">
+      <h2 class="header-title">OS Telemetry: Sprint Performance & Daily Commits</h2>
+      <span class="cmd-hint" id="telemetryStatsSummary">0 Days Committed</span>
+    </div>
+    <div id="telemetryCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
+        <div class="cmd-hint">TOTAL SPRINT COMMITS</div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-top: 4px;" id="statTotalCommits">0</div>
+      </div>
+      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
+        <div class="cmd-hint">TOTAL STEPS LOGGED</div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--info); margin-top: 4px;" id="statTotalSteps">0</div>
+      </div>
+      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
+        <div class="cmd-hint">AVG HABIT DISCIPLINE</div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
+      </div>
+      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
+        <div class="cmd-hint">TOTAL DEEP WORK</div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 4px;" id="statTotalDeepWork">0.0h</div>
+      </div>
+    </div>
+    
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;" id="telemetryTable">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--surface-border); color: var(--text-muted);">
+            <th style="padding: 0.6rem 0.8rem;">DATE</th>
+            <th style="padding: 0.6rem 0.8rem;">STREAK</th>
+            <th style="padding: 0.6rem 0.8rem;">STEPS (10K)</th>
+            <th style="padding: 0.6rem 0.8rem;">HABITS (7/7)</th>
+            <th style="padding: 0.6rem 0.8rem;">DEEP WORK</th>
+            <th style="padding: 0.6rem 0.8rem;">WINS / SHIP</th>
+          </tr>
+        </thead>
+        <tbody id="telemetryTableBody">
+          <tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits yet. Complete all daily habits and submit EOD Standup.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card full-width">
+    <div class="header-flex">
       <h2 class="header-title">Hourly Focus Distribution (Peak Velocity)</h2>
       <span class="cmd-hint" id="peakHourDisplay">Peak: --</span>
     </div>
@@ -356,13 +400,19 @@
   function switchTab(tabId) {
     document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
-    if(tabId === 'analytics') generateAnalytics();
+    if (event && event.target && event.target.classList.contains('nav-tab')) {
+      event.target.classList.add('active');
+    } else {
+      const targetBtn = Array.from(document.querySelectorAll('.nav-tab')).find(b => b.getAttribute('onclick')?.includes(tabId));
+      if (targetBtn) targetBtn.classList.add('active');
+    }
+    const targetSection = document.getElementById(tabId);
+    if (targetSection) targetSection.classList.add('active');
+    if (tabId === 'analytics') generateAnalytics();
   }
   function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-  /* ================= COUNTDOWN FIX ================= */
+  /* ================= COUNTDOWN TIMER ================= */
   const targetDate = new Date("January 1, 2027 00:00:00").getTime();
   
   function updateCountdown() {
@@ -379,72 +429,145 @@
     document.getElementById("minutes").innerText = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
     document.getElementById("seconds").innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
   }
-
   updateCountdown(); 
   setInterval(updateCountdown, 1000);
 
-  /* ================= Pedometer Logic (DeviceMotion API) ================= */
+  /* ================= 1. DAILY MIDNIGHT RESET & HABITS ================= */
+  const HABIT_IDS = ['wa1', 'wa2', 'wa3', 'wa4', 'wa5', 'wa6', 'wa7'];
+  const stepTarget = 10000;
   let steps = parseInt(localStorage.getItem('todaySteps')) || 0;
-  let lastAccel = 0; let lastStepTime = 0; const stepTarget = 10000;
-  
-  const todayDateStr = new Date().toDateString();
-  if (localStorage.getItem('stepDate') !== todayDateStr) {
-      steps = 0; localStorage.setItem('todaySteps', 0); localStorage.setItem('stepDate', todayDateStr);
+  let lastAccel = 0; 
+  let lastStepTime = 0;
+  const dailyCheckboxes = document.querySelectorAll('#habitList input[type="checkbox"]');
+  let currentStreak = parseInt(localStorage.getItem('arcStreak')) || 0;
+  let loggedDates = JSON.parse(localStorage.getItem('loggedDates')) || [];
+
+  function getSystemDateKey() {
+    return new Date().toDateString();
   }
 
-  document.getElementById('stepCountDisplay').innerText = steps; updateStepUI();
+  function checkDailyMidnightReset() {
+    const today = getSystemDateKey();
+    const lastDate = localStorage.getItem('lastActiveDate') || localStorage.getItem('stepDate');
 
+    if (lastDate && lastDate !== today) {
+      // Midnight transition detected: Reset pedometer and daily habits
+      steps = 0;
+      localStorage.setItem('todaySteps', 0);
+      localStorage.setItem('stepDate', today);
+      localStorage.setItem('lastActiveDate', today);
+
+      HABIT_IDS.forEach(id => {
+        localStorage.removeItem(id);
+        localStorage.setItem(id, 'false');
+      });
+
+      dailyCheckboxes.forEach(box => {
+        box.checked = false;
+      });
+
+      updateStepUI();
+      console.log(`[Elite OS] Midnight reset executed for date: ${today}`);
+    } else if (!lastDate) {
+      localStorage.setItem('stepDate', today);
+      localStorage.setItem('lastActiveDate', today);
+    }
+  }
+
+  // Initialize habit checkbox state from localStorage
+  dailyCheckboxes.forEach(box => {
+    box.checked = localStorage.getItem(box.dataset.id) === 'true';
+    box.addEventListener('change', () => {
+      localStorage.setItem(box.dataset.id, box.checked);
+    });
+  });
+
+  function resetHabits() {
+    dailyCheckboxes.forEach(box => {
+      box.checked = false;
+      localStorage.setItem(box.dataset.id, 'false');
+      localStorage.removeItem(box.dataset.id);
+    });
+  }
+
+  /* ================= PEDOMETER SENSORS & LOGIC ================= */
   function updateStepUI() {
-      let pct = Math.min((steps / stepTarget) * 100, 100);
-      const bar = document.getElementById('stepProgressBar');
-      bar.style.width = pct + '%';
-      if(steps >= stepTarget) bar.style.background = 'var(--accent)';
+    document.getElementById('stepCountDisplay').innerText = steps.toLocaleString();
+    let pct = Math.min((steps / stepTarget) * 100, 100);
+    const bar = document.getElementById('stepProgressBar');
+    bar.style.width = pct + '%';
+    if (steps >= stepTarget) {
+      bar.style.background = 'var(--accent)';
+      // Automatically sync 10k step habit checkbox (wa5) if present
+      const stepBox = document.querySelector('input[data-id="wa5"]');
+      if (stepBox && !stepBox.checked) {
+        stepBox.checked = true;
+        localStorage.setItem('wa5', 'true');
+      }
+    } else {
+      bar.style.background = 'var(--info)';
+    }
   }
 
-  function debugStep() {
-      steps++; localStorage.setItem('todaySteps', steps);
-      document.getElementById('stepCountDisplay').innerText = steps; updateStepUI();
+  function debugStep(increment = 1) {
+    steps += increment;
+    localStorage.setItem('todaySteps', steps);
+    updateStepUI();
   }
 
   function initPedometer() {
-      const btn = document.getElementById('startPedometerBtn');
-      
-      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-          alert("Error: Mobile sensors require the app to be hosted on HTTPS. Use the test button for local development.");
-          return;
-      }
+    const btn = document.getElementById('startPedometerBtn');
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      alert("Note: Mobile hardware sensors require HTTPS. Use the test button for local browser testing.");
+    }
 
-      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-          DeviceMotionEvent.requestPermission().then(permissionState => {
-              if (permissionState === 'granted') {
-                  window.addEventListener('devicemotion', handleMotion);
-                  btn.innerText = "Sensors Active"; btn.style.color = "var(--accent)";
-              } else { alert("Sensor permission denied by user."); }
-          }).catch(err => {
-              alert("Permission request failed. Ensure you are on an HTTPS connection.");
-          });
-      } else if ('DeviceMotionEvent' in window) {
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission().then(permissionState => {
+        if (permissionState === 'granted') {
           window.addEventListener('devicemotion', handleMotion);
-          btn.innerText = "Sensors Active"; btn.style.color = "var(--accent)";
-      } else { 
-          alert("DeviceMotionEvent API not supported on this browser/device."); 
-      }
+          btn.innerText = "Sensors Active";
+          btn.style.color = "var(--accent)";
+        } else {
+          alert("Sensor permission denied by user.");
+        }
+      }).catch(err => {
+        alert("Permission request failed. Ensure you are on an HTTPS connection.");
+      });
+    } else if ('DeviceMotionEvent' in window) {
+      window.addEventListener('devicemotion', handleMotion);
+      btn.innerText = "Sensors Active";
+      btn.style.color = "var(--accent)";
+    } else { 
+      alert("DeviceMotionEvent API not supported on this browser/device."); 
+    }
   }
 
   function handleMotion(event) {
-      let acc = event.accelerationIncludingGravity || event.acceleration;
-      if(!acc || acc.x === null) return;
-      let mag = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
-      let delta = Math.abs(mag - lastAccel);
-      let now = Date.now();
-      
-      if (delta > 1.2 && (now - lastStepTime) > 300) {
-          steps++; localStorage.setItem('todaySteps', steps);
-          document.getElementById('stepCountDisplay').innerText = steps; updateStepUI();
-          lastStepTime = now;
-      }
-      lastAccel = mag;
+    let acc = event.accelerationIncludingGravity || event.acceleration;
+    if (!acc || acc.x === null) return;
+    let mag = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
+    let delta = Math.abs(mag - lastAccel);
+    let now = Date.now();
+    
+    if (delta > 1.2 && (now - lastStepTime) > 300) {
+      steps++;
+      localStorage.setItem('todaySteps', steps);
+      updateStepUI();
+      lastStepTime = now;
+    }
+    lastAccel = mag;
   }
+
+  // Run on Boot
+  checkDailyMidnightReset();
+  updateStepUI();
+  document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
+
+  // Auto-check midnight transition every 30 seconds & when tab regains visibility
+  setInterval(checkDailyMidnightReset, 30000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) checkDailyMidnightReset();
+  });
 
   /* ================= 2. MICRO-KANBAN BOARD ================= */
   let kanbanTasks = JSON.parse(localStorage.getItem('kanbanState')) || { todo: [], active: [], done: [] };
@@ -452,43 +575,70 @@
   function renderKanban() {
     ['todo', 'active', 'done'].forEach(colId => {
       const col = document.getElementById('col-' + colId);
+      if (!col) return;
       col.innerHTML = col.firstElementChild.outerHTML; 
       kanbanTasks[colId].forEach(task => {
-        const div = document.createElement('div'); div.className = 'task-card'; div.draggable = true;
-        div.innerText = task.text; div.id = task.id; div.ondragstart = drag; col.appendChild(div);
+        const div = document.createElement('div');
+        div.className = 'task-card';
+        div.draggable = true;
+        div.innerText = task.text;
+        div.id = task.id;
+        div.ondragstart = drag;
+        col.appendChild(div);
       });
     });
   }
 
-  function addNewTask() { const text = prompt("Enter new task:"); if(text) { kanbanTasks.todo.push({ id: 'task_' + Date.now(), text: text }); saveKanban(); } }
-  function saveKanban() { localStorage.setItem('kanbanState', JSON.stringify(kanbanTasks)); renderKanban(); }
-  function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); ev.target.classList.add('dragging'); }
+  function addNewTask() {
+    const text = prompt("Enter new task:");
+    if (text) {
+      kanbanTasks.todo.push({ id: 'task_' + Date.now(), text: text });
+      saveKanban();
+    }
+  }
+  function saveKanban() {
+    localStorage.setItem('kanbanState', JSON.stringify(kanbanTasks));
+    renderKanban();
+  }
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+    ev.target.classList.add('dragging');
+  }
   function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
   
   function drop(ev) {
-    ev.preventDefault(); document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
-    const taskId = ev.dataTransfer.getData("text"); const targetCol = ev.currentTarget.id.replace('col-', '');
+    ev.preventDefault();
+    document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+    const taskId = ev.dataTransfer.getData("text");
+    const targetCol = ev.currentTarget.id.replace('col-', '');
     let movedTask = null;
     ['todo', 'active', 'done'].forEach(c => {
       const idx = kanbanTasks[c].findIndex(t => t.id === taskId);
-      if(idx > -1) { movedTask = kanbanTasks[c].splice(idx, 1)[0]; }
+      if (idx > -1) { movedTask = kanbanTasks[c].splice(idx, 1)[0]; }
     });
-    if(movedTask) { kanbanTasks[targetCol].push(movedTask); saveKanban(); }
+    if (movedTask) {
+      kanbanTasks[targetCol].push(movedTask);
+      saveKanban();
+    }
   }
   renderKanban(); 
 
   /* ================= 3. TIMER LOGIC ================= */
-  let interval = null, elapsedSeconds = 0, currentTask = ""; let isPomodoro = false;
+  let interval = null, elapsedSeconds = 0, currentTask = "";
+  let isPomodoro = false;
 
   function toggleMode() {
     isPomodoro = document.querySelector('input[name="timerMode"]:checked').value === 'pomodoro';
     document.getElementById('targetMinutes').style.display = isPomodoro ? 'block' : 'none';
-    if(!interval) document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
+    if (!interval) document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
   }
 
-  function handleDropdownChange() { document.getElementById('customInput').style.display = document.getElementById('timerPillar').value === 'custom' ? 'block' : 'none'; }
+  function handleDropdownChange() {
+    document.getElementById('customInput').style.display = document.getElementById('timerPillar').value === 'custom' ? 'block' : 'none';
+  }
+
   function formatTime(secs) {
-    if(isNaN(secs) || secs < 0) secs = 0;
+    if (isNaN(secs) || secs < 0) secs = 0;
     return `${String(Math.floor(secs / 3600)).padStart(2, '0')}:${String(Math.floor((secs % 3600) / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
   }
 
@@ -496,28 +646,40 @@
     const btn = document.getElementById("timerBtn"); 
     if (!interval) {
       currentTask = document.getElementById('timerPillar').value === 'custom' ? document.getElementById('customInput').value.trim() : document.getElementById('timerPillar').value;
-      if (!currentTask) currentTask = "Terminal Execution"; elapsedSeconds = 0;
+      if (!currentTask) currentTask = "Terminal Execution";
+      elapsedSeconds = 0;
       
       let targetSecs = isPomodoro ? parseInt(document.getElementById('targetMinutes').value || 0) * 60 : 0;
 
       interval = setInterval(() => {
         elapsedSeconds++;
-        if(isPomodoro) {
+        if (isPomodoro) {
           let remaining = targetSecs - elapsedSeconds;
           document.getElementById("liveTimer").innerText = formatTime(remaining);
-          if(remaining <= 0) { clearInterval(interval); saveSession(currentTask, elapsedSeconds); resetTimerUI(); alert("Target Complete!"); }
-        } else { document.getElementById("liveTimer").innerText = formatTime(elapsedSeconds); }
+          if (remaining <= 0) {
+            clearInterval(interval);
+            saveSession(currentTask, elapsedSeconds);
+            resetTimerUI();
+            alert("Target Complete!");
+          }
+        } else {
+          document.getElementById("liveTimer").innerText = formatTime(elapsedSeconds);
+        }
       }, 1000);
-      btn.innerText = "End & Log Session"; btn.className = "btn active";
+      btn.innerText = "End & Log Session";
+      btn.className = "btn active";
     } else {
-      clearInterval(interval); if (elapsedSeconds > 5) saveSession(currentTask, elapsedSeconds); resetTimerUI();
+      clearInterval(interval);
+      if (elapsedSeconds > 5) saveSession(currentTask, elapsedSeconds);
+      resetTimerUI();
     }
   }
 
   function resetTimerUI() {
     interval = null;
     document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
-    document.getElementById("timerBtn").innerText = "Initialize Session"; document.getElementById("timerBtn").className = "btn";
+    document.getElementById("timerBtn").innerText = "Initialize Session";
+    document.getElementById("timerBtn").className = "btn";
   }
 
   function saveSession(task, seconds) {
@@ -525,133 +687,332 @@
     logs.unshift({ id: Date.now(), task: task, seconds: seconds, timeStr: formatTime(seconds), timestamp: new Date().toISOString() });
     localStorage.setItem('enggLogs', JSON.stringify(logs));
     
-    if(document.getElementById('timerPillar').value === 'custom' && task !== "Terminal Execution") {
+    if (document.getElementById('timerPillar').value === 'custom' && task !== "Terminal Execution") {
        let customCats = JSON.parse(localStorage.getItem('customCats')) || [];
-       if(!customCats.includes(task)) { customCats.push(task); localStorage.setItem('customCats', JSON.stringify(customCats)); const newOption = new Option("📌 " + task, task); document.getElementById('timerPillar').insertBefore(newOption, document.getElementById('customOptionSelector')); }
-       document.getElementById('timerPillar').value = task; document.getElementById('customInput').style.display = 'none'; document.getElementById('customInput').value = '';
+       if (!customCats.includes(task)) {
+         customCats.push(task);
+         localStorage.setItem('customCats', JSON.stringify(customCats));
+         const newOption = new Option("📌 " + task, task);
+         document.getElementById('timerPillar').insertBefore(newOption, document.getElementById('customOptionSelector'));
+       }
+       document.getElementById('timerPillar').value = task;
+       document.getElementById('customInput').style.display = 'none';
+       document.getElementById('customInput').value = '';
     }
-    if(document.getElementById('analytics').classList.contains('active')) generateAnalytics();
+    if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
   }
 
   (function loadCustomCategories() {
     let customCats = JSON.parse(localStorage.getItem('customCats')) || [];
     const select = document.getElementById('timerPillar');
-    customCats.forEach(cat => { const newOption = new Option("📌 " + cat, cat); select.insertBefore(newOption, document.getElementById('customOptionSelector')); });
+    customCats.forEach(cat => {
+      const newOption = new Option("📌 " + cat, cat);
+      select.insertBefore(newOption, document.getElementById('customOptionSelector'));
+    });
   })();
 
-  /* ================= 4. AGILE STANDUP & STREAKS ================= */
-  const dailyCheckboxes = document.querySelectorAll('#habitList input[type="checkbox"]');
-  let currentStreak = parseInt(localStorage.getItem('arcStreak')) || 0;
-  let loggedDates = JSON.parse(localStorage.getItem('loggedDates')) || [];
-  document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
-
-  dailyCheckboxes.forEach(box => {
-    box.checked = localStorage.getItem(box.dataset.id) === 'true';
-    box.addEventListener('change', () => localStorage.setItem(box.dataset.id, box.checked));
-  });
-
-  function resetHabits() { dailyCheckboxes.forEach(box => { box.checked = false; localStorage.removeItem(box.dataset.id); }); }
-
+  /* ================= 4. AGILE STANDUP & OS TELEMETRY COMMITS ================= */
   function initiateStandup() {
-    if (!Array.from(dailyCheckboxes).every(box => box.checked)) { alert("Finish your daily tasks first."); return; }
-    const today = new Date().toDateString();
-    if (loggedDates.includes(today)) { alert("Day already logged!"); return; }
+    if (!Array.from(dailyCheckboxes).every(box => box.checked)) {
+      alert("Finish all 7 daily Winter Arc tasks before committing your EOD Standup.");
+      return;
+    }
+    const today = getSystemDateKey();
+    if (loggedDates.includes(today)) {
+      alert("Day already committed to Telemetry History for today!");
+      return;
+    }
     document.getElementById('standupModal').style.display = 'flex';
   }
 
-  function submitStandup() {
-    const today = new Date().toDateString(); let standups = JSON.parse(localStorage.getItem('standupLogs')) || [];
-    standups.unshift({ date: today, wins: document.getElementById('standupWins').value, blocks: document.getElementById('standupBlocks').value, next: document.getElementById('standupNext').value });
-    localStorage.setItem('standupLogs', JSON.stringify(standups));
-    currentStreak++; loggedDates.push(today);
-    localStorage.setItem('arcStreak', currentStreak); localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
-    document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
-    closeModal('standupModal'); resetHabits();
-    document.getElementById('standupWins').value = ''; document.getElementById('standupBlocks').value = ''; document.getElementById('standupNext').value = '';
-    if(document.getElementById('analytics').classList.contains('active')) generateAnalytics();
+  function calculateTodayFocusSeconds() {
+    const todayISO = new Date().toISOString().split('T')[0];
+    const logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
+    return logs.reduce((acc, log) => {
+      if (log.timestamp && log.timestamp.startsWith(todayISO)) {
+        return acc + (log.seconds || 0);
+      }
+      return acc;
+    }, 0);
   }
 
-  /* ================= 5. TELEMETRY, BURNDOWN, & HEATMAP ================= */
+  function submitStandup() {
+    const today = getSystemDateKey();
+    const wins = document.getElementById('standupWins').value.trim() || 'Daily targets crushed.';
+    const blocks = document.getElementById('standupBlocks').value.trim() || 'None reported.';
+    const next = document.getElementById('standupNext').value.trim() || 'Continue sprint velocity.';
+
+    // 1. Maintain legacy standup logs for resilience
+    let standups = JSON.parse(localStorage.getItem('standupLogs')) || [];
+    standups.unshift({ date: today, wins: wins, blocks: blocks, next: next, timestamp: new Date().toISOString() });
+    localStorage.setItem('standupLogs', JSON.stringify(standups));
+
+    // 2. Capture completed metrics and push to telemetryHistory
+    const totalHabits = dailyCheckboxes.length;
+    const completedHabits = Array.from(dailyCheckboxes).filter(b => b.checked).length;
+    const todayFocusSecs = calculateTodayFocusSeconds();
+
+    let telemetryHistory = JSON.parse(localStorage.getItem('telemetryHistory')) || [];
+    const dailyTelemetryRecord = {
+      id: 'telem_' + Date.now(),
+      date: today,
+      timestamp: new Date().toISOString(),
+      streak: currentStreak + 1,
+      steps: steps,
+      stepGoalMet: steps >= stepTarget,
+      habitsCompleted: completedHabits,
+      totalHabits: totalHabits,
+      habitScorePct: Math.round((completedHabits / totalHabits) * 100),
+      deepWorkSeconds: todayFocusSecs,
+      deepWorkFormatted: formatTime(todayFocusSecs),
+      wins: wins,
+      blocks: blocks,
+      next: next
+    };
+
+    // Remove any duplicate for the same date if re-committed, then unshift new record
+    telemetryHistory = telemetryHistory.filter(item => item.date !== today);
+    telemetryHistory.unshift(dailyTelemetryRecord);
+    localStorage.setItem('telemetryHistory', JSON.stringify(telemetryHistory));
+
+    // 3. Update Streaks and Logged Dates
+    currentStreak++;
+    loggedDates.push(today);
+    localStorage.setItem('arcStreak', currentStreak);
+    localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
+    document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
+
+    // 4. Reset Modal & Daily Habits for Next Cycle
+    closeModal('standupModal');
+    resetHabits();
+    document.getElementById('standupWins').value = '';
+    document.getElementById('standupBlocks').value = '';
+    document.getElementById('standupNext').value = '';
+
+    alert(`Day committed to OS Telemetry! Sprint Streak: ${currentStreak} Days.`);
+    if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
+  }
+
+  /* ================= 5. TELEMETRY, BURNDOWN, HEATMAP & TABLE ================= */
   function generateAnalytics() {
-    const grid = document.getElementById('heatmapGrid'); grid.innerHTML = ''; 
-    const sprintStart = new Date('2026-09-01T00:00:00');
-    const today = new Date();
-    
-    for(let i = 0; i < 122; i++) {
-      let d = new Date(sprintStart);
-      d.setDate(d.getDate() + i);
-      let isLogged = loggedDates.includes(d.toDateString());
-      let isFuture = d > today;
-      let opacityStyle = isFuture ? 'opacity: 0.1;' : '';
-      grid.innerHTML += `<div class="heat-box ${isLogged ? 'active' : ''}" style="${opacityStyle}" title="${d.toDateString()}"></div>`;
+    const telemetryHistory = JSON.parse(localStorage.getItem('telemetryHistory')) || [];
+    const grid = document.getElementById('heatmapGrid');
+    if (grid) {
+      grid.innerHTML = ''; 
+      const sprintStart = new Date('2026-09-01T00:00:00');
+      const today = new Date();
+      
+      for (let i = 0; i < 122; i++) {
+        let d = new Date(sprintStart);
+        d.setDate(d.getDate() + i);
+        let dateStr = d.toDateString();
+        let isLogged = loggedDates.includes(dateStr) || telemetryHistory.some(t => t.date === dateStr);
+        let isFuture = d > today;
+        let opacityStyle = isFuture ? 'opacity: 0.1;' : '';
+        grid.innerHTML += `<div class="heat-box ${isLogged ? 'active' : ''}" style="${opacityStyle}" title="${dateStr}"></div>`;
+      }
     }
 
+    // Telemetry Overview Stats Cards
+    const totalCommits = telemetryHistory.length;
+    const totalStepsLogged = telemetryHistory.reduce((sum, item) => sum + (item.steps || 0), 0);
+    const avgHabitScore = totalCommits > 0 ? Math.round(telemetryHistory.reduce((sum, item) => sum + (item.habitScorePct || 100), 0) / totalCommits) : 0;
+    const totalDeepWorkSecs = telemetryHistory.reduce((sum, item) => sum + (item.deepWorkSeconds || 0), 0);
+
+    if (document.getElementById('statTotalCommits')) document.getElementById('statTotalCommits').innerText = totalCommits;
+    if (document.getElementById('statTotalSteps')) document.getElementById('statTotalSteps').innerText = totalStepsLogged.toLocaleString();
+    if (document.getElementById('statAvgHabits')) document.getElementById('statAvgHabits').innerText = totalCommits > 0 ? `${avgHabitScore}%` : '100%';
+    if (document.getElementById('statTotalDeepWork')) document.getElementById('statTotalDeepWork').innerText = `${(totalDeepWorkSecs / 3600).toFixed(1)}h`;
+    if (document.getElementById('telemetryStatsSummary')) document.getElementById('telemetryStatsSummary').innerText = `${totalCommits} Sprint Days Committed`;
+
+    // Render Telemetry History Table
+    const tableBody = document.getElementById('telemetryTableBody');
+    if (tableBody) {
+      if (telemetryHistory.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="padding: 1.25rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits logged yet. Complete all 7 daily habits and submit EOD Standup.</td></tr>`;
+      } else {
+        tableBody.innerHTML = telemetryHistory.map(row => {
+          const stepBadge = row.steps >= 10000 
+            ? `<span style="background: rgba(16, 185, 129, 0.2); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-weight: 700;">${row.steps.toLocaleString()} ✔</span>`
+            : `<span style="color: var(--text-muted);">${row.steps.toLocaleString()}</span>`;
+          const habitBadge = `<span style="color: var(--accent); font-weight: 600;">${row.habitsCompleted}/${row.totalHabits} (${row.habitScorePct || 100}%)</span>`;
+          const deepWorkDisplay = row.deepWorkFormatted || `${Math.floor((row.deepWorkSeconds || 0)/3600)}h ${Math.floor(((row.deepWorkSeconds || 0)%3600)/60)}m`;
+
+          return `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <td style="padding: 0.6rem 0.8rem; font-weight: 600; white-space: nowrap;">${row.date}</td>
+              <td style="padding: 0.6rem 0.8rem; color: var(--accent);">🔥 ${row.streak}</td>
+              <td style="padding: 0.6rem 0.8rem;">${stepBadge}</td>
+              <td style="padding: 0.6rem 0.8rem;">${habitBadge}</td>
+              <td style="padding: 0.6rem 0.8rem; color: var(--info); font-family: monospace;">${deepWorkDisplay}</td>
+              <td style="padding: 0.6rem 0.8rem; color: var(--text-main); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${row.wins}">${row.wins}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // Engine Logs & Hours distribution
     let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
     let cats = { "💻 GSoC / Frontend Sprint": 0, "☕ Java DSA": 0, "👕 Gen AI T-Shirt Design": 0 };
-    let hourlyData = new Array(24).fill(0); let maxHourVal = 0;
+    let hourlyData = new Array(24).fill(0); 
+    let maxHourVal = 0;
 
     logs.forEach(l => { 
-      if(cats[l.task] !== undefined) cats[l.task] += l.seconds; 
+      if (cats[l.task] !== undefined) cats[l.task] += l.seconds; 
       let hour = new Date(l.timestamp).getHours();
-      if(!isNaN(hour)) { hourlyData[hour] += l.seconds; if(hourlyData[hour] > maxHourVal) maxHourVal = hourlyData[hour]; }
+      if (!isNaN(hour)) {
+        hourlyData[hour] += l.seconds;
+        if (hourlyData[hour] > maxHourVal) maxHourVal = hourlyData[hour];
+      }
     });
 
     const updateBar = (id, currentSecs, targetHours) => {
       let pct = Math.min(((currentSecs / 3600) / targetHours) * 100, 100).toFixed(1);
-      document.getElementById('burn' + id).innerText = `${(currentSecs/3600).toFixed(1)}h / ${targetHours}h (${pct}%)`;
-      document.getElementById('fill' + id).style.width = pct + '%';
+      const burnEl = document.getElementById('burn' + id);
+      const fillEl = document.getElementById('fill' + id);
+      if (burnEl) burnEl.innerText = `${(currentSecs/3600).toFixed(1)}h / ${targetHours}h (${pct}%)`;
+      if (fillEl) fillEl.style.width = pct + '%';
     };
-    updateBar('Frontend', cats["💻 GSoC / Frontend Sprint"], 150); updateBar('Java', cats["☕ Java DSA"], 100); updateBar('Design', cats["👕 Gen AI T-Shirt Design"], 50);
+    updateBar('Frontend', cats["💻 GSoC / Frontend Sprint"], 150);
+    updateBar('Java', cats["☕ Java DSA"], 100);
+    updateBar('Design', cats["👕 Gen AI T-Shirt Design"], 50);
 
-    const chart = document.getElementById('hourlyChart'); chart.innerHTML = ''; let peakHour = 0;
-    for(let i=0; i<24; i++) {
-      let heightPct = maxHourVal === 0 ? 0 : (hourlyData[i] / maxHourVal) * 100;
-      if(hourlyData[i] === maxHourVal && maxHourVal > 0) peakHour = i;
-      let label = (i%4===0) ? `<div class="hourly-label">${i}:00</div>` : '';
-      chart.innerHTML += `<div class="hourly-bar" style="height: ${heightPct}%;">${label}</div>`;
+    const chart = document.getElementById('hourlyChart');
+    if (chart) {
+      chart.innerHTML = '';
+      let peakHour = 0;
+      for (let i = 0; i < 24; i++) {
+        let heightPct = maxHourVal === 0 ? 0 : (hourlyData[i] / maxHourVal) * 100;
+        if (hourlyData[i] === maxHourVal && maxHourVal > 0) peakHour = i;
+        let label = (i % 4 === 0) ? `<div class="hourly-label">${i}:00</div>` : '';
+        chart.innerHTML += `<div class="hourly-bar" style="height: ${heightPct}%;">${label}</div>`;
+      }
+      document.getElementById('peakHourDisplay').innerText = maxHourVal > 0 ? `Peak Focus: ${peakHour}:00` : `Peak: --`;
     }
-    document.getElementById('peakHourDisplay').innerText = maxHourVal > 0 ? `Peak Focus: ${peakHour}:00` : `Peak: --`;
   }
 
-  /* ================= 6. DATA RESILIENCE & CONTENT LOGIC ================= */
+  /* ================= 6. DATA RESILIENCE & BACKUPS ================= */
   function exportData(format) {
-    const dataObj = { enggLogs: JSON.parse(localStorage.getItem('enggLogs') || '[]'), standupLogs: JSON.parse(localStorage.getItem('standupLogs') || '[]'), kanbanState: kanbanTasks, loggedDates: loggedDates, arcStreak: localStorage.getItem('arcStreak') || 0, todaySteps: steps };
+    const dataObj = {
+      enggLogs: JSON.parse(localStorage.getItem('enggLogs') || '[]'),
+      standupLogs: JSON.parse(localStorage.getItem('standupLogs') || '[]'),
+      telemetryHistory: JSON.parse(localStorage.getItem('telemetryHistory') || '[]'),
+      kanbanState: kanbanTasks,
+      loggedDates: loggedDates,
+      arcStreak: localStorage.getItem('arcStreak') || 0,
+      todaySteps: steps,
+      lastActiveDate: localStorage.getItem('lastActiveDate') || getSystemDateKey()
+    };
+
     if (format === 'json') {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
-      const link = document.createElement("a"); link.href = dataStr; link.download = `2027_OS_Backup_${new Date().toISOString().split('T')[0]}.json`; link.click();
+      const link = document.createElement("a");
+      link.href = dataStr;
+      link.download = `Elite_OS_Telemetry_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
     } else if (format === 'csv') {
-      let csv = "ID,Task,Duration(Sec),Time,Timestamp\n"; dataObj.enggLogs.forEach(l => csv += `${l.id},"${l.task}",${l.seconds},${l.timeStr},"${l.timestamp}"\n`);
-      const link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "OS_Logs.csv"; link.click();
+      let csv = "Type,Date,Streak,Steps,HabitScore,DeepWorkSecs,Notes\n";
+      (dataObj.telemetryHistory || []).forEach(t => {
+        csv += `Telemetry,"${t.date}",${t.streak},${t.steps},"${t.habitScorePct}%",${t.deepWorkSeconds},"${(t.wins||'').replace(/"/g, '""')}"\n`;
+      });
+      dataObj.enggLogs.forEach(l => {
+        csv += `FocusLog,"${l.timestamp}",--,--,--,${l.seconds},"${(l.task||'').replace(/"/g, '""')}"\n`;
+      });
+      const link = document.createElement("a");
+      link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+      link.download = `Elite_OS_Telemetry_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
     }
   }
 
   function importData(event) {
-    const file = event.target.files[0]; if (!file) return;
+    const file = event.target.files[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = function(e) {
       try {
         const dataObj = JSON.parse(e.target.result);
-        if(dataObj.enggLogs) localStorage.setItem('enggLogs', JSON.stringify(dataObj.enggLogs));
-        if(dataObj.standupLogs) localStorage.setItem('standupLogs', JSON.stringify(dataObj.standupLogs));
-        if(dataObj.kanbanState) localStorage.setItem('kanbanState', JSON.stringify(dataObj.kanbanState));
-        if(dataObj.loggedDates) localStorage.setItem('loggedDates', JSON.stringify(dataObj.loggedDates));
-        if(dataObj.arcStreak) localStorage.setItem('arcStreak', dataObj.arcStreak);
-        alert("OS State Restored Successfully! Reloading..."); location.reload();
-      } catch (err) { alert("Invalid Backup File!"); }
+        if (dataObj.enggLogs) localStorage.setItem('enggLogs', JSON.stringify(dataObj.enggLogs));
+        if (dataObj.standupLogs) localStorage.setItem('standupLogs', JSON.stringify(dataObj.standupLogs));
+        if (dataObj.telemetryHistory) localStorage.setItem('telemetryHistory', JSON.stringify(dataObj.telemetryHistory));
+        if (dataObj.kanbanState) localStorage.setItem('kanbanState', JSON.stringify(dataObj.kanbanState));
+        if (dataObj.loggedDates) localStorage.setItem('loggedDates', JSON.stringify(dataObj.loggedDates));
+        if (dataObj.arcStreak) localStorage.setItem('arcStreak', dataObj.arcStreak);
+        if (dataObj.todaySteps !== undefined) localStorage.setItem('todaySteps', dataObj.todaySteps);
+        if (dataObj.lastActiveDate) localStorage.setItem('lastActiveDate', dataObj.lastActiveDate);
+
+        alert("OS State and Telemetry History Restored Successfully! Reloading...");
+        location.reload();
+      } catch (err) {
+        alert("Invalid Backup File! Could not parse JSON.");
+      }
     };
     reader.readAsText(file);
   }
 
+  /* ================= 7. CONTENT PIPELINE CHECKBOXES ================= */
   const contentBoxes = document.querySelectorAll('input[data-content]');
   contentBoxes.forEach(box => {
-    const id = box.dataset.content; const isDone = localStorage.getItem('content_' + id) === 'true';
-    box.checked = isDone; if(isDone) document.getElementById('t-' + id).classList.add('done');
+    const id = box.dataset.content;
+    const isDone = localStorage.getItem('content_' + id) === 'true';
+    box.checked = isDone;
+    const titleEl = document.getElementById('t-' + id);
+    if (titleEl && isDone) titleEl.classList.add('done');
   });
 
   function toggleContent(id) {
     const box = document.querySelector(`input[data-content="${id}"]`);
+    if (!box) return;
     localStorage.setItem('content_' + id, box.checked);
-    document.getElementById('t-' + id).classList.toggle('done', box.checked);
+    const titleEl = document.getElementById('t-' + id);
+    if (titleEl) titleEl.classList.toggle('done', box.checked);
+  }
+
+  /* ================= 8. COMMAND PALETTE & KEYBOARD SHORTCUTS ================= */
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      const modal = document.getElementById('cmdModal');
+      modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+      if (modal.style.display === 'flex') {
+        const input = document.getElementById('cmdInput');
+        input.value = '';
+        setTimeout(() => input.focus(), 50);
+      }
+    } else if (e.key === 'Escape') {
+      closeModal('cmdModal');
+      closeModal('standupModal');
+    }
+  });
+
+  const cmdInput = document.getElementById('cmdInput');
+  if (cmdInput) {
+    cmdInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = cmdInput.value.trim().toLowerCase();
+        closeModal('cmdModal');
+        if (val === 'export' || val === 'backup') {
+          exportData('json');
+        } else if (val === 'csv') {
+          exportData('csv');
+        } else if (val === 'restore' || val === 'import') {
+          document.getElementById('importJson').click();
+        } else if (val === 'standup' || val === 'log') {
+          initiateStandup();
+        } else if (val === 'reset') {
+          if (confirm("Reset today's habits?")) resetHabits();
+        } else if (val === 'analytics' || val === 'telemetry') {
+          switchTab('analytics');
+        } else if (val === 'kanban') {
+          switchTab('kanban');
+        } else if (val === 'dashboard') {
+          switchTab('dashboard');
+        } else {
+          alert(`Command '${val}' not recognized. Available: backup, csv, restore, standup, reset, analytics, kanban, dashboard`);
+        }
+      }
+    });
   }
 </script>
 </body>
