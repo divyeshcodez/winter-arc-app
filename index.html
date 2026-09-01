@@ -425,8 +425,12 @@
     </div>
   </div>
 
+  <!-- Deep Work Terminal with Stopwatch, Pomodoro & Pause/Resume -->
   <div class="card timer-card">
-    <div class="header-flex"><h2 class="header-title">Deep Work Terminal</h2></div>
+    <div class="header-flex">
+      <h2 class="header-title">Deep Work Terminal</h2>
+      <span class="cmd-hint" id="timerStatusHint" style="color: var(--accent); font-weight: 700;">Ready</span>
+    </div>
     
     <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 0.5rem; font-size: 0.85rem; flex-wrap: wrap;">
       <label><input type="radio" name="timerMode" value="stopwatch" checked onchange="toggleMode()"> Stopwatch</label>
@@ -448,7 +452,14 @@
       <option value="custom" id="customOptionSelector">✍️ Custom Task...</option>
     </select>
     <input type="text" id="customInput" class="input-css" style="display: none;" placeholder="Enter custom task...">
+    
     <button class="btn" id="timerBtn" onclick="toggleTimer()">Initialize Session</button>
+
+    <!-- Pause & Discard Controls when timer is active -->
+    <div id="activeTimerControls" style="display: none; gap: 0.6rem; margin-top: 0.65rem; width: 100%;">
+      <button class="btn" id="pauseTimerBtn" style="background: var(--warning); color: #000; flex: 1; padding: 0.85rem;" onclick="togglePauseTimer()">⏸️ Pause Session</button>
+      <button class="btn" id="cancelTimerBtn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); box-shadow: none; width: auto; padding: 0.85rem 1.2rem;" onclick="cancelTimer()" title="Discard session without logging">✕ Cancel</button>
+    </div>
   </div>
 
   <div class="card">
@@ -667,10 +678,7 @@
         <div class="cmd-hint">TOTAL STEPS LOGGED</div>
         <div style="font-size: 1.5rem; font-weight: 800; color: var(--info); margin-top: 4px;" id="statTotalSteps">0</div>
       </div>
-      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
-        <div class="cmd-hint">AVG HABIT DISCIPLINE</div>
-        <div style="font-size: 1.5rem; font-weight: 800; color: var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
-      </div>
+      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
       <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
         <div class="cmd-hint">TOTAL DEEP WORK</div>
         <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 4px;" id="statTotalDeepWork">0.0h</div>
@@ -690,7 +698,7 @@
           </tr>
         </thead>
         <tbody id="telemetryTableBody">
-          <tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits yet. Complete all daily habits and submit EOD Standup.</td></tr>
+          <tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits yet. Complete daily protocols and submit EOD Standup.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1136,10 +1144,8 @@
     const lastDate = localStorage.getItem('lastActiveDate') || localStorage.getItem('stepDate');
 
     if (lastDate && lastDate !== today) {
-      // Archive yesterday before reset
       saveCurrentDaySnapshot();
 
-      // Fresh New Page initialization for today
       steps = 0;
       localStorage.setItem('todaySteps', 0);
       localStorage.setItem('stepDate', today);
@@ -1498,15 +1504,20 @@
   }
   renderKanban(); 
 
-  /* ================= 3. TIMER & WORK LOG TIMELINE ================= */
+  /* ================= 3. TIMER & WORK LOG TIMELINE (WITH PAUSE / RESUME) ================= */
   let interval = null, elapsedSeconds = 0, currentTask = "";
   let isPomodoro = false;
+  let isTimerPaused = false;
   let sessionStartTime = null;
 
   function toggleMode() {
+    if (interval || isTimerPaused) {
+      alert("Please end or reset the active session before switching modes.");
+      return;
+    }
     isPomodoro = document.querySelector('input[name="timerMode"]:checked').value === 'pomodoro';
     document.getElementById('targetMinutes').style.display = isPomodoro ? 'block' : 'none';
-    if (!interval) document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
+    document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
   }
 
   function handleDropdownChange() {
@@ -1532,13 +1543,76 @@
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
   }
 
+  function togglePauseTimer() {
+    if (!interval && !isTimerPaused) return;
+
+    const pauseBtn = document.getElementById("pauseTimerBtn");
+    const hintEl = document.getElementById("timerStatusHint");
+    const timerDisplay = document.getElementById("liveTimer");
+
+    if (!isTimerPaused) {
+      // Pause
+      clearInterval(interval);
+      interval = null;
+      isTimerPaused = true;
+      pauseBtn.innerText = "▶️ Resume Session";
+      pauseBtn.style.background = "var(--accent)";
+      if (hintEl) {
+        hintEl.innerText = "Paused";
+        hintEl.style.color = "var(--warning)";
+      }
+      timerDisplay.style.color = "var(--warning)";
+      showToast("Session Paused ⏸️");
+    } else {
+      // Resume
+      isTimerPaused = false;
+      pauseBtn.innerText = "⏸️ Pause Session";
+      pauseBtn.style.background = "var(--warning)";
+      if (hintEl) {
+        hintEl.innerText = "Running";
+        hintEl.style.color = "var(--accent)";
+      }
+      timerDisplay.style.color = "var(--accent)";
+
+      let targetSecs = isPomodoro ? parseInt(document.getElementById('targetMinutes').value || 0) * 60 : 0;
+      interval = setInterval(() => {
+        elapsedSeconds++;
+        if (isPomodoro) {
+          let remaining = targetSecs - elapsedSeconds;
+          document.getElementById("liveTimer").innerText = formatTime(remaining);
+          if (remaining <= 0) {
+            clearInterval(interval);
+            saveSession(currentTask, elapsedSeconds, sessionStartTime, new Date());
+            resetTimerUI();
+            alert("Target Complete!");
+          }
+        } else {
+          document.getElementById("liveTimer").innerText = formatTime(elapsedSeconds);
+        }
+      }, 1000);
+      showToast("Session Resumed ▶️");
+    }
+  }
+
+  function cancelTimer() {
+    if (!confirm("Discard and cancel this active session without logging?")) return;
+    clearInterval(interval);
+    resetTimerUI();
+    showToast("Session discarded.");
+  }
+
   function toggleTimer() {
     const btn = document.getElementById("timerBtn"); 
-    if (!interval) {
+    const controls = document.getElementById("activeTimerControls");
+    const hintEl = document.getElementById("timerStatusHint");
+    const timerDisplay = document.getElementById("liveTimer");
+
+    if (!interval && !isTimerPaused) {
       sessionStartTime = new Date();
       currentTask = document.getElementById('timerPillar').value === 'custom' ? document.getElementById('customInput').value.trim() : document.getElementById('timerPillar').value;
       if (!currentTask) currentTask = "Terminal Execution";
       elapsedSeconds = 0;
+      isTimerPaused = false;
       
       let targetSecs = isPomodoro ? parseInt(document.getElementById('targetMinutes').value || 0) * 60 : 0;
 
@@ -1557,13 +1631,25 @@
           document.getElementById("liveTimer").innerText = formatTime(elapsedSeconds);
         }
       }, 1000);
+
       btn.innerText = "End & Log Session";
       btn.className = "btn active";
+      controls.style.display = "flex";
+      const pauseBtn = document.getElementById("pauseTimerBtn");
+      pauseBtn.innerText = "⏸️ Pause Session";
+      pauseBtn.style.background = "var(--warning)";
+      if (hintEl) {
+        hintEl.innerText = "Running";
+        hintEl.style.color = "var(--accent)";
+      }
+      timerDisplay.style.color = "var(--accent)";
     } else {
       clearInterval(interval);
       const sessionEndTime = new Date();
       if (elapsedSeconds > 3) {
         saveSession(currentTask, elapsedSeconds, sessionStartTime, sessionEndTime);
+      } else {
+        showToast("Session too short to log (< 3s).");
       }
       resetTimerUI();
     }
@@ -1571,10 +1657,18 @@
 
   function resetTimerUI() {
     interval = null;
+    isTimerPaused = false;
     sessionStartTime = null;
     document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
+    document.getElementById("liveTimer").style.color = "var(--accent)";
     document.getElementById("timerBtn").innerText = "Initialize Session";
     document.getElementById("timerBtn").className = "btn";
+    document.getElementById("activeTimerControls").style.display = "none";
+    const hintEl = document.getElementById("timerStatusHint");
+    if (hintEl) {
+      hintEl.innerText = "Ready";
+      hintEl.style.color = "var(--accent)";
+    }
   }
 
   function saveSession(task, seconds, startDt, endDt) {
@@ -1994,6 +2088,8 @@
         closeModal('cmdModal');
         if (val === 'lock' || val === 'logout') {
           lockSystem();
+        } else if (val === 'pause') {
+          togglePauseTimer();
         } else if (val === 'sync') {
           manualCloudSync();
         } else if (val === 'export' || val === 'backup') {
@@ -2013,7 +2109,7 @@
         } else if (val === 'dashboard') {
           switchTab('dashboard');
         } else {
-          alert(`Command '${val}' not recognized. Available: lock, sync, backup, csv, restore, standup, reset, analytics, kanban, dashboard`);
+          alert(`Command '${val}' not recognized. Available: lock, pause, sync, backup, csv, restore, standup, reset, analytics, kanban, dashboard`);
         }
       }
     });
