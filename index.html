@@ -74,6 +74,53 @@
   input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
   input[type="checkbox"]:checked::after { content: '✔'; position: absolute; color: #000; font-size: 12px; font-weight: 800; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
+  /* Work Log & Timeline Styles */
+  .work-log-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    background: #1e293b;
+    border-radius: 10px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 0.5rem;
+    transition: transform 0.15s ease, background 0.2s;
+    gap: 0.75rem;
+  }
+  .work-log-item:hover {
+    background: #24344d;
+    transform: translateX(2px);
+  }
+  .work-log-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+  .work-log-task { font-weight: 700; font-size: 0.9rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .work-log-time { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .work-log-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .work-log-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .delete-log-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: 0.2s;
+  }
+  .delete-log-btn:hover {
+    color: var(--danger);
+    background: rgba(239, 68, 68, 0.1);
+  }
+
   /* Kanban Board */
   .kanban-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; overflow-x: auto; padding-bottom: 1rem; }
   @media (max-width: 768px) { .kanban-wrapper { grid-template-columns: repeat(3, 260px); } }
@@ -223,6 +270,26 @@
     <div class="cmd-hint" style="text-align: center; margin-bottom: 1rem;">DAILY STEPS</div>
     <div class="burndown-bar"><div class="step-fill" id="stepProgressBar" style="width: 0%;"></div></div>
     <div style="text-align: right; font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">Goal: 10,000</div>
+  </div>
+
+  <!-- Today's Deep Work Activity Log / Timeline -->
+  <div class="card full-width">
+    <div class="header-flex">
+      <div>
+        <h2 class="header-title">Daily Deep Work Timeline</h2>
+        <span class="cmd-hint" id="todayFocusTotalSummary" style="color: var(--accent); font-weight: 600;">0 sessions • 0.0h focus logged today</span>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <select id="workLogFilter" class="input-css" style="margin-bottom: 0; padding: 0.35rem 0.65rem; font-size: 0.75rem; width: auto;" onchange="renderWorkLogs()">
+          <option value="today">Today's Work</option>
+          <option value="all">All Session History</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="scroll-list" id="workLogList" style="max-height: 320px;">
+      <!-- Populated dynamically -->
+    </div>
   </div>
 
   <div class="card full-width">
@@ -392,10 +459,7 @@
         <div class="cmd-hint">TOTAL STEPS LOGGED</div>
         <div style="font-size: 1.5rem; font-weight: 800; color: var(--info); margin-top: 4px;" id="statTotalSteps">0</div>
       </div>
-      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
-        <div class="cmd-hint">AVG HABIT DISCIPLINE</div>
-        <div style="font-size: 1.5rem; font-weight: 800; color: var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
-      </div>
+      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
       <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
         <div class="cmd-hint">TOTAL DEEP WORK</div>
         <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 4px;" id="statTotalDeepWork">0.0h</div>
@@ -622,6 +686,7 @@
       // 5. Engineering Logs & Custom Pillars
       if (data.enggLogs) {
         localStorage.setItem('enggLogs', JSON.stringify(data.enggLogs));
+        renderWorkLogs();
       }
       if (data.customCats) {
         localStorage.setItem('customCats', JSON.stringify(data.customCats));
@@ -759,6 +824,7 @@
       });
 
       updateStepUI();
+      renderWorkLogs();
       console.log(`[Elite OS] Midnight reset executed for date: ${today}`);
       debouncePushToFirebase();
     } else if (!lastDate) {
@@ -923,9 +989,10 @@
   }
   renderKanban(); 
 
-  /* ================= 3. TIMER LOGIC ================= */
+  /* ================= 3. TIMER & WORK LOG TIMELINE ================= */
   let interval = null, elapsedSeconds = 0, currentTask = "";
   let isPomodoro = false;
+  let sessionStartTime = null;
 
   function toggleMode() {
     isPomodoro = document.querySelector('input[name="timerMode"]:checked').value === 'pomodoro';
@@ -942,9 +1009,24 @@
     return `${String(Math.floor(secs / 3600)).padStart(2, '0')}:${String(Math.floor((secs % 3600) / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
   }
 
+  function formatDurationText(secs) {
+    if (isNaN(secs) || secs < 0) secs = 0;
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    if (h > 0) return `${h}h ${m}m ${s}s`;
+    if (m > 0) return `${m}m ${s}s`;
+    return `${s}s`;
+  }
+
+  function formatClockTime(d) {
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
   function toggleTimer() {
     const btn = document.getElementById("timerBtn"); 
     if (!interval) {
+      sessionStartTime = new Date();
       currentTask = document.getElementById('timerPillar').value === 'custom' ? document.getElementById('customInput').value.trim() : document.getElementById('timerPillar').value;
       if (!currentTask) currentTask = "Terminal Execution";
       elapsedSeconds = 0;
@@ -958,7 +1040,7 @@
           document.getElementById("liveTimer").innerText = formatTime(remaining);
           if (remaining <= 0) {
             clearInterval(interval);
-            saveSession(currentTask, elapsedSeconds);
+            saveSession(currentTask, elapsedSeconds, sessionStartTime, new Date());
             resetTimerUI();
             alert("Target Complete!");
           }
@@ -970,21 +1052,46 @@
       btn.className = "btn active";
     } else {
       clearInterval(interval);
-      if (elapsedSeconds > 5) saveSession(currentTask, elapsedSeconds);
+      const sessionEndTime = new Date();
+      if (elapsedSeconds > 3) {
+        saveSession(currentTask, elapsedSeconds, sessionStartTime, sessionEndTime);
+      }
       resetTimerUI();
     }
   }
 
   function resetTimerUI() {
     interval = null;
+    sessionStartTime = null;
     document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
     document.getElementById("timerBtn").innerText = "Initialize Session";
     document.getElementById("timerBtn").className = "btn";
   }
 
-  function saveSession(task, seconds) {
+  function saveSession(task, seconds, startDt, endDt) {
+    const endTime = endDt || new Date();
+    const startTime = startDt || new Date(endTime.getTime() - seconds * 1000);
+    const startClockStr = formatClockTime(startTime);
+    const endClockStr = formatClockTime(endTime);
+    const dateKey = startTime.toDateString();
+
     let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
-    logs.unshift({ id: Date.now(), task: task, seconds: seconds, timeStr: formatTime(seconds), timestamp: new Date().toISOString() });
+    const newRecord = {
+      id: 'log_' + Date.now(),
+      task: task,
+      seconds: seconds,
+      timeStr: formatTime(seconds),
+      formattedDuration: formatDurationText(seconds),
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+      startClock: startClockStr,
+      endClock: endClockStr,
+      clockRange: `${startClockStr} - ${endClockStr}`,
+      date: dateKey,
+      timestamp: endTime.toISOString()
+    };
+
+    logs.unshift(newRecord);
     localStorage.setItem('enggLogs', JSON.stringify(logs));
     
     if (document.getElementById('timerPillar').value === 'custom' && task !== "Terminal Execution") {
@@ -999,9 +1106,93 @@
        document.getElementById('customInput').style.display = 'none';
        document.getElementById('customInput').value = '';
     }
+
+    renderWorkLogs();
     if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
     debouncePushToFirebase();
-    showToast(`Logged deep work session: ${formatTime(seconds)}`);
+    showToast(`Logged: ${task} (${formatDurationText(seconds)}) at ${startClockStr}`);
+  }
+
+  function deleteWorkLog(logId) {
+    if (!confirm("Are you sure you want to remove this work session log?")) return;
+    let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
+    logs = logs.filter(l => l.id !== logId && String(l.id) !== String(logId));
+    localStorage.setItem('enggLogs', JSON.stringify(logs));
+    renderWorkLogs();
+    if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
+    debouncePushToFirebase();
+    showToast("Work session removed.");
+  }
+
+  function renderWorkLogs() {
+    const listEl = document.getElementById('workLogList');
+    const summaryEl = document.getElementById('todayFocusTotalSummary');
+    if (!listEl) return;
+
+    const filter = document.getElementById('workLogFilter')?.value || 'today';
+    const logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
+    const todayISO = new Date().toISOString().split('T')[0];
+    const todayDateKey = getSystemDateKey();
+
+    // Filter today's vs all logs
+    const todayLogs = logs.filter(l => {
+      const matchISO = l.timestamp && l.timestamp.startsWith(todayISO);
+      const matchDateKey = l.date === todayDateKey;
+      return matchISO || matchDateKey;
+    });
+
+    const displayedLogs = filter === 'today' ? todayLogs : logs;
+
+    // Calculate today's focus summary
+    const todayTotalSecs = todayLogs.reduce((sum, l) => sum + (l.seconds || 0), 0);
+    const todayHours = Math.floor(todayTotalSecs / 3600);
+    const todayMins = Math.floor((todayTotalSecs % 3600) / 60);
+    if (summaryEl) {
+      summaryEl.innerText = `${todayLogs.length} session${todayLogs.length === 1 ? '' : 's'} • ${todayHours}h ${todayMins}m total focus logged today`;
+    }
+
+    if (displayedLogs.length === 0) {
+      listEl.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem;">
+          ${filter === 'today' ? '🚀 No deep work sessions logged yet today. Hit "Initialize Session" above to start grinding!' : 'No historical work sessions found.'}
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = displayedLogs.map(l => {
+      const logDateObj = l.timestamp ? new Date(l.timestamp) : new Date();
+      const isToday = (l.date === todayDateKey) || (l.timestamp && l.timestamp.startsWith(todayISO));
+      const dateDisplay = isToday ? 'Today' : (l.date || logDateObj.toDateString());
+
+      let clockDisplay = l.clockRange;
+      if (!clockDisplay && l.timestamp) {
+        const endDt = new Date(l.timestamp);
+        const startDt = new Date(endDt.getTime() - (l.seconds || 0) * 1000);
+        clockDisplay = `${formatClockTime(startDt)} - ${formatClockTime(endDt)}`;
+      } else if (!clockDisplay) {
+        clockDisplay = 'Logged session';
+      }
+
+      const durationDisplay = l.formattedDuration || formatDurationText(l.seconds || 0);
+
+      return `
+        <div class="work-log-item">
+          <div class="work-log-info">
+            <div class="work-log-task">${l.task || 'Terminal Execution'}</div>
+            <div class="work-log-time">
+              <span>📅 ${dateDisplay}</span>
+              <span>•</span>
+              <span style="color: var(--text-main); font-weight: 500;">🕒 ${clockDisplay}</span>
+            </div>
+          </div>
+          <div class="work-log-meta">
+            <div class="work-log-badge">⏱️ ${durationDisplay}</div>
+            <button class="delete-log-btn" onclick="deleteWorkLog('${l.id}')" title="Delete entry">✕</button>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   function loadCustomCategories() {
@@ -1016,6 +1207,7 @@
     });
   }
   loadCustomCategories();
+  renderWorkLogs();
 
   /* ================= 4. AGILE STANDUP & OS TELEMETRY COMMITS ================= */
   function initiateStandup() {
