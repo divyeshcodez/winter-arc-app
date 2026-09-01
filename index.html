@@ -208,7 +208,8 @@
   @media (max-width: 400px) { .timer-display, .step-display { font-size: 3.2rem; } }
   .step-display { color: var(--info); }
   .scroll-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 350px; overflow-y: auto; }
-  .list-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #1e293b; border-radius: 8px; font-size: 0.9rem;}
+  .list-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #1e293b; border-radius: 8px; font-size: 0.9rem; transition: background 0.2s;}
+  .list-item:hover { background: #23334a; }
   input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 6px; cursor: pointer; position: relative; flex-shrink: 0;}
   input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
   input[type="checkbox"]:checked::after { content: '✔'; position: absolute; color: #000; font-size: 12px; font-weight: 800; top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -405,6 +406,25 @@
     </div>
   </div>
 
+  <!-- Day Page Navigator (New Day New Page) -->
+  <div class="card full-width" style="padding: 1rem 1.25rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button class="text-btn info" onclick="navigateDay(-1)" title="Previous Day">◀ Prev Day</button>
+        <button class="text-btn success" id="todayNavBtn" onclick="goToToday()" title="Jump to Today">⚡ Today</button>
+        <button class="text-btn info" onclick="navigateDay(1)" title="Next Day">Next Day ▶</button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="font-size: 0.9rem; font-weight: 700; color: var(--accent);" id="activeDayLabel">📅 Today: Tue Sep 01 2026</span>
+        <input type="date" id="datePickerInput" class="input-css" style="margin-bottom: 0; padding: 0.35rem 0.6rem; font-size: 0.8rem; width: auto;" onchange="onPickDate(event)">
+      </div>
+    </div>
+    <div id="archiveBanner" style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--info); border-radius: 8px; padding: 0.6rem 0.85rem; margin-top: 0.75rem; font-size: 0.85rem; color: var(--info); justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <span>📁 <b>Day Archive Page:</b> Showing saved tasks & execution for this specific date.</span>
+      <button class="text-btn success" onclick="goToToday()">⚡ Return to Today</button>
+    </div>
+  </div>
+
   <div class="card timer-card">
     <div class="header-flex"><h2 class="header-title">Deep Work Terminal</h2></div>
     
@@ -449,12 +469,12 @@
   <div class="card full-width">
     <div class="header-flex">
       <div>
-        <h2 class="header-title">Daily Deep Work Timeline</h2>
-        <span class="cmd-hint" id="todayFocusTotalSummary" style="color: var(--accent); font-weight: 600;">0 sessions • 0.0h focus logged today</span>
+        <h2 class="header-title">Deep Work Timeline</h2>
+        <span class="cmd-hint" id="todayFocusTotalSummary" style="color: var(--accent); font-weight: 600;">0 sessions • 0.0h focus logged</span>
       </div>
       <div style="display: flex; gap: 8px; align-items: center;">
         <select id="workLogFilter" class="input-css" style="margin-bottom: 0; padding: 0.35rem 0.65rem; font-size: 0.75rem; width: auto;" onchange="renderWorkLogs()">
-          <option value="today">Today's Work</option>
+          <option value="selected">Selected Day</option>
           <option value="all">All Session History</option>
         </select>
       </div>
@@ -465,15 +485,22 @@
     </div>
   </div>
 
+  <!-- Winter Arc Daily Protocols & Custom Daily Checklist Card -->
   <div class="card full-width">
     <div class="header-flex">
-      <h2 class="header-title">Winter Arc: <span id="streakDisplay" style="color: var(--accent);">0 Streak</span></h2>
       <div>
-        <button class="text-btn success" style="margin-right: 10px;" onclick="initiateStandup()">Log Day</button>
+        <h2 class="header-title">Winter Arc: <span id="streakDisplay" style="color: var(--accent);">0 Streak</span></h2>
+        <div class="cmd-hint" id="dayCompletionScore">0/7 Protocols Completed</div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="text-btn success" onclick="addNewDailyTask()">+ Add Daily Task</button>
+        <button class="text-btn success" onclick="initiateStandup()">Log Day</button>
         <button class="text-btn danger" onclick="resetHabits()">Reset</button>
       </div>
     </div>
-    <div class="scroll-list" id="habitList">
+
+    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Core Daily Protocols</div>
+    <div class="scroll-list" id="habitList" style="margin-bottom: 1.25rem;">
       <div class="list-item"><span>💧 1. 3L Water per day</span><input type="checkbox" data-id="wa1"></div>
       <div class="list-item"><span>🍔 2. Clean diet (No junk / sugar)</span><input type="checkbox" data-id="wa2"></div>
       <div class="list-item"><span>😴 3. 7-8 hours quality sleep</span><input type="checkbox" data-id="wa3"></div>
@@ -481,6 +508,14 @@
       <div class="list-item"><span>🚶 5. 10,000 steps daily</span><input type="checkbox" data-id="wa5"></div>
       <div class="list-item"><span>📵 6. No phone during meals / morning</span><input type="checkbox" data-id="wa6"></div>
       <div class="list-item"><span>🙏 7. Daily Gratitude & Reflection</span><input type="checkbox" data-id="wa7"></div>
+    </div>
+
+    <!-- Custom Daily Tasks For This Day -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; border-top: 1px solid var(--surface-border); padding-top: 0.75rem;">
+      <div style="font-size: 0.75rem; font-weight: 700; color: var(--info); text-transform: uppercase; letter-spacing: 1px;">Daily Custom Targets (<span id="customTaskCount">0</span>)</div>
+    </div>
+    <div class="scroll-list" id="customDailyTaskList">
+      <!-- Populated dynamically per day -->
     </div>
   </div>
 </div>
@@ -763,8 +798,6 @@
       }
     });
   }
-
-  // Initial check
   checkPortalAuth();
 
   /* ================= FIREBASE CONFIGURATION & INITIALIZATION ================= */
@@ -815,14 +848,12 @@
       auth = firebase.auth();
       isFirebaseReady = true;
 
-      // Attempt anonymous authentication for authenticated database rules
       auth.signInAnonymously().then(cred => {
         console.log('[Firebase] Signed in as:', cred.user.uid);
       }).catch(err => {
         console.warn('[Firebase Auth Note]', err.message);
       });
 
-      // Listen for connection status
       const connectedRef = rtdb.ref(".info/connected");
       connectedRef.on("value", (snap) => {
         if (snap.val() === true) {
@@ -833,7 +864,6 @@
         }
       });
 
-      // Listen for real-time cloud data updates
       const osDataRef = rtdb.ref('winter_arc_os/state');
       osDataRef.on('value', (snapshot) => {
         const cloudData = snapshot.val();
@@ -877,6 +907,7 @@
       customCats: JSON.parse(localStorage.getItem('customCats') || '[]'),
       standupLogs: JSON.parse(localStorage.getItem('standupLogs') || '[]'),
       telemetryHistory: JSON.parse(localStorage.getItem('telemetryHistory') || '[]'),
+      dailyArchives: JSON.parse(localStorage.getItem('dailyArchives') || '{}'),
       contentState: contentObj,
       lastSyncTimestamp: Date.now(),
       lastSyncDateStr: new Date().toISOString()
@@ -906,23 +937,22 @@
     isReceivingCloudData = true;
 
     try {
-      // 1. Habits
+      if (data.dailyArchives) {
+        localStorage.setItem('dailyArchives', JSON.stringify(data.dailyArchives));
+      }
+
       if (data.habits) {
         Object.keys(data.habits).forEach(id => {
           localStorage.setItem(id, data.habits[id]);
-          const box = document.querySelector(`input[data-id="${id}"]`);
-          if (box) box.checked = Boolean(data.habits[id]);
         });
       }
 
-      // 2. Steps
       if (data.todaySteps !== undefined && data.stepDate === getSystemDateKey()) {
         steps = data.todaySteps;
         localStorage.setItem('todaySteps', steps);
         updateStepUI();
       }
 
-      // 3. Streak & Dates
       if (data.arcStreak !== undefined) {
         currentStreak = data.arcStreak;
         localStorage.setItem('arcStreak', currentStreak);
@@ -936,14 +966,12 @@
         localStorage.setItem('lastActiveDate', data.lastActiveDate);
       }
 
-      // 4. Kanban
       if (data.kanbanState) {
         kanbanTasks = data.kanbanState;
         localStorage.setItem('kanbanState', JSON.stringify(kanbanTasks));
         renderKanban();
       }
 
-      // 5. Engineering Logs & Custom Pillars
       if (data.enggLogs) {
         localStorage.setItem('enggLogs', JSON.stringify(data.enggLogs));
         renderWorkLogs();
@@ -953,7 +981,6 @@
         loadCustomCategories();
       }
 
-      // 6. Standups & Telemetry
       if (data.standupLogs) {
         localStorage.setItem('standupLogs', JSON.stringify(data.standupLogs));
       }
@@ -961,7 +988,6 @@
         localStorage.setItem('telemetryHistory', JSON.stringify(data.telemetryHistory));
       }
 
-      // 7. Content Pipeline Checkboxes
       if (data.contentState) {
         Object.keys(data.contentState).forEach(id => {
           const isDone = Boolean(data.contentState[id]);
@@ -973,6 +999,7 @@
         });
       }
 
+      renderActiveDayPage();
       if (document.getElementById('analytics').classList.contains('active')) {
         generateAnalytics();
       }
@@ -1050,18 +1077,58 @@
   updateCountdown(); 
   setInterval(updateCountdown, 1000);
 
-  /* ================= 1. DAILY MIDNIGHT RESET & HABITS ================= */
+  /* ================= 1. DAY-BY-DAY ARCHIVING & "NEW DAY NEW PAGE" ================= */
   const HABIT_IDS = ['wa1', 'wa2', 'wa3', 'wa4', 'wa5', 'wa6', 'wa7'];
   const stepTarget = 10000;
   let steps = parseInt(localStorage.getItem('todaySteps')) || 0;
   let lastAccel = 0; 
   let lastStepTime = 0;
-  const dailyCheckboxes = document.querySelectorAll('#habitList input[type="checkbox"]');
   let currentStreak = parseInt(localStorage.getItem('arcStreak')) || 0;
   let loggedDates = JSON.parse(localStorage.getItem('loggedDates')) || [];
 
-  function getSystemDateKey() {
-    return new Date().toDateString();
+  // Active Day Page state
+  let viewingDate = new Date();
+
+  function getSystemDateKey(dt = new Date()) {
+    return dt.toDateString();
+  }
+
+  function getISODateKey(dt = new Date()) {
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, '0');
+    const d = String(dt.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function getDailyArchives() {
+    return JSON.parse(localStorage.getItem('dailyArchives')) || {};
+  }
+
+  function saveDailyArchives(archives) {
+    localStorage.setItem('dailyArchives', JSON.stringify(archives));
+  }
+
+  function saveCurrentDaySnapshot() {
+    const dateKey = getSystemDateKey(new Date());
+    const archives = getDailyArchives();
+    
+    const habitsObj = {};
+    HABIT_IDS.forEach(id => {
+      habitsObj[id] = localStorage.getItem(id) === 'true';
+    });
+
+    const currentCustomTasks = JSON.parse(localStorage.getItem('todayCustomTasks') || '[]');
+
+    archives[dateKey] = {
+      date: dateKey,
+      dateISO: getISODateKey(new Date()),
+      habits: habitsObj,
+      customTasks: currentCustomTasks,
+      steps: steps,
+      timestamp: new Date().toISOString()
+    };
+
+    saveDailyArchives(archives);
   }
 
   function checkDailyMidnightReset() {
@@ -1069,23 +1136,26 @@
     const lastDate = localStorage.getItem('lastActiveDate') || localStorage.getItem('stepDate');
 
     if (lastDate && lastDate !== today) {
+      // Archive yesterday before reset
+      saveCurrentDaySnapshot();
+
+      // Fresh New Page initialization for today
       steps = 0;
       localStorage.setItem('todaySteps', 0);
       localStorage.setItem('stepDate', today);
       localStorage.setItem('lastActiveDate', today);
+      localStorage.setItem('todayCustomTasks', '[]');
 
       HABIT_IDS.forEach(id => {
         localStorage.removeItem(id);
         localStorage.setItem(id, 'false');
       });
 
-      dailyCheckboxes.forEach(box => {
-        box.checked = false;
-      });
-
+      viewingDate = new Date();
       updateStepUI();
+      renderActiveDayPage();
       renderWorkLogs();
-      console.log(`[Elite OS] Midnight reset executed for date: ${today}`);
+      console.log(`[Elite OS] New Day, New Page initialized for date: ${today}`);
       debouncePushToFirebase();
     } else if (!lastDate) {
       localStorage.setItem('stepDate', today);
@@ -1093,21 +1163,196 @@
     }
   }
 
-  // Initialize habit checkbox state from localStorage
-  dailyCheckboxes.forEach(box => {
-    box.checked = localStorage.getItem(box.dataset.id) === 'true';
+  function navigateDay(offset) {
+    const newDt = new Date(viewingDate);
+    newDt.setDate(newDt.getDate() + offset);
+    viewingDate = newDt;
+    renderActiveDayPage();
+  }
+
+  function goToToday() {
+    viewingDate = new Date();
+    renderActiveDayPage();
+  }
+
+  function onPickDate(e) {
+    if (!e.target.value) return;
+    const parts = e.target.value.split('-');
+    viewingDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    renderActiveDayPage();
+  }
+
+  function renderActiveDayPage() {
+    const todayKey = getSystemDateKey(new Date());
+    const selectedKey = getSystemDateKey(viewingDate);
+    const isToday = selectedKey === todayKey;
+
+    const labelEl = document.getElementById('activeDayLabel');
+    const bannerEl = document.getElementById('archiveBanner');
+    const todayNavBtn = document.getElementById('todayNavBtn');
+    const datePicker = document.getElementById('datePickerInput');
+
+    if (datePicker) datePicker.value = getISODateKey(viewingDate);
+    if (labelEl) {
+      labelEl.innerText = isToday ? `📅 Today: ${selectedKey}` : `📅 ${selectedKey}`;
+      labelEl.style.color = isToday ? 'var(--accent)' : 'var(--info)';
+    }
+
+    if (bannerEl) bannerEl.style.display = isToday ? 'none' : 'flex';
+    if (todayNavBtn) todayNavBtn.style.display = isToday ? 'none' : 'inline-block';
+
+    const archives = getDailyArchives();
+    const dayData = isToday ? null : (archives[selectedKey] || { habits: {}, customTasks: [], steps: 0 });
+
+    // 1. Render Habits for active day
+    let completedCount = 0;
+    HABIT_IDS.forEach(id => {
+      const box = document.querySelector(`input[data-id="${id}"]`);
+      if (box) {
+        const val = isToday ? (localStorage.getItem(id) === 'true') : Boolean(dayData?.habits?.[id]);
+        box.checked = val;
+        if (val) completedCount++;
+      }
+    });
+
+    const scoreEl = document.getElementById('dayCompletionScore');
+    if (scoreEl) scoreEl.innerText = `${completedCount}/7 Protocols Completed`;
+
+    // 2. Render Custom Daily Tasks
+    const customListEl = document.getElementById('customDailyTaskList');
+    const customTasks = isToday ? JSON.parse(localStorage.getItem('todayCustomTasks') || '[]') : (dayData?.customTasks || []);
+    
+    const countEl = document.getElementById('customTaskCount');
+    if (countEl) countEl.innerText = customTasks.length;
+
+    if (customListEl) {
+      if (customTasks.length === 0) {
+        customListEl.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 0.75rem;">No custom daily tasks for this day. Click "+ Add Daily Task" to plan today's specific goals.</div>`;
+      } else {
+        customListEl.innerHTML = customTasks.map(t => `
+          <div class="list-item">
+            <span style="${t.done ? 'text-decoration: line-through; color: var(--text-muted);' : ''}">${t.text}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleCustomDailyTask('${t.id}')">
+              <button class="delete-log-btn" onclick="deleteCustomDailyTask('${t.id}')" title="Remove task">✕</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    renderWorkLogs();
+  }
+
+  // Handle habit checkbox changes
+  document.querySelectorAll('#habitList input[type="checkbox"]').forEach(box => {
     box.addEventListener('change', () => {
-      localStorage.setItem(box.dataset.id, box.checked);
+      const id = box.dataset.id;
+      const todayKey = getSystemDateKey(new Date());
+      const selectedKey = getSystemDateKey(viewingDate);
+      const isToday = selectedKey === todayKey;
+
+      if (isToday) {
+        localStorage.setItem(id, box.checked);
+        saveCurrentDaySnapshot();
+      } else {
+        const archives = getDailyArchives();
+        if (!archives[selectedKey]) archives[selectedKey] = { date: selectedKey, habits: {}, customTasks: [], steps: 0 };
+        if (!archives[selectedKey].habits) archives[selectedKey].habits = {};
+        archives[selectedKey].habits[id] = box.checked;
+        saveDailyArchives(archives);
+      }
+      renderActiveDayPage();
       debouncePushToFirebase();
     });
   });
 
   function resetHabits() {
-    dailyCheckboxes.forEach(box => {
-      box.checked = false;
-      localStorage.setItem(box.dataset.id, 'false');
-      localStorage.removeItem(box.dataset.id);
-    });
+    const todayKey = getSystemDateKey(new Date());
+    const selectedKey = getSystemDateKey(viewingDate);
+    const isToday = selectedKey === todayKey;
+
+    if (isToday) {
+      HABIT_IDS.forEach(id => {
+        localStorage.setItem(id, 'false');
+      });
+      saveCurrentDaySnapshot();
+    } else {
+      const archives = getDailyArchives();
+      if (archives[selectedKey]) {
+        archives[selectedKey].habits = {};
+        saveDailyArchives(archives);
+      }
+    }
+    renderActiveDayPage();
+    debouncePushToFirebase();
+  }
+
+  function addNewDailyTask() {
+    const text = prompt("Enter custom objective/task for this day:");
+    if (!text || !text.trim()) return;
+
+    const todayKey = getSystemDateKey(new Date());
+    const selectedKey = getSystemDateKey(viewingDate);
+    const isToday = selectedKey === todayKey;
+
+    const newTask = { id: 'ct_' + Date.now(), text: text.trim(), done: false };
+
+    if (isToday) {
+      const list = JSON.parse(localStorage.getItem('todayCustomTasks') || '[]');
+      list.push(newTask);
+      localStorage.setItem('todayCustomTasks', JSON.stringify(list));
+      saveCurrentDaySnapshot();
+    } else {
+      const archives = getDailyArchives();
+      if (!archives[selectedKey]) archives[selectedKey] = { date: selectedKey, habits: {}, customTasks: [], steps: 0 };
+      if (!archives[selectedKey].customTasks) archives[selectedKey].customTasks = [];
+      archives[selectedKey].customTasks.push(newTask);
+      saveDailyArchives(archives);
+    }
+    renderActiveDayPage();
+    debouncePushToFirebase();
+  }
+
+  function toggleCustomDailyTask(taskId) {
+    const todayKey = getSystemDateKey(new Date());
+    const selectedKey = getSystemDateKey(viewingDate);
+    const isToday = selectedKey === todayKey;
+
+    if (isToday) {
+      let list = JSON.parse(localStorage.getItem('todayCustomTasks') || '[]');
+      list = list.map(t => t.id === taskId ? { ...t, done: !t.done } : t);
+      localStorage.setItem('todayCustomTasks', JSON.stringify(list));
+      saveCurrentDaySnapshot();
+    } else {
+      const archives = getDailyArchives();
+      if (archives[selectedKey]?.customTasks) {
+        archives[selectedKey].customTasks = archives[selectedKey].customTasks.map(t => t.id === taskId ? { ...t, done: !t.done } : t);
+        saveDailyArchives(archives);
+      }
+    }
+    renderActiveDayPage();
+    debouncePushToFirebase();
+  }
+
+  function deleteCustomDailyTask(taskId) {
+    const todayKey = getSystemDateKey(new Date());
+    const selectedKey = getSystemDateKey(viewingDate);
+    const isToday = selectedKey === todayKey;
+
+    if (isToday) {
+      let list = JSON.parse(localStorage.getItem('todayCustomTasks') || '[]');
+      list = list.filter(t => t.id !== taskId);
+      localStorage.setItem('todayCustomTasks', JSON.stringify(list));
+      saveCurrentDaySnapshot();
+    } else {
+      const archives = getDailyArchives();
+      if (archives[selectedKey]?.customTasks) {
+        archives[selectedKey].customTasks = archives[selectedKey].customTasks.filter(t => t.id !== taskId);
+        saveDailyArchives(archives);
+      }
+    }
+    renderActiveDayPage();
     debouncePushToFirebase();
   }
 
@@ -1123,6 +1368,7 @@
       if (stepBox && !stepBox.checked) {
         stepBox.checked = true;
         localStorage.setItem('wa5', 'true');
+        saveCurrentDaySnapshot();
         debouncePushToFirebase();
       }
     } else {
@@ -1134,6 +1380,7 @@
     steps += increment;
     localStorage.setItem('todaySteps', steps);
     updateStepUI();
+    saveCurrentDaySnapshot();
     debouncePushToFirebase();
   }
 
@@ -1175,6 +1422,7 @@
       steps++;
       localStorage.setItem('todaySteps', steps);
       updateStepUI();
+      saveCurrentDaySnapshot();
       debouncePushToFirebase();
       lastStepTime = now;
     }
@@ -1184,6 +1432,7 @@
   // Run on Boot
   checkDailyMidnightReset();
   updateStepUI();
+  renderActiveDayPage();
   document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
 
   setInterval(checkDailyMidnightReset, 30000);
@@ -1368,6 +1617,7 @@
     }
 
     renderWorkLogs();
+    saveCurrentDaySnapshot();
     if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
     debouncePushToFirebase();
     showToast(`Logged: ${task} (${formatDurationText(seconds)}) at ${startClockStr}`);
@@ -1379,6 +1629,7 @@
     logs = logs.filter(l => l.id !== logId && String(l.id) !== String(logId));
     localStorage.setItem('enggLogs', JSON.stringify(logs));
     renderWorkLogs();
+    saveCurrentDaySnapshot();
     if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
     debouncePushToFirebase();
     showToast("Work session removed.");
@@ -1389,32 +1640,30 @@
     const summaryEl = document.getElementById('todayFocusTotalSummary');
     if (!listEl) return;
 
-    const filter = document.getElementById('workLogFilter')?.value || 'today';
+    const filter = document.getElementById('workLogFilter')?.value || 'selected';
     const logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
-    const todayISO = new Date().toISOString().split('T')[0];
-    const todayDateKey = getSystemDateKey();
+    const selectedDateKey = getSystemDateKey(viewingDate);
+    const selectedISO = getISODateKey(viewingDate);
 
-    // Filter today's vs all logs
-    const todayLogs = logs.filter(l => {
-      const matchISO = l.timestamp && l.timestamp.startsWith(todayISO);
-      const matchDateKey = l.date === todayDateKey;
+    const selectedLogs = logs.filter(l => {
+      const matchISO = l.timestamp && l.timestamp.startsWith(selectedISO);
+      const matchDateKey = l.date === selectedDateKey;
       return matchISO || matchDateKey;
     });
 
-    const displayedLogs = filter === 'today' ? todayLogs : logs;
+    const displayedLogs = filter === 'selected' ? selectedLogs : logs;
 
-    // Calculate today's focus summary
-    const todayTotalSecs = todayLogs.reduce((sum, l) => sum + (l.seconds || 0), 0);
-    const todayHours = Math.floor(todayTotalSecs / 3600);
-    const todayMins = Math.floor((todayTotalSecs % 3600) / 60);
+    const selectedTotalSecs = selectedLogs.reduce((sum, l) => sum + (l.seconds || 0), 0);
+    const hours = Math.floor(selectedTotalSecs / 3600);
+    const mins = Math.floor((selectedTotalSecs % 3600) / 60);
     if (summaryEl) {
-      summaryEl.innerText = `${todayLogs.length} session${todayLogs.length === 1 ? '' : 's'} • ${todayHours}h ${todayMins}m total focus logged today`;
+      summaryEl.innerText = `${selectedLogs.length} session${selectedLogs.length === 1 ? '' : 's'} • ${hours}h ${mins}m focus logged (${selectedDateKey})`;
     }
 
     if (displayedLogs.length === 0) {
       listEl.innerHTML = `
         <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem;">
-          ${filter === 'today' ? '🚀 No deep work sessions logged yet today. Hit "Initialize Session" above to start grinding!' : 'No historical work sessions found.'}
+          ${filter === 'selected' ? `🚀 No deep work sessions logged for ${selectedDateKey}.` : 'No historical work sessions found.'}
         </div>
       `;
       return;
@@ -1422,8 +1671,7 @@
 
     listEl.innerHTML = displayedLogs.map(l => {
       const logDateObj = l.timestamp ? new Date(l.timestamp) : new Date();
-      const isToday = (l.date === todayDateKey) || (l.timestamp && l.timestamp.startsWith(todayISO));
-      const dateDisplay = isToday ? 'Today' : (l.date || logDateObj.toDateString());
+      const dateDisplay = l.date || logDateObj.toDateString();
 
       let clockDisplay = l.clockRange;
       if (!clockDisplay && l.timestamp) {
@@ -1467,14 +1715,9 @@
     });
   }
   loadCustomCategories();
-  renderWorkLogs();
 
   /* ================= 4. AGILE STANDUP & OS TELEMETRY COMMITS ================= */
   function initiateStandup() {
-    if (!Array.from(dailyCheckboxes).every(box => box.checked)) {
-      alert("Finish all 7 daily Winter Arc tasks before committing your EOD Standup.");
-      return;
-    }
     const today = getSystemDateKey();
     if (loggedDates.includes(today)) {
       alert("Day already committed to Telemetry History for today!");
@@ -1500,14 +1743,12 @@
     const blocks = document.getElementById('standupBlocks').value.trim() || 'None reported.';
     const next = document.getElementById('standupNext').value.trim() || 'Continue sprint velocity.';
 
-    // 1. Maintain legacy standup logs for resilience
     let standups = JSON.parse(localStorage.getItem('standupLogs')) || [];
     standups.unshift({ date: today, wins: wins, blocks: blocks, next: next, timestamp: new Date().toISOString() });
     localStorage.setItem('standupLogs', JSON.stringify(standups));
 
-    // 2. Capture completed metrics and push to telemetryHistory
-    const totalHabits = dailyCheckboxes.length;
-    const completedHabits = Array.from(dailyCheckboxes).filter(b => b.checked).length;
+    const totalHabits = HABIT_IDS.length;
+    const completedHabits = HABIT_IDS.filter(id => localStorage.getItem(id) === 'true').length;
     const todayFocusSecs = calculateTodayFocusSeconds();
 
     let telemetryHistory = JSON.parse(localStorage.getItem('telemetryHistory')) || [];
@@ -1532,16 +1773,14 @@
     telemetryHistory.unshift(dailyTelemetryRecord);
     localStorage.setItem('telemetryHistory', JSON.stringify(telemetryHistory));
 
-    // 3. Update Streaks and Logged Dates
     currentStreak++;
     loggedDates.push(today);
     localStorage.setItem('arcStreak', currentStreak);
     localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
     document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
 
-    // 4. Reset Modal & Daily Habits for Next Cycle
     closeModal('standupModal');
-    resetHabits();
+    saveCurrentDaySnapshot();
     document.getElementById('standupWins').value = '';
     document.getElementById('standupBlocks').value = '';
     document.getElementById('standupNext').value = '';
@@ -1571,7 +1810,6 @@
       }
     }
 
-    // Telemetry Overview Stats Cards
     const totalCommits = telemetryHistory.length;
     const totalStepsLogged = telemetryHistory.reduce((sum, item) => sum + (item.steps || 0), 0);
     const avgHabitScore = totalCommits > 0 ? Math.round(telemetryHistory.reduce((sum, item) => sum + (item.habitScorePct || 100), 0) / totalCommits) : 0;
@@ -1583,11 +1821,10 @@
     if (document.getElementById('statTotalDeepWork')) document.getElementById('statTotalDeepWork').innerText = `${(totalDeepWorkSecs / 3600).toFixed(1)}h`;
     if (document.getElementById('telemetryStatsSummary')) document.getElementById('telemetryStatsSummary').innerText = `${totalCommits} Sprint Days Committed`;
 
-    // Render Telemetry History Table
     const tableBody = document.getElementById('telemetryTableBody');
     if (tableBody) {
       if (telemetryHistory.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" style="padding: 1.25rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits logged yet. Complete all 7 daily habits and submit EOD Standup.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" style="padding: 1.25rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits logged yet. Complete daily protocols and submit EOD Standup.</td></tr>`;
       } else {
         tableBody.innerHTML = telemetryHistory.map(row => {
           const stepBadge = row.steps >= 10000 
@@ -1610,7 +1847,6 @@
       }
     }
 
-    // Engine Logs & Hours distribution
     let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
     let cats = { "💻 GSoC / Frontend Sprint": 0, "☕ Java DSA": 0, "👕 Gen AI T-Shirt Design": 0 };
     let hourlyData = new Array(24).fill(0); 
@@ -1656,6 +1892,8 @@
       enggLogs: JSON.parse(localStorage.getItem('enggLogs') || '[]'),
       standupLogs: JSON.parse(localStorage.getItem('standupLogs') || '[]'),
       telemetryHistory: JSON.parse(localStorage.getItem('telemetryHistory') || '[]'),
+      dailyArchives: JSON.parse(localStorage.getItem('dailyArchives') || '{}'),
+      todayCustomTasks: JSON.parse(localStorage.getItem('todayCustomTasks') || '[]'),
       kanbanState: kanbanTasks,
       loggedDates: loggedDates,
       arcStreak: localStorage.getItem('arcStreak') || 0,
@@ -1694,6 +1932,8 @@
         if (dataObj.enggLogs) localStorage.setItem('enggLogs', JSON.stringify(dataObj.enggLogs));
         if (dataObj.standupLogs) localStorage.setItem('standupLogs', JSON.stringify(dataObj.standupLogs));
         if (dataObj.telemetryHistory) localStorage.setItem('telemetryHistory', JSON.stringify(dataObj.telemetryHistory));
+        if (dataObj.dailyArchives) localStorage.setItem('dailyArchives', JSON.stringify(dataObj.dailyArchives));
+        if (dataObj.todayCustomTasks) localStorage.setItem('todayCustomTasks', JSON.stringify(dataObj.todayCustomTasks));
         if (dataObj.kanbanState) localStorage.setItem('kanbanState', JSON.stringify(dataObj.kanbanState));
         if (dataObj.loggedDates) localStorage.setItem('loggedDates', JSON.stringify(dataObj.loggedDates));
         if (dataObj.arcStreak) localStorage.setItem('arcStreak', dataObj.arcStreak);
