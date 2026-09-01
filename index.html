@@ -21,11 +21,143 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
   body { background: var(--bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 1rem; padding-top: 1.5rem; line-height: 1.5; min-height: 100vh; overflow-x: hidden;}
 
+  /* Security Portal Overlay */
+  #loginPortalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 99999;
+    background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    backdrop-filter: blur(20px);
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  #loginPortalOverlay.unlocked {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .login-card {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--surface-border);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(16, 185, 129, 0.15);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--info), var(--accent), var(--info));
+  }
+  .login-icon-wrap {
+    width: 64px;
+    height: 64px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .login-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--text-main);
+    text-transform: uppercase;
+  }
+  .login-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    margin-bottom: 1.5rem;
+  }
+  .passcode-input {
+    width: 100%;
+    text-align: center;
+    font-size: 1.8rem;
+    letter-spacing: 10px;
+    font-weight: 800;
+    padding: 0.8rem;
+    background: #020617;
+    border: 2px solid var(--surface-border);
+    border-radius: 12px;
+    color: var(--accent);
+    outline: none;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+  }
+  .passcode-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+  .passcode-error {
+    color: var(--danger);
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-height: 18px;
+    margin-bottom: 1rem;
+  }
+  .keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .key-btn {
+    background: #1e293b;
+    border: 1px solid var(--surface-border);
+    color: var(--text-main);
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 0.85rem 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .key-btn:hover {
+    background: #27354a;
+    border-color: var(--accent);
+    transform: scale(1.03);
+  }
+  .key-btn:active {
+    transform: scale(0.95);
+    background: var(--accent);
+    color: #000;
+  }
+  .shake-anim {
+    animation: shake 0.4s ease-in-out;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
   /* Top Navigation & Brand Header */
   .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1000px; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
   .brand-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
   .brand-sub { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
   
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+
   .cloud-badge { 
     display: inline-flex; align-items: center; gap: 8px; background: #0f172a; border: 1px solid var(--surface-border); 
     padding: 0.4rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); 
@@ -33,6 +165,13 @@
   }
   .cloud-badge:hover { border-color: var(--accent); color: var(--text-main); }
   
+  .lock-btn {
+    display: inline-flex; align-items: center; gap: 5px; background: #0f172a; border: 1px solid var(--surface-border);
+    padding: 0.4rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  .lock-btn:hover { border-color: var(--danger); color: var(--danger); }
+
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; transition: all 0.3s; }
   .status-dot.online { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
   .status-dot.syncing { background: var(--warning); animation: pulse 1s infinite; }
@@ -174,15 +313,49 @@
 </head>
 <body>
 
+<!-- Login Security Portal Overlay -->
+<div id="loginPortalOverlay">
+  <div class="login-card" id="loginCard">
+    <div class="login-icon-wrap">🔒</div>
+    <div class="login-title">Elite OS Access</div>
+    <div class="login-subtitle">Winter Arc 2027 Architect Terminal</div>
+    
+    <input type="password" id="passcodeInput" class="passcode-input" placeholder="••••••" maxlength="10" autocomplete="off" autofocus>
+    <div class="passcode-error" id="passcodeError"></div>
+
+    <div class="keypad-grid">
+      <button class="key-btn" onclick="appendPin('1')">1</button>
+      <button class="key-btn" onclick="appendPin('2')">2</button>
+      <button class="key-btn" onclick="appendPin('3')">3</button>
+      <button class="key-btn" onclick="appendPin('4')">4</button>
+      <button class="key-btn" onclick="appendPin('5')">5</button>
+      <button class="key-btn" onclick="appendPin('6')">6</button>
+      <button class="key-btn" onclick="appendPin('7')">7</button>
+      <button class="key-btn" onclick="appendPin('8')">8</button>
+      <button class="key-btn" onclick="appendPin('9')">9</button>
+      <button class="key-btn" style="color: var(--danger);" onclick="clearPin()">C</button>
+      <button class="key-btn" onclick="appendPin('0')">0</button>
+      <button class="key-btn" style="color: var(--warning);" onclick="deletePin()">⌫</button>
+    </div>
+
+    <button class="btn" style="margin-top: 0.5rem;" onclick="verifyPasscode()">Unlock System</button>
+  </div>
+</div>
+
 <!-- Top Header Bar -->
 <div class="top-bar">
   <div class="brand-title">
     <span>❄️ WINTER ARC</span>
     <span class="brand-sub">| ELITE OS</span>
   </div>
-  <div class="cloud-badge" id="cloudBadge" onclick="manualCloudSync()" title="Firebase Cloud Sync Status. Click to force sync.">
-    <span class="status-dot offline" id="statusDot"></span>
-    <span id="cloudStatusText">Connecting Firebase...</span>
+  <div class="header-actions">
+    <div class="cloud-badge" id="cloudBadge" onclick="manualCloudSync()" title="Firebase Cloud Sync Status. Click to force sync.">
+      <span class="status-dot offline" id="statusDot"></span>
+      <span id="cloudStatusText">Connecting Firebase...</span>
+    </div>
+    <button class="lock-btn" onclick="lockSystem()" title="Lock Elite OS Portal">
+      <span>🔒</span> <span>Lock</span>
+    </button>
   </div>
 </div>
 
@@ -193,7 +366,7 @@
 <div class="modal-overlay" id="cmdModal">
   <div class="modal-content" style="background: #020617;">
     <h2 class="header-title">Developer Command Palette</h2>
-    <input type="text" id="cmdInput" class="input-css" placeholder="e.g., 'sync', 'export', 'backup', 'standup'" autocomplete="off">
+    <input type="text" id="cmdInput" class="input-css" placeholder="e.g., 'lock', 'sync', 'export', 'backup', 'standup'" autocomplete="off">
     <div class="cmd-hint">Press <b>Esc</b> to close. Type command and press <b>Enter</b>.</div>
   </div>
 </div>
@@ -459,7 +632,10 @@
         <div class="cmd-hint">TOTAL STEPS LOGGED</div>
         <div style="font-size: 1.5rem; font-weight: 800; color: var(--info); margin-top: 4px;" id="statTotalSteps">0</div>
       </div>
-      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
+      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
+        <div class="cmd-hint">AVG HABIT DISCIPLINE</div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
+      </div>
       <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
         <div class="cmd-hint">TOTAL DEEP WORK</div>
         <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 4px;" id="statTotalDeepWork">0.0h</div>
@@ -507,6 +683,90 @@
 </div>
 
 <script>
+  /* ================= 0. SECURITY ACCESS PORTAL ================= */
+  const PORTAL_PASSCODE = "112233";
+
+  function checkPortalAuth() {
+    const isAuth = sessionStorage.getItem('elite_os_auth');
+    const overlay = document.getElementById('loginPortalOverlay');
+    if (isAuth === 'true') {
+      overlay.classList.add('unlocked');
+    } else {
+      overlay.classList.remove('unlocked');
+      const input = document.getElementById('passcodeInput');
+      input.value = '';
+      setTimeout(() => input.focus(), 100);
+    }
+  }
+
+  function verifyPasscode() {
+    const input = document.getElementById('passcodeInput');
+    const card = document.getElementById('loginCard');
+    const errorEl = document.getElementById('passcodeError');
+    const val = input.value.trim();
+
+    if (val === PORTAL_PASSCODE) {
+      errorEl.innerText = '';
+      sessionStorage.setItem('elite_os_auth', 'true');
+      document.getElementById('loginPortalOverlay').classList.add('unlocked');
+      showToast("Access Granted: Welcome to Elite OS");
+    } else {
+      errorEl.innerText = "Access Denied: Invalid Security Passcode";
+      card.classList.remove('shake-anim');
+      void card.offsetWidth;
+      card.classList.add('shake-anim');
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  function appendPin(digit) {
+    const input = document.getElementById('passcodeInput');
+    if (input.value.length < 8) {
+      input.value += digit;
+      if (input.value.length === 6) {
+        verifyPasscode();
+      }
+    }
+  }
+
+  function deletePin() {
+    const input = document.getElementById('passcodeInput');
+    input.value = input.value.slice(0, -1);
+    document.getElementById('passcodeError').innerText = '';
+  }
+
+  function clearPin() {
+    const input = document.getElementById('passcodeInput');
+    input.value = '';
+    document.getElementById('passcodeError').innerText = '';
+    input.focus();
+  }
+
+  function lockSystem() {
+    sessionStorage.removeItem('elite_os_auth');
+    checkPortalAuth();
+    showToast("Terminal Locked.");
+  }
+
+  const passcodeInput = document.getElementById('passcodeInput');
+  if (passcodeInput) {
+    passcodeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        verifyPasscode();
+      }
+    });
+    passcodeInput.addEventListener('input', () => {
+      document.getElementById('passcodeError').innerText = '';
+      if (passcodeInput.value.length === 6) {
+        verifyPasscode();
+      }
+    });
+  }
+
+  // Initial check
+  checkPortalAuth();
+
   /* ================= FIREBASE CONFIGURATION & INITIALIZATION ================= */
   const firebaseConfig = {
     apiKey: "AIzaSyAy6gYYSEfHknla-34582enmEBNldrVZ48",
@@ -1492,7 +1752,9 @@
       if (e.key === 'Enter') {
         const val = cmdInput.value.trim().toLowerCase();
         closeModal('cmdModal');
-        if (val === 'sync') {
+        if (val === 'lock' || val === 'logout') {
+          lockSystem();
+        } else if (val === 'sync') {
           manualCloudSync();
         } else if (val === 'export' || val === 'backup') {
           exportData('json');
@@ -1511,7 +1773,7 @@
         } else if (val === 'dashboard') {
           switchTab('dashboard');
         } else {
-          alert(`Command '${val}' not recognized. Available: sync, backup, csv, restore, standup, reset, analytics, kanban, dashboard`);
+          alert(`Command '${val}' not recognized. Available: lock, sync, backup, csv, restore, standup, reset, analytics, kanban, dashboard`);
         }
       }
     });
