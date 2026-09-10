@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="emerald">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#030712">
-<title>Winter Arc 2026 // Gen-Z Beast OS</title>
+<meta name="theme-color" content="#090d16">
+<title>Winter Arc OS // Daily Discipline & Execution</title>
 
-<!-- Modern Fonts -->
+<!-- Clean Modern Typography -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
 <!-- Canvas Confetti -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -22,78 +22,36 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 
 <style>
-  /* ================= 2026 CYBER LUXE MOBILE DESIGN SYSTEM ================= */
+  /* ================= CLEAN, HIGH-EFFICIENCY DESIGN SYSTEM ================= */
   :root {
-    --bg-base: #030712;
-    --bg-radial: radial-gradient(circle at 50% -10%, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.08) 35%, rgba(3, 7, 18, 0.98) 80%);
-    --surface-1: rgba(15, 23, 42, 0.82);
-    --surface-2: rgba(30, 41, 59, 0.65);
-    --surface-elevated: rgba(20, 30, 48, 0.94);
-    --surface-border: rgba(255, 255, 255, 0.08);
-    --surface-border-hover: rgba(16, 185, 129, 0.5);
+    --bg-base: #090d16;
+    --surface-1: #111827;
+    --surface-2: #1f2937;
+    --surface-elevated: #1e293b;
+    --surface-border: #283548;
+    --surface-border-active: #10b981;
     
     --accent: #10b981;
     --accent-light: #34d399;
-    --accent-glow: rgba(16, 185, 129, 0.4);
-    --accent-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --accent-subtle: rgba(16, 185, 129, 0.15);
+    --accent-subtle: rgba(16, 185, 129, 0.12);
     
     --cyan: #06b6d4;
-    --cyan-glow: rgba(6, 182, 212, 0.4);
-    --danger: #f43f5e;
-    --danger-glow: rgba(244, 63, 94, 0.4);
+    --cyan-subtle: rgba(6, 182, 212, 0.12);
     --warning: #f59e0b;
-    --warning-glow: rgba(245, 158, 11, 0.4);
-    --purple: #c084fc;
-    --purple-glow: rgba(192, 132, 252, 0.4);
+    --danger: #ef4444;
     
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --text-highlight: #ffffff;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
     
-    --radius-sm: 10px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
     --radius-full: 9999px;
 
-    --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    --font-heading: 'Outfit', sans-serif;
+    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    
-    --glass-blur: blur(24px);
-    --shadow-card: 0 12px 36px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    --nav-height: 70px;
-  }
-
-  [data-theme="arctic"] {
-    --bg-radial: radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.08) 35%, rgba(2, 9, 20, 0.98) 80%);
-    --accent: #38bdf8;
-    --accent-light: #7dd3fc;
-    --accent-glow: rgba(56, 189, 248, 0.45);
-    --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-    --accent-subtle: rgba(56, 189, 248, 0.16);
-    --surface-border-hover: rgba(56, 189, 248, 0.5);
-  }
-
-  [data-theme="violet"] {
-    --bg-radial: radial-gradient(circle at 50% -10%, rgba(192, 132, 252, 0.25) 0%, rgba(168, 85, 247, 0.08) 35%, rgba(8, 3, 18, 0.98) 80%);
-    --accent: #c084fc;
-    --accent-light: #e879f9;
-    --accent-glow: rgba(192, 132, 252, 0.45);
-    --accent-gradient: linear-gradient(135deg, #c084fc 0%, #9333ea 100%);
-    --accent-subtle: rgba(192, 132, 252, 0.16);
-    --surface-border-hover: rgba(192, 132, 252, 0.5);
-  }
-
-  [data-theme="ember"] {
-    --bg-radial: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.25) 0%, rgba(234, 88, 12, 0.08) 35%, rgba(16, 4, 2, 0.98) 80%);
-    --accent: #f97316;
-    --accent-light: #fb923c;
-    --accent-glow: rgba(249, 115, 22, 0.45);
-    --accent-gradient: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
-    --accent-subtle: rgba(249, 115, 22, 0.16);
-    --surface-border-hover: rgba(249, 115, 22, 0.5);
+    --nav-height: 64px;
   }
 
   * {
@@ -102,432 +60,153 @@
     padding: 0;
     font-family: var(--font-main);
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  input, textarea, select {
-    -webkit-user-select: auto;
-    user-select: auto;
   }
 
   body {
     background-color: var(--bg-base);
-    background-image: var(--bg-radial);
-    background-attachment: fixed;
     color: var(--text-primary);
     min-height: 100vh;
-    padding: 0.75rem 0.75rem calc(var(--nav-height) + env(safe-area-inset-bottom, 20px) + 1.25rem) 0.75rem;
-    overflow-x: hidden;
-    font-size: 14.5px;
+    padding: 0.85rem 0.85rem calc(var(--nav-height) + env(safe-area-inset-bottom, 16px) + 1.2rem) 0.85rem;
+    font-size: 15px;
     line-height: 1.5;
-    touch-action: pan-y;
+    -webkit-font-smoothing: antialiased;
   }
 
-  #ambientCanvas {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-  }
-
-  .mobile-container {
+  .app-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 580px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    position: relative;
-    z-index: 10;
   }
 
-  /* ================= TOP GAMIFIED HUD ================= */
-  .top-hud {
+  /* ================= TOP COMPACT HEADER ================= */
+  .top-header {
     background: var(--surface-1);
     border: 1px solid var(--surface-border);
-    backdrop-filter: var(--glass-blur);
-    padding: 0.9rem 1.1rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    margin-bottom: 0.85rem;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .hud-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .user-badge {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .avatar-ring {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--accent-gradient);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    box-shadow: 0 0 16px var(--accent-glow);
-    flex-shrink: 0;
-    position: relative;
-  }
-
-  .avatar-ring::after {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    border: 1.5px dashed var(--accent-light);
-    animation: rotateSlow 12s linear infinite;
-  }
-
-  @keyframes rotateSlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .user-meta {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .user-rank {
-    font-family: var(--font-heading);
-    font-size: 1rem;
-    font-weight: 900;
-    color: var(--text-highlight);
-    letter-spacing: -0.2px;
-  }
-
-  .user-title {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--accent-light);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-
-  .hud-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .flame-streak-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(249, 115, 22, 0.18);
-    border: 1px solid rgba(249, 115, 22, 0.45);
-    color: #fb923c;
-    padding: 0.35rem 0.75rem;
-    border-radius: var(--radius-full);
-    font-family: var(--font-heading);
-    font-weight: 800;
-    font-size: 0.82rem;
-    box-shadow: 0 0 14px rgba(249, 115, 22, 0.3);
-  }
-
-  .xp-bar-container {
-    width: 100%;
-    background: rgba(3, 7, 18, 0.8);
-    border: 1px solid var(--surface-border);
-    height: 10px;
-    border-radius: var(--radius-full);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .xp-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--cyan) 100%);
-    border-radius: var(--radius-full);
-    width: 45%;
-    transition: width 0.5s ease;
-    box-shadow: 0 0 10px var(--accent-glow);
-  }
-
-  .xp-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    margin-top: -3px;
-  }
-
-  /* ================= BOSS DEMON HP BAR ================= */
-  .boss-card {
-    background: radial-gradient(circle at 100% 0%, rgba(244, 63, 94, 0.18) 0%, rgba(15, 23, 42, 0.85) 100%);
-    border: 1px solid rgba(244, 63, 94, 0.35);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.15rem;
-    margin-bottom: 0.85rem;
-    box-shadow: var(--shadow-card);
-  }
-
-  .boss-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .boss-name {
-    font-family: var(--font-heading);
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #fda4af;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .boss-hp-val {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--danger);
-  }
-
-  .boss-hp-bar {
-    width: 100%;
-    height: 10px;
-    background: rgba(3, 7, 18, 0.8);
-    border: 1px solid rgba(244, 63, 94, 0.3);
-    border-radius: var(--radius-full);
-    overflow: hidden;
-  }
-
-  .boss-hp-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #f43f5e 0%, #be123c 100%);
-    border-radius: var(--radius-full);
-    width: 100%;
-    transition: width 0.4s ease;
-    box-shadow: 0 0 10px var(--danger-glow);
-  }
-
-  /* ================= QUICK-ACTION CAROUSEL ================= */
-  .quick-log-row {
-    display: flex;
-    gap: 7px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-    margin-bottom: 0.85rem;
-  }
-
-  .quick-log-row::-webkit-scrollbar { display: none; }
-
-  .quick-chip {
-    flex-shrink: 0;
-    background: var(--surface-1);
-    border: 1px solid var(--surface-border);
-    color: var(--text-primary);
-    padding: 0.55rem 0.95rem;
-    border-radius: var(--radius-full);
-    font-size: 0.78rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: transform 0.15s ease, background 0.15s ease;
-    backdrop-filter: var(--glass-blur);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  }
-
-  .quick-chip:active {
-    transform: scale(0.92);
-    border-color: var(--accent);
-    background: var(--accent-subtle);
-  }
-
-  /* ================= EMERGENCY LAZY PROTOCOL ================= */
-  .lazy-banner {
-    background: rgba(15, 23, 42, 0.75);
-    border: 1px dashed var(--surface-border);
-    border-radius: var(--radius-md);
     padding: 0.75rem 1rem;
-    margin-bottom: 0.85rem;
+    border-radius: var(--radius-md);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.85rem;
   }
 
-  .lazy-switch {
+  .brand-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
     display: flex;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
-    font-size: 0.78rem;
-    font-weight: 700;
   }
 
-  /* ================= CARDS & COMMON UI ================= */
+  .streak-badge {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Progress Pill Bar */
+  .progress-summary-card {
+    background: var(--surface-1);
+    border: 1px solid var(--surface-border);
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 0.85rem;
+  }
+
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    background: #1f2937;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: var(--radius-full);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* ================= CARDS & LISTS ================= */
   .card {
     background: var(--surface-1);
     border: 1px solid var(--surface-border);
-    backdrop-filter: var(--glass-blur);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
-    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-md);
+    padding: 1rem;
     margin-bottom: 0.85rem;
-    position: relative;
   }
 
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.65rem;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--surface-border);
   }
 
-  .card-title-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .card-icon {
-    font-size: 1.25rem;
-  }
-
   .card-title {
-    font-family: var(--font-heading);
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: var(--text-highlight);
-    letter-spacing: -0.3px;
-  }
-
-  .card-sub {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--text-muted);
-  }
-
-  /* Buttons */
-  .btn {
-    width: 100%;
-    padding: 0.85rem 1.15rem;
-    background: var(--accent-gradient);
-    color: #030712;
-    border: none;
-    border-radius: var(--radius-md);
-    font-family: var(--font-heading);
-    font-weight: 800;
-    font-size: 0.95rem;
-    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 18px var(--accent-glow);
-    transition: transform 0.15s ease;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  .btn:active { transform: scale(0.96); }
-
-  .btn.danger {
-    background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
-    color: #fff;
-    box-shadow: 0 4px 18px var(--danger-glow);
-  }
-
-  .btn-sm {
-    padding: 0.45rem 0.85rem;
-    font-size: 0.78rem;
-    border-radius: var(--radius-sm);
-    width: auto;
-  }
-
-  .text-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--surface-border);
-    color: var(--text-secondary);
-    padding: 0.4rem 0.75rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .text-btn:active { transform: scale(0.94); }
-  .text-btn.success { color: var(--accent-light); border-color: rgba(16, 185, 129, 0.3); background: var(--accent-subtle); }
-  .text-btn.info { color: var(--cyan); border-color: rgba(6, 182, 212, 0.3); background: rgba(6, 182, 212, 0.12); }
-  .text-btn.danger { color: var(--danger); border-color: rgba(244, 63, 94, 0.3); background: rgba(244, 63, 94, 0.12); }
-
-  .input-css {
-    width: 100%;
-    padding: 0.75rem 0.95rem;
-    background: rgba(3, 7, 18, 0.75);
-    border: 1px solid var(--surface-border);
-    color: var(--text-primary);
-    border-radius: var(--radius-md);
-    margin-bottom: 0.75rem;
-    outline: none;
-    font-size: 0.88rem;
-  }
-
-  .input-css:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 12px var(--accent-glow);
-  }
-
-  /* ================= 1. TAB: QUESTS ================= */
-  .quest-list {
+  /* Checkbox Habit List */
+  .habit-list {
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
+    gap: 0.45rem;
   }
 
-  .quest-item {
+  .habit-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(3, 7, 18, 0.6);
+    background: var(--surface-2);
     border: 1px solid var(--surface-border);
-    padding: 0.85rem 1rem;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: 0.88rem;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
 
-  .quest-item:active { transform: scale(0.98); }
-
-  .quest-item.completed {
+  .habit-item.completed {
     background: var(--accent-subtle);
     border-color: rgba(16, 185, 129, 0.35);
   }
 
-  .quest-item.completed .quest-text {
+  .habit-item.completed span {
     text-decoration: line-through;
     color: var(--text-muted);
   }
 
-  .quest-left {
+  .habit-left {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -535,46 +214,28 @@
     min-width: 0;
   }
 
-  .quest-text {
-    white-space: normal;
-    word-break: break-word;
-  }
-
-  .quest-xp-tag {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--accent-light);
-    background: rgba(16, 185, 129, 0.15);
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 6px;
-    flex-shrink: 0;
-  }
-
   input[type="checkbox"] {
     appearance: none;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border: 2px solid var(--text-muted);
-    border-radius: 7px;
+    border-radius: 6px;
     cursor: pointer;
     position: relative;
     flex-shrink: 0;
-    background: rgba(3, 7, 18, 0.8);
-    transition: transform 0.15s ease, background 0.2s ease;
+    background: #111827;
+    transition: all 0.15s ease;
   }
 
   input[type="checkbox"]:checked {
     background: var(--accent);
     border-color: var(--accent);
-    box-shadow: 0 0 10px var(--accent-glow);
   }
 
   input[type="checkbox"]:checked::after {
     content: '✔';
     position: absolute;
-    color: #030712;
+    color: #090d16;
     font-size: 13px;
     font-weight: 900;
     top: 50%;
@@ -582,266 +243,182 @@
     transform: translate(-50%, -50%);
   }
 
-  /* ================= 2. TAB: FAT BURN & GLOW UP ================= */
-  .body-stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-bottom: 0.85rem;
+  /* Buttons */
+  .btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--accent);
+    color: #090d16;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: opacity 0.15s ease;
   }
 
-  .body-stat-box {
-    background: rgba(3, 7, 18, 0.65);
+  .btn:active { opacity: 0.85; }
+
+  .btn-sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.78rem;
+    width: auto;
+  }
+
+  .text-btn {
+    background: #1f2937;
     border: 1px solid var(--surface-border);
-    padding: 1rem 0.85rem;
-    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .text-btn.success { color: var(--accent-light); border-color: rgba(16, 185, 129, 0.4); background: var(--accent-subtle); }
+  .text-btn.info { color: var(--cyan); border-color: rgba(6, 182, 212, 0.4); background: var(--cyan-subtle); }
+  .text-btn.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1); }
+
+  .input-css {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    background: #0d131f;
+    border: 1px solid var(--surface-border);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.65rem;
+    outline: none;
+    font-size: 0.88rem;
+  }
+
+  .input-css:focus {
+    border-color: var(--accent);
+  }
+
+  /* Grid metrics */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .metric-box {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border);
+    padding: 0.85rem;
+    border-radius: var(--radius-sm);
     text-align: center;
   }
 
-  .body-stat-val {
-    font-family: var(--font-heading);
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--text-highlight);
-    line-height: 1.1;
+  .metric-val {
+    font-size: 1.6rem;
+    font-weight: 800;
     font-variant-numeric: tabular-nums;
   }
 
-  .body-stat-label {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  /* Water Bottles */
-  .water-bottle-row {
-    display: flex;
-    gap: 6px;
-    justify-content: space-between;
-    margin: 0.75rem 0;
-  }
-
-  .water-cup {
-    flex: 1;
-    height: 38px;
-    background: rgba(3, 7, 18, 0.8);
-    border: 1px solid var(--surface-border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .water-cup.filled {
-    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
-    color: #fff;
-    font-weight: 800;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-    border-color: #38bdf8;
-  }
-
-  /* Glow Up Checklist */
-  .glow-check-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0.85rem;
-    background: rgba(3, 7, 18, 0.6);
-    border-radius: var(--radius-sm);
-    margin-bottom: 6px;
-    border: 1px solid var(--surface-border);
-  }
-
-  /* ================= 3. TAB: CHARISMA, RIZZ & MIND ================= */
-  .charisma-prompt-card {
-    background: radial-gradient(circle at 0% 0%, rgba(192, 132, 252, 0.2) 0%, rgba(15, 23, 42, 0.85) 100%);
-    border: 1px solid rgba(192, 132, 252, 0.35);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
-    margin-bottom: 0.85rem;
-  }
-
-  .speaking-timer-dial {
-    font-family: var(--font-mono);
-    font-size: 3.2rem;
-    font-weight: 900;
-    color: var(--purple);
-    text-align: center;
-    margin: 0.5rem 0;
-  }
-
-  .prompt-display {
-    background: rgba(3, 7, 18, 0.75);
-    border: 1px solid var(--surface-border);
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    font-size: 0.92rem;
+  .metric-label {
+    font-size: 0.68rem;
     font-weight: 600;
-    color: #f1f5f9;
-    margin-bottom: 0.85rem;
-    line-height: 1.6;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 2px;
   }
 
-  /* Social Courage Tally */
-  .social-tally-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 0.75rem;
-  }
-
-  .social-tally-btn {
-    background: rgba(3, 7, 18, 0.7);
-    border: 1px solid var(--surface-border);
-    padding: 0.85rem;
-    border-radius: var(--radius-md);
-    color: var(--text-primary);
-    font-size: 0.8rem;
-    font-weight: 700;
+  /* Water tracker quick buttons */
+  .water-cups-row {
     display: flex;
-    flex-direction: column;
+    gap: 5px;
+    margin: 0.65rem 0;
+  }
+
+  .water-cup-btn {
+    flex: 1;
+    height: 36px;
+    background: #1f2937;
+    border: 1px solid var(--surface-border);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
     cursor: pointer;
   }
 
-  .social-tally-btn:active { transform: scale(0.95); border-color: var(--purple); }
-  .social-tally-count { font-size: 1.25rem; font-weight: 900; color: var(--purple); }
+  .water-cup-btn.filled {
+    background: var(--cyan);
+    color: #090d16;
+    font-weight: 800;
+    border-color: var(--cyan);
+  }
 
-  /* 4-7-8 Box Breathing */
-  .breathing-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    background: rgba(3, 7, 18, 0.65);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--surface-border);
+  /* Timer Display */
+  .timer-box {
     text-align: center;
-    margin-top: 0.85rem;
+    padding: 1rem 0;
   }
 
-  .breath-circle {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: var(--accent-subtle);
-    border: 2px solid var(--accent);
-    box-shadow: 0 0 25px var(--accent-glow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 0.85rem;
-    color: var(--accent-light);
-    margin-bottom: 1rem;
-    transition: transform 4s ease-in-out;
-  }
-
-  .breath-circle.expand { transform: scale(1.6); }
-  .breath-circle.contract { transform: scale(1); }
-
-  /* ================= 4. TAB: DEEP WORK COCKPIT ================= */
-  .timer-visual-wrapper {
-    position: relative;
-    width: 220px;
-    height: 220px;
-    margin: 0.25rem auto 1rem auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .timer-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-  }
-
-  .timer-circle-bg {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.05);
-    stroke-width: 8;
-  }
-
-  .timer-circle-progress {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 8;
-    stroke-linecap: round;
-    stroke-dasharray: 691;
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 0.5s ease;
-    filter: drop-shadow(0 0 8px var(--accent-glow));
-  }
-
-  .timer-display {
+  .timer-number {
     font-family: var(--font-mono);
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 800;
-    color: var(--text-highlight);
+    color: var(--accent);
     letter-spacing: -1.5px;
     font-variant-numeric: tabular-nums;
   }
 
-  .ambient-sound-chips {
+  /* Focus Presets */
+  .preset-row {
     display: flex;
     gap: 6px;
     justify-content: center;
-    margin-top: 0.75rem;
-    flex-wrap: wrap;
+    margin-bottom: 0.85rem;
   }
 
-  .ambient-chip {
-    background: rgba(3, 7, 18, 0.7);
+  .preset-btn {
+    background: #1f2937;
     border: 1px solid var(--surface-border);
     color: var(--text-secondary);
-    padding: 0.4rem 0.85rem;
+    padding: 0.35rem 0.75rem;
     border-radius: var(--radius-full);
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
   }
 
-  .ambient-chip.active {
-    background: var(--accent-subtle);
+  .preset-btn.active {
+    background: var(--accent);
+    color: #090d16;
     border-color: var(--accent);
-    color: var(--accent-light);
-    box-shadow: 0 0 12px var(--accent-glow);
   }
 
-  /* ================= 5. TAB: STATS & HEATMAP ================= */
+  /* Consistency Heatmap Grid */
   .heatmap-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(14px, 1fr));
-    gap: 4px;
-    margin-top: 0.85rem;
+    grid-template-columns: repeat(auto-fill, minmax(13px, 1fr));
+    gap: 3px;
+    margin-top: 0.65rem;
   }
 
   .heat-box {
     width: 100%;
     aspect-ratio: 1;
-    background: rgba(30, 41, 59, 0.6);
-    border-radius: 3px;
+    background: #1f2937;
+    border-radius: 2px;
   }
 
   .heat-box.active {
     background: var(--accent);
-    box-shadow: 0 0 8px var(--accent-glow);
   }
 
   /* ================= FIXED BOTTOM NAV ================= */
@@ -852,14 +429,13 @@
     right: 0;
     height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    background: rgba(10, 15, 29, 0.94);
-    backdrop-filter: blur(24px);
+    background: rgba(17, 24, 39, 0.96);
     border-top: 1px solid var(--surface-border);
+    backdrop-filter: blur(12px);
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 999;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
   }
 
   .nav-item {
@@ -867,989 +443,470 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
     background: none;
     border: none;
     color: var(--text-muted);
     cursor: pointer;
     flex: 1;
-    padding: 8px 0;
-    transition: transform 0.15s ease, color 0.15s ease;
+    padding: 6px 0;
   }
 
-  .nav-item:active { transform: scale(0.9); }
-  .nav-icon { font-size: 1.35rem; transition: transform 0.2s; }
-  .nav-label { font-family: var(--font-heading); font-size: 0.68rem; font-weight: 700; letter-spacing: -0.2px; }
-  .nav-item.active { color: var(--accent-light); }
-  .nav-item.active .nav-icon { transform: translateY(-2px) scale(1.15); }
+  .nav-icon {
+    font-size: 1.25rem;
+  }
 
-  /* Views Routing */
+  .nav-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+  }
+
+  .nav-item.active {
+    color: var(--accent);
+  }
+
+  /* Tab switching */
   .view-tab {
     display: none;
-    animation: tabSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .view-tab.active { display: block; }
-
-  @keyframes tabSlide {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
+  .view-tab.active {
+    display: block;
   }
 
-  /* Security Portal Overlay */
-  #loginPortalOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    background: radial-gradient(circle at 50% 30%, rgba(15, 23, 42, 0.98) 0%, #030712 100%);
-    backdrop-filter: blur(28px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
-  }
-
-  #loginPortalOverlay.unlocked {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  /* Modals & Toasts */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(3, 7, 18, 0.88);
-    backdrop-filter: blur(12px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    padding: 1.25rem;
-  }
-
-  .modal-content {
-    background: var(--surface-elevated);
-    border: 1px solid var(--surface-border);
-    padding: 1.75rem 1.5rem;
-    border-radius: var(--radius-lg);
-    width: 100%;
-    max-width: 480px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
-  }
-
+  /* Toast Notification */
   .toast-container {
     position: fixed;
     top: 16px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 999999;
+    z-index: 99999;
     width: 90%;
-    max-width: 380px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    max-width: 360px;
     pointer-events: none;
   }
 
   .toast {
-    background: rgba(15, 23, 42, 0.96);
-    border: 1px solid var(--surface-border-hover);
-    backdrop-filter: blur(16px);
-    color: var(--text-highlight);
-    padding: 0.75rem 1.15rem;
-    border-radius: var(--radius-md);
-    font-size: 0.85rem;
-    font-weight: 700;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--accent-glow);
+    background: #1e293b;
+    border: 1px solid var(--surface-border);
+    color: #fff;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     display: flex;
     align-items: center;
     gap: 8px;
-    animation: toastPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  @keyframes toastPop {
-    from { transform: translateY(-15px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    margin-bottom: 6px;
   }
 </style>
 </head>
 <body>
 
-<!-- Ambient Particles Canvas -->
-<canvas id="ambientCanvas"></canvas>
+<div class="app-container">
 
-<!-- Security Access Portal -->
-<div id="loginPortalOverlay">
-  <div class="modal-content" style="text-align: center;" id="loginCard">
-    <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-light); font-weight: 800; letter-spacing: 1px; margin-bottom: 0.5rem;">🔒 GEN-Z BEAST TERMINAL</div>
-    <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 4px;">Elite Winter Arc OS</h2>
-    <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Enter Passcode to Unlock Daily Quests</p>
-
-    <input type="password" id="passcodeInput" class="input-css" style="text-align: center; font-size: 1.8rem; letter-spacing: 8px; font-family: var(--font-mono); font-weight: 800; color: var(--accent);" placeholder="••••••" maxlength="6" autofocus>
-    <div id="passcodeError" style="color: var(--danger); font-size: 0.75rem; font-weight: 700; min-height: 18px; margin-bottom: 0.75rem;"></div>
-
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem;">
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('1')">1</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('2')">2</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('3')">3</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('4')">4</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('5')">5</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('6')">6</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('7')">7</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('8')">8</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('9')">9</button>
-      <button class="text-btn danger" style="justify-content: center; padding: 0.85rem; font-size: 1rem; font-weight: 800;" onclick="clearPin()">C</button>
-      <button class="text-btn" style="justify-content: center; padding: 0.85rem; font-size: 1.2rem; font-weight: 800;" onclick="appendPin('0')">0</button>
-      <button class="text-btn info" style="justify-content: center; padding: 0.85rem; font-size: 1rem; font-weight: 800;" onclick="deletePin()">⌫</button>
+  <!-- Compact Top Header -->
+  <header class="top-header">
+    <div class="brand-title">
+      <span>❄️ Winter Arc</span>
     </div>
-
-    <button class="btn" onclick="verifyPasscode()">⚡ Unlock Terminal</button>
-    <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 10px;">Passcode: <b>112233</b></div>
-  </div>
-</div>
-
-<!-- ================= MAIN MOBILE CONTAINER ================= -->
-<div class="mobile-container">
-
-  <!-- TOP GAMIFIED HUD -->
-  <header class="top-hud">
-    <div class="hud-top-row">
-      <div class="user-badge">
-        <div class="avatar-ring" id="userAvatar">🐺</div>
-        <div class="user-meta">
-          <div class="user-rank" id="userRankText">LVL 3 // SHADOW MONK</div>
-          <div class="user-title" id="userXpText">280 / 500 XP</div>
-        </div>
-      </div>
-      <div class="hud-actions">
-        <div class="flame-streak-badge" id="hudStreakBadge">🔥 0 DAYS</div>
-        <button class="text-btn" style="padding: 0.35rem 0.55rem; border-radius: var(--radius-full);" onclick="cycleTheme()" title="Switch Theme">🎨</button>
-        <button class="text-btn" style="padding: 0.35rem 0.55rem; border-radius: var(--radius-full);" onclick="lockSystem()" title="Lock">🔒</button>
-      </div>
-    </div>
-
-    <!-- XP Progress Bar -->
-    <div class="xp-bar-container">
-      <div class="xp-bar-fill" id="xpBarFill" style="width: 56%;"></div>
-    </div>
-    <div class="xp-labels">
-      <span>NEXT: LEVEL 4 (CYBER CHAD)</span>
-      <span id="dailyProtocolScore">0/7 Daily Quests Done</span>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="streak-badge" id="headerStreakBadge">🔥 0 Day Streak</div>
+      <button class="text-btn info" onclick="manualSync()" title="Sync Cloud State">☁️ Sync</button>
     </div>
   </header>
 
-  <!-- DAILY BRAINROT DEMON BOSS HP -->
-  <div class="boss-card">
-    <div class="boss-header">
-      <span class="boss-name">👹 Procrastination Demon</span>
-      <span class="boss-hp-val" id="bossHpText">HP: 100/100</span>
+  <!-- Progress Summary -->
+  <div class="progress-summary-card">
+    <div class="progress-row">
+      <span>Daily Execution</span>
+      <span id="progressSummaryText" style="color: var(--accent);">0/7 Completed (0%)</span>
     </div>
-    <div class="boss-hp-bar">
-      <div class="boss-hp-fill" id="bossHpFill"></div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressBarFill"></div>
     </div>
-    <div style="font-size: 0.68rem; color: #fca5a5; margin-top: 4px; font-family: var(--font-mono);">Damage boss by finishing quests, drinking water & coding.</div>
   </div>
 
-  <!-- 1-TAP QUICK LOG ACTION CAROUSEL -->
-  <div class="quick-log-row">
-    <button class="quick-chip" onclick="quickAddWater(500)">💧 +500ml Water</button>
-    <button class="quick-chip" onclick="quickAddSteps(500)">🏃 +500 Steps</button>
-    <button class="quick-chip" onclick="switchMobileTab('tab-charisma'); generateSpeakingPrompt();">🎙️ 60s Speech</button>
-    <button class="quick-chip" onclick="startBoxBreathing()">🧘 1m Reset</button>
-    <button class="quick-chip" onclick="quickWorkoutDone()">💪 20 Pushups</button>
-    <button class="quick-chip" onclick="logSocialCourage('eye_contact')">👀 Eye Contact</button>
-  </div>
-
-  <!-- LAZY EMERGENCY PROTOCOL BANNER -->
-  <div class="lazy-banner">
-    <div style="display: flex; align-items: center; gap: 6px;">
-      <span style="font-size: 1rem;" id="modeIcon">⚡</span>
-      <span style="font-weight: 800; font-size: 0.82rem;" id="modeTitle">BEAST ARC MODE</span>
-    </div>
-    <label class="lazy-switch">
-      <span style="color: var(--text-muted); font-size: 0.72rem;">Lazy Emergency?</span>
-      <input type="checkbox" id="lazyModeToggle" onchange="toggleLazyMode()" style="width: 20px; height: 20px;">
-    </label>
-  </div>
-
-  <!-- ================= 1. TAB: DAILY QUESTS & PROTOCOLS ================= -->
-  <section id="tab-quests" class="view-tab active">
+  <!-- ================= 1. TAB: TODAY (DAILY PROTOCOL) ================= -->
+  <main id="tab-today" class="view-tab active">
     
-    <!-- Day Navigator Header -->
-    <div class="card" style="padding: 0.85rem 1rem;">
+    <!-- Day Navigation Bar -->
+    <div class="card" style="padding: 0.65rem 0.85rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <button class="text-btn info" onclick="navigateDay(-1)">◀ Prev</button>
-        <span id="activeDayLabel" style="font-family: var(--font-heading); font-weight: 800; font-size: 0.95rem; color: var(--accent-light);">📅 Today</span>
-        <button class="text-btn info" onclick="navigateDay(1)">Next ▶</button>
+        <button class="text-btn" onclick="navigateDay(-1)">◀ Prev Day</button>
+        <span id="activeDateLabel" style="font-weight: 700; font-size: 0.85rem; color: var(--accent-light);">Today</span>
+        <button class="text-btn" onclick="navigateDay(1)">Next Day ▶</button>
       </div>
     </div>
 
-    <!-- Daily Quests Checklist -->
+    <!-- Core Habits Card -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">⚔️</span>
-          <div>
-            <div class="card-title">Daily Boss Quests</div>
-            <div class="card-sub">Complete daily to level up XP</div>
-          </div>
-        </div>
-        <button class="text-btn success" onclick="addNewDailyTask()">+ Quest</button>
+        <div class="card-title">🛡️ Core Non-Negotiables</div>
+        <button class="text-btn success" onclick="addNewCustomTask()">+ Add Task</button>
       </div>
 
-      <div class="quest-list" id="questList">
-        <div class="quest-item" id="q-wa1">
-          <div class="quest-left">
+      <div class="habit-list" id="habitList">
+        <div class="habit-item" id="h-wa1">
+          <div class="habit-left">
             <input type="checkbox" data-id="wa1">
-            <span class="quest-text">💧 3 Liters Hydration Goal <span class="quest-xp-tag">+30 XP</span></span>
+            <span>💧 1. 3 Liters Water Hydration</span>
           </div>
         </div>
-        <div class="quest-item" id="q-wa2">
-          <div class="quest-left">
+        <div class="habit-item" id="h-wa2">
+          <div class="habit-left">
             <input type="checkbox" data-id="wa2">
-            <span class="quest-text">🥗 Clean Fuel (Zero Junk / Refined Sugar) <span class="quest-xp-tag">+40 XP</span></span>
+            <span>🥗 2. Clean Diet (No Sugar / Zero Junk)</span>
           </div>
         </div>
-        <div class="quest-item" id="q-wa3">
-          <div class="quest-left">
+        <div class="habit-item" id="h-wa3">
+          <div class="habit-left">
             <input type="checkbox" data-id="wa3">
-            <span class="quest-text">😴 7-8h Quality Sleep Recovery <span class="quest-xp-tag">+30 XP</span></span>
+            <span>😴 3. 7-8 Hours Sleep Recovery</span>
           </div>
         </div>
-        <div class="quest-item" id="q-wa4">
-          <div class="quest-left">
+        <div class="habit-item" id="h-wa4">
+          <div class="habit-left">
             <input type="checkbox" data-id="wa4">
-            <span class="quest-text">🏋️ 45m High-Intensity Gym / Calisthenics <span class="quest-xp-tag">+50 XP</span></span>
+            <span>🏋️ 4. 45 Min Gym / Workout</span>
           </div>
         </div>
-        <div class="quest-item" id="q-wa5">
-          <div class="quest-left">
+        <div class="habit-item" id="h-wa5">
+          <div class="habit-left">
             <input type="checkbox" data-id="wa5">
-            <span class="quest-text">🚶 10,000 Fat-Burn Daily Steps <span class="quest-xp-tag">+50 XP</span></span>
+            <span>🚶 5. 10,000 Active Daily Steps</span>
           </div>
         </div>
-        <div class="quest-item" id="q-wa6">
-          <div class="quest-left">
+        <div class="habit-item" id="h-wa6">
+          <div class="habit-left">
             <input type="checkbox" data-id="wa6">
-            <span class="quest-text">📵 Anti-Brainrot Morning & Meals <span class="quest-xp-tag">+30 XP</span></span>
+            <span>📵 6. Zero Phone Morning / Meal Routine</span>
           </div>
         </div>
-        <div class="quest-item" id="q-wa7">
-          <div class="quest-left">
+        <div class="habit-item" id="h-wa7">
+          <div class="habit-left">
             <input type="checkbox" data-id="wa7">
-            <span class="quest-text">🎙️ Daily Speech Drill / Reflection <span class="quest-xp-tag">+40 XP</span></span>
+            <span>🎙️ 7. 60s Speech Drill & Reflection</span>
           </div>
         </div>
       </div>
 
-      <!-- Custom Daily Objectives -->
-      <div id="customQuestContainer" style="margin-top: 1rem; border-top: 1px dashed var(--surface-border); padding-top: 0.75rem;">
-        <div style="font-size: 0.75rem; font-weight: 800; color: var(--cyan); margin-bottom: 0.5rem; text-transform: uppercase;">Custom Side Quests</div>
-        <div class="quest-list" id="customQuestList"></div>
+      <!-- Custom Day Objectives -->
+      <div id="customHabitSection" style="margin-top: 0.75rem; border-top: 1px dashed var(--surface-border); padding-top: 0.65rem;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--cyan); margin-bottom: 0.4rem; text-transform: uppercase;">Custom Day Objectives</div>
+        <div class="habit-list" id="customHabitList"></div>
       </div>
-
-      <button class="btn" style="margin-top: 1rem;" onclick="initiateStandup()">⚡ Commit Day & Lock Streak</button>
     </div>
 
-  </section>
+    <!-- Daily Standup / Note -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📝 End of Day Commit & Win</div>
+      </div>
+      <textarea id="dailyWinNote" class="input-css" style="height: 65px; resize: none; margin-bottom: 0.5rem;" placeholder="What did you execute and accomplish today?"></textarea>
+      <button class="btn" onclick="commitEODStandup()">⚡ Commit Day & Lock Streak</button>
+    </div>
 
-  <!-- ================= 2. TAB: FAT BURN & GLOW UP ================= -->
-  <section id="tab-body" class="view-tab">
+  </main>
+
+  <!-- ================= 2. TAB: FITNESS & DIET ================= -->
+  <section id="tab-fitness" class="view-tab">
     
-    <div class="body-stat-grid">
-      <div class="body-stat-box">
-        <div class="body-stat-val" id="stepsDisplayVal" style="color: var(--cyan);">0</div>
-        <div class="body-stat-label">DAILY STEPS</div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Goal: 10,000 (Burn ~400 kcal)</div>
+    <div class="metric-grid">
+      <div class="metric-box">
+        <div class="metric-val" id="stepCountDisplay" style="color: var(--cyan);">0</div>
+        <div class="metric-label">Daily Steps (Goal: 10k)</div>
       </div>
-      <div class="body-stat-box">
-        <div class="body-stat-val" id="waterDisplayVal" style="color: #38bdf8;">0.0L</div>
-        <div class="body-stat-label">WATER INTAKE</div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Goal: 3.0 Liters</div>
+      <div class="metric-box">
+        <div class="metric-val" id="waterAmountDisplay" style="color: #38bdf8;">0.0L</div>
+        <div class="metric-label">Water (Goal: 3.0L)</div>
       </div>
     </div>
 
-    <!-- Quick Water Bottle Tap Visualizer -->
+    <!-- 3L Hydration Logger -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">💧</span>
-          <div>
-            <div class="card-title">Hydration Multiplier (3L)</div>
-            <div class="card-sub">Tap cups to log 500ml water</div>
-          </div>
-        </div>
+        <div class="card-title">💧 3L Hydration Tracker</div>
+        <button class="text-btn success" onclick="quickAddWater(500)">+500ml</button>
       </div>
-
-      <div class="water-bottle-row" id="waterCupRow">
-        <div class="water-cup" onclick="toggleWaterCup(0)">500ml</div>
-        <div class="water-cup" onclick="toggleWaterCup(1)">1.0L</div>
-        <div class="water-cup" onclick="toggleWaterCup(2)">1.5L</div>
-        <div class="water-cup" onclick="toggleWaterCup(3)">2.0L</div>
-        <div class="water-cup" onclick="toggleWaterCup(4)">2.5L</div>
-        <div class="water-cup" onclick="toggleWaterCup(5)">3.0L</div>
+      <div class="water-cups-row" id="waterCupsRow">
+        <div class="water-cup-btn" onclick="setWaterLevel(0.5)">500ml</div>
+        <div class="water-cup-btn" onclick="setWaterLevel(1.0)">1.0L</div>
+        <div class="water-cup-btn" onclick="setWaterLevel(1.5)">1.5L</div>
+        <div class="water-cup-btn" onclick="setWaterLevel(2.0)">2.0L</div>
+        <div class="water-cup-btn" onclick="setWaterLevel(2.5)">2.5L</div>
+        <div class="water-cup-btn" onclick="setWaterLevel(3.0)">3.0L</div>
       </div>
     </div>
 
-    <!-- Glow Up Routine Checklist -->
+    <!-- Fast Step Logger & Sensors -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">✨</span>
-          <div>
-            <div class="card-title">Glow-Up Non-Negotiables</div>
-            <div class="card-sub">Posture, Skincare & Energy</div>
-          </div>
-        </div>
-      </div>
-      <div class="glow-check-item"><span>🧘 Upright Posture (Shoulders Back)</span><input type="checkbox" onchange="addXP(15)"></div>
-      <div class="glow-check-item"><span>🚿 Cold Shower / Ice Face Dunk</span><input type="checkbox" onchange="addXP(20)"></div>
-      <div class="glow-check-item"><span>🧴 Night Skincare & Lip Balm</span><input type="checkbox" onchange="addXP(15)"></div>
-      <div class="glow-check-item"><span>🥩 High Protein First Meal</span><input type="checkbox" onchange="addXP(20)"></div>
-    </div>
-
-    <!-- 16:8 Intermittent Fasting Tracker -->
-    <div class="card" style="text-align: center; border-color: rgba(245, 158, 11, 0.35);">
-      <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; color: #fbbf24; margin-bottom: 4px;">⏳ 16:8 Intermittent Fasting</div>
-      <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Fast for rapid fat oxidation & autophagy</div>
-      
-      <div id="fastingTimerDisplay" style="font-family: var(--font-mono); font-size: 2.6rem; font-weight: 900; color: #f59e0b; margin-bottom: 0.75rem;">16:00:00</div>
-      
-      <div style="display: flex; gap: 8px; justify-content: center;">
-        <button class="btn btn-sm" id="fastingActionBtn" onclick="toggleFastingTimer()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">▶️ Start Fast (16h)</button>
-        <button class="text-btn danger" onclick="resetFastingTimer()">Reset</button>
-      </div>
-    </div>
-
-    <!-- Pedometer Motion Sensors -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">🏃</span>
-          <div>
-            <div class="card-title">Live Step Sensor & Burn</div>
-            <div class="card-sub">Phone Accelerometer</div>
-          </div>
-        </div>
-        <button class="text-btn success" id="pedometerSensorsBtn" onclick="initPedometer()">Link Sensor</button>
+        <div class="card-title">🚶 Steps & Fat Burn</div>
+        <button class="text-btn info" onclick="initPedometer()">Link Sensor</button>
       </div>
       <div style="display: flex; gap: 8px;">
-        <button class="btn btn-sm" style="flex: 1;" onclick="quickAddSteps(500)">+500 Steps (Walk)</button>
-        <button class="btn btn-sm" style="flex: 1;" onclick="quickAddSteps(1000)">+1,000 Steps</button>
+        <button class="btn btn-sm" style="flex: 1;" onclick="addSteps(500)">+500 Steps (Walk)</button>
+        <button class="btn btn-sm" style="flex: 1;" onclick="addSteps(1000)">+1,000 Steps</button>
       </div>
     </div>
 
-  </section>
-
-  <!-- ================= 3. TAB: CHARISMA, RIZZ & MIND ================= -->
-  <section id="tab-charisma" class="view-tab">
-    
-    <!-- Daily 60-Second Speaking Drill -->
-    <div class="charisma-prompt-card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: #e9d5ff;">🎙️ 60s Speech & Articulation Drill</div>
-        <button class="text-btn info" onclick="generateSpeakingPrompt()">⚡ Next Topic</button>
-      </div>
-
-      <div class="prompt-display" id="speakingPromptText">
-        "Pick one tech concept (e.g. AI agents, APIs, or Cloud databases) and explain it with zero filler words in 60 seconds as if pitch-meeting an investor."
-      </div>
-
-      <div class="speaking-timer-dial" id="speechTimerDisplay">60s</div>
-
-      <div style="display: flex; gap: 8px;">
-        <button class="btn" id="speechTimerBtn" style="background: linear-gradient(135deg, #c084fc 0%, #9333ea 100%);" onclick="toggleSpeechTimer()">▶️ Start 60s Speech</button>
-      </div>
-    </div>
-
-    <!-- Social Courage & Charisma Tally -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">💬</span>
-          <div>
-            <div class="card-title">Daily Social Courage Tally</div>
-            <div class="card-sub">Overcome approach anxiety</div>
-          </div>
-        </div>
-      </div>
-      <div class="social-tally-grid">
-        <button class="social-tally-btn" onclick="logSocialCourage('eye_contact')">
-          <span>👀 Eye Contact & Smile</span>
-          <span class="social-tally-count" id="tallyEyeContact">0</span>
-        </button>
-        <button class="social-tally-btn" onclick="logSocialCourage('compliment')">
-          <span>🤝 Gave a Compliment</span>
-          <span class="social-tally-count" id="tallyCompliment">0</span>
-        </button>
-        <button class="social-tally-btn" onclick="logSocialCourage('spoke_up')">
-          <span>📢 Spoke in Meeting/Class</span>
-          <span class="social-tally-count" id="tallySpokeUp">0</span>
-        </button>
-        <button class="social-tally-btn" onclick="logSocialCourage('cold_dm')">
-          <span>🚀 Sent 1 Cold Outreach DM</span>
-          <span class="social-tally-count" id="tallyColdDm">0</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Dopamine Detox & 4-7-8 Box Breathing -->
-    <div class="breathing-box">
-      <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; color: var(--accent-light); margin-bottom: 4px;">🧘 4-7-8 Anti-Brainrot Reset</div>
-      <div style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Inhale 4s • Hold 7s • Exhale 8s</div>
-      
-      <div class="breath-circle" id="breathBall">BREATHE</div>
-      <div id="breathInstruction" style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--text-highlight); margin-bottom: 1rem;">Tap Start to Calibrate Nervous System</div>
-
-      <button class="btn btn-sm" id="breathBtn" onclick="toggleBreathingExercise()">Start 1-Min Reset</button>
-    </div>
-
-  </section>
-
-  <!-- ================= 4. TAB: DEEP WORK COCKPIT ================= -->
-  <section id="tab-work" class="view-tab">
-    
+    <!-- 16:8 Fasting Timer -->
     <div class="card" style="text-align: center;">
       <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">⚡</span>
-          <div>
-            <div class="card-title">Deep Work Cockpit</div>
-            <div class="card-sub">Flow State Protocol</div>
-          </div>
-        </div>
-        <span class="text-btn info" id="workTimerHint">Ready</span>
+        <div class="card-title">⏳ 16:8 Intermittent Fasting</div>
+        <button class="text-btn danger" onclick="resetFast()">Reset</button>
       </div>
-
-      <!-- Circular Timer -->
-      <div class="timer-visual-wrapper">
-        <svg class="timer-svg" viewBox="0 0 240 240">
-          <circle class="timer-circle-bg" cx="120" cy="120" r="110"></circle>
-          <circle class="timer-circle-progress" id="timerProgressCircle" cx="120" cy="120" r="110"></circle>
-        </svg>
-        <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;">
-          <div class="timer-display" id="liveTimer">00:00:00</div>
-          <div style="font-family: var(--font-heading); font-size: 0.72rem; color: var(--accent); font-weight: 800; text-transform: uppercase;">LOCKED IN</div>
-        </div>
-      </div>
-
-      <!-- Focus Target Selector -->
-      <select class="input-css" id="timerPillar">
-        <option value="💻 GSoC / Frontend Sprint">💻 GSoC / Frontend Sprint</option>
-        <option value="☕ Java DSA & LeetCode">☕ Java DSA & LeetCode</option>
-        <option value="👕 Gen AI Design & E-Com">👕 Gen AI Design & E-Com</option>
-        <option value="🎬 Content / Reel Scripting">🎬 Content / Reel Scripting</option>
-        <option value="📚 College Tech Studies">📚 College Tech Studies</option>
-        <option value="✍️ Custom Sprint">✍️ Custom Sprint</option>
-      </select>
-
-      <button class="btn" id="timerBtn" onclick="toggleTimer()">⚡ Initialize Deep Work</button>
-
-      <!-- Active Controls (Pause & Discard) -->
-      <div id="activeTimerControls" style="display: none; gap: 8px; margin-top: 8px;">
-        <button class="btn" id="pauseTimerBtn" style="background: var(--warning); color: #000; flex: 1;" onclick="togglePauseTimer()">⏸️ Pause</button>
-        <button class="text-btn danger" onclick="cancelTimer()">✕ Discard</button>
-      </div>
-
-      <!-- Ambient Audio Synthesizer Chips -->
-      <div class="ambient-sound-chips">
-        <div class="ambient-chip" id="ambRain" onclick="toggleAmbientSound('rain')">🌧️ Rain Noise</div>
-        <div class="ambient-chip" id="ambBinaural" onclick="toggleAmbientSound('binaural')">🧠 40Hz Alpha</div>
-        <div class="ambient-chip" id="ambWhite" onclick="toggleAmbientSound('white')">📻 Noise</div>
-      </div>
-    </div>
-
-    <!-- Recent Session Logs -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">📜</span>
-          <div class="card-title">Today's Focus Log</div>
-        </div>
-      </div>
-      <div class="quest-list" id="workLogList" style="max-height: 250px; overflow-y: auto;"></div>
+      <div id="fastTimerDisplay" style="font-family: var(--font-mono); font-size: 2.4rem; font-weight: 800; color: var(--warning); margin: 0.4rem 0;">16:00:00</div>
+      <button class="btn" id="fastBtn" style="background: var(--warning); color: #090d16;" onclick="toggleFast()">▶️ Start Fasting Window</button>
     </div>
 
   </section>
 
-  <!-- ================= 5. TAB: PROGRESS, HEATMAP & SYNC ================= -->
-  <section id="tab-progress" class="view-tab">
+  <!-- ================= 3. TAB: SPEECH & MIND ================= -->
+  <section id="tab-speech" class="view-tab">
     
-    <!-- Level Matrix Card -->
+    <!-- 60s Impromptu Speech Generator -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">🏆</span>
-          <div>
-            <div class="card-title">Architect Level & Rank</div>
-            <div class="card-sub">Winter Arc Gamification</div>
-          </div>
-        </div>
+        <div class="card-title">🎙️ 60s Speech & Articulation Drill</div>
+        <button class="text-btn info" onclick="nextSpeechTopic()">⚡ New Topic</button>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
-        <div class="body-stat-box">
-          <div class="body-stat-val" id="totalXpDisplay" style="color: var(--accent);">280</div>
-          <div class="body-stat-label">TOTAL XP EARNED</div>
-        </div>
-        <div class="body-stat-box">
-          <div class="body-stat-val" id="streakDisplayVal" style="color: #fb923c;">0</div>
-          <div class="body-stat-label">BEST STREAK</div>
-        </div>
+
+      <div style="background: var(--surface-2); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border); font-size: 0.9rem; margin-bottom: 0.85rem;" id="speechTopicBox">
+        "Pick one technical concept you learned recently (e.g., REST API, Git, or Binary Trees) and explain it clearly in 60 seconds with zero filler words."
+      </div>
+
+      <div style="font-family: var(--font-mono); font-size: 2.8rem; font-weight: 800; color: var(--cyan); text-align: center; margin-bottom: 0.65rem;" id="speechTimerDisplay">60s</div>
+
+      <button class="btn" id="speechBtn" style="background: var(--cyan); color: #090d16;" onclick="toggleSpeechTimer()">▶️ Start 60s Speech Drill</button>
+    </div>
+
+    <!-- Social Confidence Checklist -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🗣️ Daily Communication & Presence</div>
+      </div>
+      <div class="habit-list">
+        <div class="habit-item"><span>👀 Made eye contact & smiled with confidence</span><input type="checkbox"></div>
+        <div class="habit-item"><span>🤝 Gave a genuine compliment to someone</span><input type="checkbox"></div>
+        <div class="habit-item"><span>📢 Spoke up during college/work discussion</span><input type="checkbox"></div>
+        <div class="habit-item"><span>🧘 Maintained upright posture throughout day</span><input type="checkbox"></div>
       </div>
     </div>
 
-    <!-- 122-Day Consistency Heatmap -->
+    <!-- 1-Min Box Breathing -->
+    <div class="card" style="text-align: center;">
+      <div class="card-header">
+        <div class="card-title">🧘 4-7-8 Anti-Brainrot Reset</div>
+      </div>
+      <div id="breathInstruction" style="font-size: 0.9rem; font-weight: 600; color: var(--accent-light); margin: 0.75rem 0;">Inhale 4s • Hold 7s • Exhale 8s</div>
+      <button class="btn btn-sm" id="breathBtn" style="margin: 0 auto;" onclick="toggleBreathing()">Start 1-Min Breathwork</button>
+    </div>
+
+  </section>
+
+  <!-- ================= 4. TAB: DEEP WORK TIMER ================= -->
+  <section id="tab-work" class="view-tab">
+    
+    <div class="card timer-box">
+      <div class="card-header">
+        <div class="card-title">⏱️ Deep Work Session</div>
+        <span id="timerStatusLabel" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Ready</span>
+      </div>
+
+      <div class="preset-row">
+        <button class="preset-btn active" onclick="setPreset(25)">25m</button>
+        <button class="preset-btn" onclick="setPreset(50)">50m</button>
+        <button class="preset-btn" onclick="setPreset(90)">90m</button>
+        <button class="preset-btn" onclick="setPreset(0)">Stopwatch</button>
+      </div>
+
+      <div class="timer-number" id="liveTimerDisplay">25:00</div>
+
+      <select class="input-css" id="focusPillarSelect" style="margin-top: 0.5rem;">
+        <option value="💻 Frontend / GSoC Sprint">💻 Frontend / GSoC Sprint</option>
+        <option value="☕ Java DSA / LeetCode">☕ Java DSA / LeetCode</option>
+        <option value="👕 AI Design / T-Shirts">👕 AI Design / T-Shirts</option>
+        <option value="🎬 Content / Reel Creation">🎬 Content / Reel Creation</option>
+        <option value="📚 College Tech Studies">📚 College Tech Studies</option>
+      </select>
+
+      <button class="btn" id="focusBtn" onclick="toggleFocusTimer()">⚡ Start Focus Session</button>
+
+      <div id="activeControlsRow" style="display: none; gap: 6px; margin-top: 6px;">
+        <button class="btn" id="pauseBtn" style="background: var(--warning); color: #090d16; flex: 1;" onclick="togglePauseFocus()">⏸️ Pause</button>
+        <button class="text-btn danger" onclick="cancelFocus()">✕ Cancel</button>
+      </div>
+
+      <!-- Ambient noise chips -->
+      <div style="display: flex; gap: 6px; justify-content: center; margin-top: 0.85rem;">
+        <button class="text-btn" id="soundRain" onclick="toggleSound('rain')">🌧️ Rain</button>
+        <button class="text-btn" id="soundAlpha" onclick="toggleSound('alpha')">🧠 40Hz Waves</button>
+        <button class="text-btn" id="soundWhite" onclick="toggleSound('white')">📻 Noise</button>
+      </div>
+    </div>
+
+    <!-- Focus History -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">🔥</span>
-          <div class="card-title">122-Day Sprint Heatmap</div>
-        </div>
+        <div class="card-title">📜 Today's Focus Log</div>
+        <span id="todayTotalFocus" style="font-size: 0.75rem; color: var(--accent); font-weight: 700;">0.0h logged</span>
+      </div>
+      <div class="habit-list" id="focusLogsList" style="max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+  </section>
+
+  <!-- ================= 5. TAB: HISTORY & BACKUP ================= -->
+  <section id="tab-history" class="view-tab">
+    
+    <!-- Consistency Heatmap -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🔥 120-Day Consistency Grid</div>
+        <span id="heatmapCommitsCount" style="font-size: 0.75rem; color: var(--text-muted);">0 Days</span>
       </div>
       <div class="heatmap-grid" id="heatmapGrid"></div>
     </div>
 
-    <!-- Cloud Sync & Backup -->
+    <!-- Data Cloud Sync & Export -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title-group">
-          <span class="card-icon">☁️</span>
-          <div class="card-title">Firebase Cloud & Backup</div>
-        </div>
-        <span class="text-btn info" id="cloudStatusBadge">Syncing...</span>
+        <div class="card-title">☁️ Firebase Cloud & Data</div>
+        <span id="cloudStatusLabel" style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Cloud Ready</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <button class="btn btn-sm" onclick="pushToFirebase(true)">☁️ Force Backup to Cloud</button>
-        <button class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: #fff;" onclick="exportData('json')">⬇ Download JSON Backup</button>
+        <button class="btn btn-sm" onclick="pushToCloud(true)">☁️ Backup to Firebase Cloud</button>
+        <button class="btn btn-sm" style="background: #1f2937; color: #fff;" onclick="exportJSONBackup()">⬇ Download JSON File Backup</button>
       </div>
     </div>
 
   </section>
 
-</div>
-
-<!-- ================= EOD COMMIT MODAL ================= -->
-<div class="modal-overlay" id="standupModal">
-  <div class="modal-content">
-    <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 800; color: var(--accent-light); margin-bottom: 0.5rem;">Daily EOD Telemetry Commit</h3>
-    <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1rem;">Log wins & lock your streak for today.</p>
-
-    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">What did you ship / accomplish today?</label>
-    <textarea id="standupWins" class="input-css" style="height: 60px; resize: none;" placeholder="e.g. 10k steps, solved 3 hard DSA problems, clean diet..."></textarea>
-
-    <button class="btn" onclick="submitStandup()">⚡ Commit Day (+100 XP)</button>
-    <button class="btn" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 6px;" onclick="closeModal('standupModal')">Cancel</button>
-  </div>
 </div>
 
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- ================= FIXED BOTTOM NAVIGATION BAR ================= -->
+<!-- ================= FIXED BOTTOM NAV ================= -->
 <nav class="bottom-nav">
-  <button class="nav-item active" onclick="switchMobileTab('tab-quests')">
-    <span class="nav-icon">⚔️</span>
-    <span class="nav-label">Quests</span>
+  <button class="nav-item active" onclick="switchNav('tab-today')">
+    <span class="nav-icon">📋</span>
+    <span class="nav-label">Today</span>
   </button>
-  <button class="nav-item" onclick="switchMobileTab('tab-body')">
+  <button class="nav-item" onclick="switchNav('tab-fitness')">
     <span class="nav-icon">🏃</span>
-    <span class="nav-label">Fat Burn</span>
+    <span class="nav-label">Fitness</span>
   </button>
-  <button class="nav-item" onclick="switchMobileTab('tab-charisma')">
+  <button class="nav-item" onclick="switchNav('tab-speech')">
     <span class="nav-icon">🎙️</span>
-    <span class="nav-label">Charisma</span>
+    <span class="nav-label">Speech</span>
   </button>
-  <button class="nav-item" onclick="switchMobileTab('tab-work')">
-    <span class="nav-icon">⚡</span>
-    <span class="nav-label">Deep Work</span>
+  <button class="nav-item" onclick="switchNav('tab-work')">
+    <span class="nav-icon">⏱️</span>
+    <span class="nav-label">Focus</span>
   </button>
-  <button class="nav-item" onclick="switchMobileTab('tab-progress')">
+  <button class="nav-item" onclick="switchNav('tab-history')">
     <span class="nav-icon">📊</span>
-    <span class="nav-label">Stats</span>
+    <span class="nav-label">History</span>
   </button>
 </nav>
 
-<!-- ================= JAVASCRIPT CORE GEN-Z ENGINE ================= -->
+<!-- ================= FAST EXECUTION SCRIPT ================= -->
 <script>
-  /* ================= 0. CANVAS & HAPTICS ================= */
-  const canvas = document.getElementById('ambientCanvas');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
+  /* ================= 0. STATE & PERSISTENCE ================= */
+  const HABIT_IDS = ['wa1', 'wa2', 'wa3', 'wa4', 'wa5', 'wa6', 'wa7'];
+  let currentStreak = parseInt(localStorage.getItem('arcStreak')) || 0;
+  let loggedDates = JSON.parse(localStorage.getItem('loggedDates')) || [];
+  let steps = parseInt(localStorage.getItem('todaySteps')) || 0;
+  let waterLiters = parseFloat(localStorage.getItem('todayWater')) || 0.0;
+  let viewingDate = new Date();
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+  function getSystemDateKey(d = new Date()) { return d.toDateString(); }
+  function getDailyArchives() { return JSON.parse(localStorage.getItem('dailyArchives')) || {}; }
+  function saveDailyArchives(arch) { localStorage.setItem('dailyArchives', JSON.stringify(arch)); }
 
-  for (let i = 0; i < 30; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 2 + 0.5,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      alpha: Math.random() * 0.35 + 0.1
-    });
-  }
-
-  function animateCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-      ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    requestAnimationFrame(animateCanvas);
-  }
-  animateCanvas();
-
-  function triggerHaptic(pattern = [25]) {
-    if ('vibrate' in navigator) {
-      try { navigator.vibrate(pattern); } catch(e) {}
-    }
+  function showToast(msg) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<span>⚡</span> <span>${msg}</span>`;
+    container.appendChild(t);
+    setTimeout(() => {
+      t.style.transition = 'opacity 0.2s';
+      t.style.opacity = '0';
+      setTimeout(() => t.remove(), 200);
+    }, 2000);
   }
 
-  /* ================= 1. THEMES & SOUND FX ================= */
-  const THEMES = ['emerald', 'arctic', 'violet', 'ember'];
-  let currentThemeIdx = 0;
-
-  function cycleTheme() {
-    currentThemeIdx = (currentThemeIdx + 1) % THEMES.length;
-    const t = THEMES[currentThemeIdx];
-    document.documentElement.setAttribute('data-theme', t);
-    localStorage.setItem('elite_theme', t);
-    showToast(`Theme: ${t.toUpperCase()}`);
-    triggerHaptic(20);
-  }
-  const savedTheme = localStorage.getItem('elite_theme') || 'emerald';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  currentThemeIdx = THEMES.indexOf(savedTheme);
-  if (currentThemeIdx === -1) currentThemeIdx = 0;
-
-  // Web Audio Context for Ambient & UI FX
-  let audioCtx = null;
-  function getAudioContext() {
-    if (!audioCtx) {
-      const AudioClass = window.AudioContext || window.webkitAudioContext;
-      if (AudioClass) audioCtx = new AudioClass();
-    }
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    return audioCtx;
-  }
-
-  function playSynthChime(freq = 659.25, dur = 0.25) {
-    try {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(0.1, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + dur);
-    } catch(e) {}
-  }
-
-  // Ambient Noise Generator
-  let activeAmbient = null;
-  let ambientSource = null;
-
-  function toggleAmbientSound(type) {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-    triggerHaptic(25);
-
-    if (activeAmbient === type) {
-      stopAmbientSound();
-      showToast("Ambient sound off");
-      return;
-    }
-    stopAmbientSound();
-    activeAmbient = type;
-
-    document.querySelectorAll('.ambient-chip').forEach(c => c.classList.remove('active'));
-    if (type === 'rain') document.getElementById('ambRain')?.classList.add('active');
-    if (type === 'binaural') document.getElementById('ambBinaural')?.classList.add('active');
-    if (type === 'white') document.getElementById('ambWhite')?.classList.add('active');
-
-    if (type === 'rain' || type === 'white') {
-      const bufferSize = ctx.sampleRate * 2;
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      let lastOut = 0.0;
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        if (type === 'rain') {
-          lastOut = (lastOut + (0.02 * white)) / 1.02;
-          data[i] = lastOut * 3.5;
-        } else {
-          data[i] = white * 0.1;
-        }
-      }
-      const noise = ctx.createBufferSource();
-      noise.buffer = buffer;
-      noise.loop = true;
-      const gain = ctx.createGain();
-      gain.gain.value = type === 'rain' ? 0.2 : 0.08;
-      noise.connect(gain);
-      gain.connect(ctx.destination);
-      noise.start();
-      ambientSource = noise;
-      showToast(`Playing: ${type === 'rain' ? 'Rain' : 'White Noise'}`);
-    } else if (type === 'binaural') {
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      const gain = ctx.createGain();
-      gain.gain.value = 0.1;
-      osc1.frequency.value = 200;
-      osc2.frequency.value = 240;
-      const merger = ctx.createChannelMerger(2);
-      osc1.connect(merger, 0, 0);
-      osc2.connect(merger, 0, 1);
-      merger.connect(gain);
-      gain.connect(ctx.destination);
-      osc1.start();
-      osc2.start();
-      ambientSource = { stop: () => { osc1.stop(); osc2.stop(); } };
-      showToast("Playing: 40Hz Alpha Wave");
-    }
-  }
-
-  function stopAmbientSound() {
-    if (ambientSource) {
-      try { ambientSource.stop(); } catch(e) {}
-      ambientSource = null;
-    }
-    activeAmbient = null;
-    document.querySelectorAll('.ambient-chip').forEach(c => c.classList.remove('active'));
-  }
-
-  /* ================= 2. MOBILE TAB ROUTING ================= */
-  function switchMobileTab(tabId) {
-    triggerHaptic(20);
+  /* ================= 1. TAB NAVIGATION ================= */
+  function switchNav(tabId) {
     document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 
-    const targetTab = document.getElementById(tabId);
-    if (targetTab) targetTab.classList.add('active');
+    const tab = document.getElementById(tabId);
+    if (tab) tab.classList.add('active');
 
-    const clickedBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick')?.includes(tabId));
-    if (clickedBtn) clickedBtn.classList.add('active');
+    const btn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick')?.includes(tabId));
+    if (btn) btn.classList.add('active');
 
-    if (tabId === 'tab-progress') generateAnalytics();
+    if (tabId === 'tab-history') renderHeatmap();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /* ================= 3. PASSCODE LOCK & AUTH ================= */
-  const PORTAL_PASSCODE = "112233";
-
-  function checkPortalAuth() {
-    const isAuth = sessionStorage.getItem('elite_os_auth');
-    const overlay = document.getElementById('loginPortalOverlay');
-    if (isAuth === 'true') {
-      overlay.classList.add('unlocked');
-    } else {
-      overlay.classList.remove('unlocked');
-      const input = document.getElementById('passcodeInput');
-      input.value = '';
-    }
-  }
-
-  function verifyPasscode() {
-    const input = document.getElementById('passcodeInput');
-    const errorEl = document.getElementById('passcodeError');
-    if (input.value.trim() === PORTAL_PASSCODE) {
-      errorEl.innerText = '';
-      sessionStorage.setItem('elite_os_auth', 'true');
-      document.getElementById('loginPortalOverlay').classList.add('unlocked');
-      triggerHaptic([30, 50, 30]);
-      playSynthChime(880, 0.3);
-      if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 50 });
-      showToast("Access Granted. Winter Arc Active!");
-    } else {
-      errorEl.innerText = "INVALID PASSCODE";
-      triggerHaptic([100, 50, 100]);
-      input.value = '';
-    }
-  }
-
-  function appendPin(d) {
-    triggerHaptic(15);
-    const input = document.getElementById('passcodeInput');
-    if (input.value.length < 6) {
-      input.value += d;
-      if (input.value.length === 6) verifyPasscode();
-    }
-  }
-  function deletePin() {
-    triggerHaptic(15);
-    const input = document.getElementById('passcodeInput');
-    input.value = input.value.slice(0, -1);
-  }
-  function clearPin() {
-    triggerHaptic(15);
-    document.getElementById('passcodeInput').value = '';
-  }
-  function lockSystem() {
-    sessionStorage.removeItem('elite_os_auth');
-    checkPortalAuth();
-    showToast("Terminal Locked");
-  }
-  checkPortalAuth();
-
-  /* ================= 4. GAMIFIED XP, LEVEL & BOSS DAMAGE SYSTEM ================= */
-  let userXP = parseInt(localStorage.getItem('elite_user_xp')) || 280;
-  let currentStreak = parseInt(localStorage.getItem('arcStreak')) || 0;
-  let loggedDates = JSON.parse(localStorage.getItem('loggedDates')) || [];
-  let bossHP = parseInt(localStorage.getItem('elite_boss_hp')) || 100;
-
-  const RANKS = [
-    { name: "LVL 1 // COUCH SLOTH", min: 0, max: 100, avatar: "🦥" },
-    { name: "LVL 2 // DISCIPLINE RECRUIT", min: 100, max: 250, avatar: "🥷" },
-    { name: "LVL 3 // SHADOW MONK", min: 250, max: 500, avatar: "🐺" },
-    { name: "LVL 4 // CYBER CHAD", min: 500, max: 1000, avatar: "⚡" },
-    { name: "LVL 5 // 2027 ARCHITECT GOD", min: 1000, max: 2500, avatar: "👑" }
-  ];
-
-  function damageBoss(dmg = 15) {
-    bossHP = Math.max(bossHP - dmg, 0);
-    localStorage.setItem('elite_boss_hp', bossHP);
-    updateBossUI();
-    if (bossHP === 0) {
-      if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 80 });
-      showToast("💥 PROCRASTINATION DEMON DEFEATED TODAY! (+100 BONUS XP)");
-      addXP(100);
-    }
-  }
-
-  function updateBossUI() {
-    const textEl = document.getElementById('bossHpText');
-    const fillEl = document.getElementById('bossHpFill');
-    if (textEl) textEl.innerText = `HP: ${bossHP}/100`;
-    if (fillEl) fillEl.style.width = `${bossHP}%`;
-  }
-  updateBossUI();
-
-  function addXP(amount) {
-    userXP += amount;
-    localStorage.setItem('elite_user_xp', userXP);
-    damageBoss(Math.floor(amount / 2));
-    updateXpUI();
-    showToast(`+${amount} XP Gained! 🔥`);
-  }
-
-  function updateXpUI() {
-    const currentRank = RANKS.find(r => userXP >= r.min && userXP < r.max) || RANKS[RANKS.length - 1];
-    document.getElementById('userRankText').innerText = currentRank.name;
-    document.getElementById('userXpText').innerText = `${userXP} / ${currentRank.max} XP`;
-    const avatarEl = document.getElementById('userAvatar');
-    if (avatarEl) avatarEl.innerText = currentRank.avatar;
-
-    const pct = Math.min(((userXP - currentRank.min) / (currentRank.max - currentRank.min)) * 100, 100);
-    document.getElementById('xpBarFill').style.width = `${pct}%`;
-    const xpTotalEl = document.getElementById('totalXpDisplay');
-    if (xpTotalEl) xpTotalEl.innerText = userXP;
-  }
-  updateXpUI();
-
-  /* ================= 5. LAZY ARC VS BEAST MODE ================= */
-  let isLazyMode = localStorage.getItem('elite_lazy_mode') === 'true';
-
-  function toggleLazyMode() {
-    isLazyMode = document.getElementById('lazyModeToggle').checked;
-    localStorage.setItem('elite_lazy_mode', isLazyMode);
-    triggerHaptic(25);
-    applyModeConfig();
-  }
-
-  function applyModeConfig() {
-    const icon = document.getElementById('modeIcon');
-    const title = document.getElementById('modeTitle');
-    const toggle = document.getElementById('lazyModeToggle');
-    if (toggle) toggle.checked = isLazyMode;
-
-    if (isLazyMode) {
-      if (icon) icon.innerText = '🛋️';
-      if (title) title.innerText = 'LAZY ARC (MINIMUM DISCIPLINE)';
-      showToast("Lazy Emergency: Scaled micro-targets active!");
-    } else {
-      if (icon) icon.innerText = '⚡';
-      if (title) title.innerText = 'BEAST ARC MODE';
-    }
-  }
-  applyModeConfig();
-
-  /* ================= 6. DAILY PROTOCOLS & QUESTS ================= */
-  const HABIT_IDS = ['wa1', 'wa2', 'wa3', 'wa4', 'wa5', 'wa6', 'wa7'];
-  let viewingDate = new Date();
-
-  function getSystemDateKey(dt = new Date()) { return dt.toDateString(); }
-  function getDailyArchives() { return JSON.parse(localStorage.getItem('dailyArchives')) || {}; }
-  function saveDailyArchives(archives) { localStorage.setItem('dailyArchives', JSON.stringify(archives)); }
-
-  function renderActiveDayPage() {
+  /* ================= 2. HABITS & TODAY EXECUTION ================= */
+  function renderTodayUI() {
     const todayKey = getSystemDateKey(new Date());
     const selectedKey = getSystemDateKey(viewingDate);
     const isToday = selectedKey === todayKey;
 
-    document.getElementById('activeDayLabel').innerText = isToday ? `📅 Today: ${selectedKey}` : `📅 ${selectedKey}`;
-    document.getElementById('hudStreakBadge').innerText = `🔥 ${currentStreak} DAYS`;
-    const streakValEl = document.getElementById('streakDisplayVal');
-    if (streakValEl) streakValEl.innerText = currentStreak;
+    document.getElementById('activeDateLabel').innerText = isToday ? `Today (${selectedKey.split(' ').slice(1, 3).join(' ')})` : selectedKey;
+    document.getElementById('headerStreakBadge').innerText = `🔥 ${currentStreak} Day Streak`;
 
     const archives = getDailyArchives();
     const dayData = isToday ? null : (archives[selectedKey] || { habits: {}, customTasks: [] });
 
-    let doneCount = 0;
+    let completed = 0;
     HABIT_IDS.forEach(id => {
       const box = document.querySelector(`input[data-id="${id}"]`);
-      const row = document.getElementById('q-' + id);
+      const row = document.getElementById('h-' + id);
       if (box) {
-        const val = isToday ? (localStorage.getItem(id) === 'true') : Boolean(dayData?.habits?.[id]);
-        box.checked = val;
-        if (row) row.classList.toggle('completed', val);
-        if (val) doneCount++;
+        const checked = isToday ? (localStorage.getItem(id) === 'true') : Boolean(dayData?.habits?.[id]);
+        box.checked = checked;
+        if (row) row.classList.toggle('completed', checked);
+        if (checked) completed++;
       }
     });
 
-    document.getElementById('dailyProtocolScore').innerText = `${doneCount}/7 Daily Quests Done`;
+    const pct = Math.round((completed / HABIT_IDS.length) * 100);
+    document.getElementById('progressSummaryText').innerText = `${completed}/${HABIT_IDS.length} Completed (${pct}%)`;
+    document.getElementById('progressBarFill').style.width = `${pct}%`;
 
-    // Custom quests
-    const customListEl = document.getElementById('customQuestList');
+    // Render custom day tasks
+    const customList = document.getElementById('customHabitList');
     const customTasks = isToday ? JSON.parse(localStorage.getItem('todayCustomTasks') || '[]') : (dayData?.customTasks || []);
-    if (customListEl) {
+    if (customList) {
       if (customTasks.length === 0) {
-        customListEl.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 0.5rem;">No side quests added. Tap "+ Quest" above.</div>`;
+        customList.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-muted); padding: 4px;">No custom objectives added for today.</div>`;
       } else {
-        customListEl.innerHTML = customTasks.map(t => `
-          <div class="quest-item ${t.done ? 'completed' : ''}">
-            <div class="quest-left">
-              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleCustomQuest('${t.id}')">
-              <span class="quest-text">${t.text}</span>
+        customList.innerHTML = customTasks.map(t => `
+          <div class="habit-item ${t.done ? 'completed' : ''}">
+            <div class="habit-left">
+              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleCustomTask('${t.id}')">
+              <span>${t.text}</span>
             </div>
-            <button class="text-btn danger" style="padding: 2px 6px; font-size: 0.7rem;" onclick="deleteCustomQuest('${t.id}')">✕</button>
+            <button class="text-btn danger" style="padding: 2px 6px;" onclick="deleteCustomTask('${t.id}')">✕</button>
           </div>
         `).join('');
       }
     }
   }
 
-  document.querySelectorAll('#questList input[type="checkbox"]').forEach(box => {
+  document.querySelectorAll('#habitList input[type="checkbox"]').forEach(box => {
     box.addEventListener('change', () => {
-      triggerHaptic(30);
       const id = box.dataset.id;
       const todayKey = getSystemDateKey(new Date());
       const selectedKey = getSystemDateKey(viewingDate);
@@ -1865,399 +922,44 @@
         saveDailyArchives(archives);
       }
 
-      if (box.checked) {
-        addXP(40);
-        playSynthChime(659.25, 0.2);
-      }
-      renderActiveDayPage();
-      debouncePushToFirebase();
+      renderTodayUI();
+      debouncePush();
+      if (box.checked) showToast("Habit logged! Keep going.");
     });
   });
 
-  function navigateDay(off) {
-    triggerHaptic(15);
+  function navigateDay(offset) {
     const d = new Date(viewingDate);
-    d.setDate(d.getDate() + off);
+    d.setDate(d.getDate() + offset);
     viewingDate = d;
-    renderActiveDayPage();
+    renderTodayUI();
   }
 
-  function addNewDailyTask() {
-    const text = prompt("Enter new daily quest objective:");
+  function addNewCustomTask() {
+    const text = prompt("Enter custom objective for today:");
     if (!text || !text.trim()) return;
-    triggerHaptic(20);
     const list = JSON.parse(localStorage.getItem('todayCustomTasks') || '[]');
-    list.push({ id: 'q_' + Date.now(), text: text.trim(), done: false });
+    list.push({ id: 'ct_' + Date.now(), text: text.trim(), done: false });
     localStorage.setItem('todayCustomTasks', JSON.stringify(list));
-    renderActiveDayPage();
-    showToast("Side quest added.");
+    renderTodayUI();
+    showToast("Task added.");
   }
 
-  function toggleCustomQuest(id) {
-    triggerHaptic(25);
+  function toggleCustomTask(id) {
     let list = JSON.parse(localStorage.getItem('todayCustomTasks') || '[]');
     list = list.map(t => t.id === id ? { ...t, done: !t.done } : t);
     localStorage.setItem('todayCustomTasks', JSON.stringify(list));
-    renderActiveDayPage();
+    renderTodayUI();
   }
 
-  function deleteCustomQuest(id) {
-    triggerHaptic(20);
+  function deleteCustomTask(id) {
     let list = JSON.parse(localStorage.getItem('todayCustomTasks') || '[]');
     list = list.filter(t => t.id !== id);
     localStorage.setItem('todayCustomTasks', JSON.stringify(list));
-    renderActiveDayPage();
+    renderTodayUI();
   }
 
-  /* ================= 7. FAT BURN & GLOW UP LOGIC ================= */
-  let steps = parseInt(localStorage.getItem('todaySteps')) || 0;
-  let waterLiters = parseFloat(localStorage.getItem('todayWater')) || 0.0;
-
-  function updateBodyUI() {
-    document.getElementById('stepsDisplayVal').innerText = steps.toLocaleString();
-    document.getElementById('waterDisplayVal').innerText = `${waterLiters.toFixed(1)}L`;
-    
-    // Update water cups
-    const cups = Math.min(Math.floor(waterLiters / 0.5), 6);
-    document.querySelectorAll('.water-cup').forEach((cup, idx) => {
-      cup.classList.toggle('filled', idx < cups);
-    });
-  }
-  updateBodyUI();
-
-  function quickAddWater(ml = 500) {
-    triggerHaptic([20, 30]);
-    waterLiters = Math.min(waterLiters + ml / 1000, 5.0);
-    localStorage.setItem('todayWater', waterLiters);
-    updateBodyUI();
-    addXP(15);
-    showToast(`💧 Logged +${ml}ml Water! Total: ${waterLiters.toFixed(1)}L`);
-    if (waterLiters >= 3.0) {
-      const box = document.querySelector('input[data-id="wa1"]');
-      if (box && !box.checked) {
-        box.checked = true;
-        localStorage.setItem('wa1', 'true');
-        renderActiveDayPage();
-      }
-    }
-  }
-
-  function toggleWaterCup(idx) {
-    triggerHaptic(20);
-    waterLiters = (idx + 1) * 0.5;
-    localStorage.setItem('todayWater', waterLiters);
-    updateBodyUI();
-    showToast(`Hydration set to ${waterLiters.toFixed(1)}L`);
-  }
-
-  function quickAddSteps(count = 500) {
-    triggerHaptic(25);
-    steps += count;
-    localStorage.setItem('todaySteps', steps);
-    updateBodyUI();
-    addXP(20);
-    showToast(`🏃 +${count} Steps Logged! (${steps.toLocaleString()} total)`);
-    if (steps >= 10000) {
-      const box = document.querySelector('input[data-id="wa5"]');
-      if (box && !box.checked) {
-        box.checked = true;
-        localStorage.setItem('wa5', 'true');
-        renderActiveDayPage();
-        if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60 });
-      }
-    }
-  }
-
-  function quickWorkoutDone() {
-    triggerHaptic([30, 50]);
-    addXP(25);
-    showToast("💪 Pushup Session Logged! Beast Mode Active.");
-  }
-
-  function initPedometer() {
-    triggerHaptic(25);
-    if ('DeviceMotionEvent' in window) {
-      window.addEventListener('devicemotion', (e) => {
-        let acc = e.accelerationIncludingGravity || e.acceleration;
-        if (!acc) return;
-        let mag = Math.sqrt(acc.x*acc.x + acc.y*acc.y + acc.z*acc.z);
-        if (mag > 12) quickAddSteps(1);
-      });
-      document.getElementById('pedometerSensorsBtn').innerText = "Sensor Active";
-      showToast("Accelerometer linked.");
-    } else {
-      alert("Motion sensors not supported on this browser.");
-    }
-  }
-
-  /* Intermittent Fasting (16:8) */
-  let fastingInterval = null;
-  let fastingSeconds = 16 * 3600;
-  let isFasting = false;
-
-  function toggleFastingTimer() {
-    triggerHaptic(25);
-    const btn = document.getElementById('fastingActionBtn');
-    if (!isFasting) {
-      isFasting = true;
-      btn.innerText = "⏸️ Stop Fast";
-      btn.style.background = "linear-gradient(135deg, #f43f5e 0%, #be123c 100%)";
-      fastingInterval = setInterval(() => {
-        if (fastingSeconds > 0) {
-          fastingSeconds--;
-          const h = String(Math.floor(fastingSeconds / 3600)).padStart(2, '0');
-          const m = String(Math.floor((fastingSeconds % 3600) / 60)).padStart(2, '0');
-          const s = String(fastingSeconds % 60).padStart(2, '0');
-          document.getElementById('fastingTimerDisplay').innerText = `${h}:${m}:${s}`;
-        } else {
-          clearInterval(fastingInterval);
-          alert("16-Hour Fast Complete! Time for clean nutrient-dense meal.");
-        }
-      }, 1000);
-      showToast("16:8 Fasting Window Started!");
-    } else {
-      clearInterval(fastingInterval);
-      isFasting = false;
-      btn.innerText = "▶️ Start Fast (16h)";
-      btn.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
-      showToast("Fasting paused.");
-    }
-  }
-
-  function resetFastingTimer() {
-    clearInterval(fastingInterval);
-    isFasting = false;
-    fastingSeconds = 16 * 3600;
-    document.getElementById('fastingTimerDisplay').innerText = "16:00:00";
-    document.getElementById('fastingActionBtn').innerText = "▶️ Start Fast (16h)";
-  }
-
-  /* ================= 8. CHARISMA, SPEECH & SOCIAL COURAGE ================= */
-  const SPEAKING_TOPICS = [
-    "Explain what an API is in 60 seconds without using technical jargon.",
-    "Pitch your ultimate startup idea in 60 seconds as if talking to your best friend.",
-    "Why do most people fail their fitness goals? Break it down with extreme clarity.",
-    "Describe what you will achieve by December 31, 2026 with unshakeable confidence.",
-    "Explain how to stay disciplined on lazy days in 60 seconds."
-  ];
-  let topicIdx = 0;
-
-  function generateSpeakingPrompt() {
-    triggerHaptic(20);
-    topicIdx = (topicIdx + 1) % SPEAKING_TOPICS.length;
-    document.getElementById('speakingPromptText').innerText = `"${SPEAKING_TOPICS[topicIdx]}"`;
-  }
-
-  let speechTimer = null;
-  let speechSecs = 60;
-  function toggleSpeechTimer() {
-    triggerHaptic(30);
-    const btn = document.getElementById('speechTimerBtn');
-    if (!speechTimer) {
-      speechSecs = 60;
-      btn.innerText = "Stop Drill";
-      speechTimer = setInterval(() => {
-        speechSecs--;
-        document.getElementById('speechTimerDisplay').innerText = `${speechSecs}s`;
-        if (speechSecs <= 0) {
-          clearInterval(speechTimer);
-          speechTimer = null;
-          btn.innerText = "▶️ Start 60s Speech";
-          addXP(50);
-          playSynthChime(880, 0.4);
-          if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60 });
-          alert("Great job! 60s Speech Drill Completed (+50 XP).");
-        }
-      }, 1000);
-    } else {
-      clearInterval(speechTimer);
-      speechTimer = null;
-      btn.innerText = "▶️ Start 60s Speech";
-      document.getElementById('speechTimerDisplay').innerText = "60s";
-    }
-  }
-
-  // Social Courage Tallies
-  let socialCounts = JSON.parse(localStorage.getItem('socialCourageCounts')) || { eye_contact: 0, compliment: 0, spoke_up: 0, cold_dm: 0 };
-  function updateSocialUI() {
-    if (document.getElementById('tallyEyeContact')) document.getElementById('tallyEyeContact').innerText = socialCounts.eye_contact || 0;
-    if (document.getElementById('tallyCompliment')) document.getElementById('tallyCompliment').innerText = socialCounts.compliment || 0;
-    if (document.getElementById('tallySpokeUp')) document.getElementById('tallySpokeUp').innerText = socialCounts.spoke_up || 0;
-    if (document.getElementById('tallyColdDm')) document.getElementById('tallyColdDm').innerText = socialCounts.cold_dm || 0;
-  }
-  updateSocialUI();
-
-  function logSocialCourage(type) {
-    triggerHaptic([20, 30]);
-    socialCounts[type] = (socialCounts[type] || 0) + 1;
-    localStorage.setItem('socialCourageCounts', JSON.stringify(socialCounts));
-    updateSocialUI();
-    addXP(25);
-    showToast(`Charisma courage logged! (${type.replace('_', ' ').toUpperCase()})`);
-  }
-
-  /* 4-7-8 Box Breathing */
-  let breathTimer = null;
-  let breathRunning = false;
-
-  function startBoxBreathing() {
-    switchMobileTab('tab-charisma');
-    toggleBreathingExercise();
-  }
-
-  function toggleBreathingExercise() {
-    triggerHaptic(25);
-    const btn = document.getElementById('breathBtn');
-    const ball = document.getElementById('breathBall');
-    const text = document.getElementById('breathInstruction');
-
-    if (!breathRunning) {
-      breathRunning = true;
-      btn.innerText = "Stop Reset";
-      let phase = 0; // 0: Inhale, 1: Hold, 2: Exhale
-      const runCycle = () => {
-        if (!breathRunning) return;
-        if (phase === 0) {
-          text.innerText = "Inhale through nose... (4s)";
-          ball.classList.add('expand');
-          ball.classList.remove('contract');
-          phase = 1;
-          breathTimer = setTimeout(runCycle, 4000);
-        } else if (phase === 1) {
-          text.innerText = "Hold your breath... (7s)";
-          phase = 2;
-          breathTimer = setTimeout(runCycle, 7000);
-        } else {
-          text.innerText = "Exhale slowly through mouth... (8s)";
-          ball.classList.add('contract');
-          ball.classList.remove('expand');
-          phase = 0;
-          breathTimer = setTimeout(runCycle, 8000);
-        }
-      };
-      runCycle();
-    } else {
-      breathRunning = false;
-      clearTimeout(breathTimer);
-      btn.innerText = "Start 1-Min Reset";
-      text.innerText = "Nervous System Calibrated.";
-      ball.classList.remove('expand', 'contract');
-    }
-  }
-
-  /* ================= 9. DEEP WORK COCKPIT ================= */
-  let workInterval = null, elapsedSeconds = 0, isWorkPaused = false;
-
-  function toggleTimer() {
-    triggerHaptic(30);
-    const btn = document.getElementById('timerBtn');
-    const controls = document.getElementById('activeTimerControls');
-
-    if (!workInterval && !isWorkPaused) {
-      elapsedSeconds = 0;
-      workInterval = setInterval(() => {
-        elapsedSeconds++;
-        const timeStr = formatTime(elapsedSeconds);
-        document.getElementById('liveTimer').innerText = timeStr;
-      }, 1000);
-      btn.innerText = "End Session";
-      btn.className = "btn danger";
-      controls.style.display = "flex";
-      showToast("Deep work session active!");
-    } else {
-      clearInterval(workInterval);
-      workInterval = null;
-      if (elapsedSeconds > 10) {
-        addXP(Math.min(Math.floor(elapsedSeconds / 60) * 5 + 20, 150));
-        saveWorkSession(document.getElementById('timerPillar').value, elapsedSeconds);
-      }
-      resetWorkUI();
-    }
-  }
-
-  function togglePauseTimer() {
-    triggerHaptic(20);
-    const pauseBtn = document.getElementById('pauseTimerBtn');
-    if (!isWorkPaused) {
-      clearInterval(workInterval);
-      workInterval = null;
-      isWorkPaused = true;
-      pauseBtn.innerText = "▶️ Resume";
-      showToast("Session paused ⏸️");
-    } else {
-      isWorkPaused = false;
-      pauseBtn.innerText = "⏸️ Pause";
-      workInterval = setInterval(() => {
-        elapsedSeconds++;
-        document.getElementById('liveTimer').innerText = formatTime(elapsedSeconds);
-      }, 1000);
-      showToast("Session resumed ▶️");
-    }
-  }
-
-  function cancelTimer() {
-    triggerHaptic(20);
-    clearInterval(workInterval);
-    workInterval = null;
-    isWorkPaused = false;
-    resetWorkUI();
-    showToast("Session discarded.");
-  }
-
-  function resetWorkUI() {
-    document.getElementById('liveTimer').innerText = "00:00:00";
-    document.getElementById('timerBtn').innerText = "⚡ Initialize Deep Work";
-    document.getElementById('timerBtn').className = "btn";
-    document.getElementById('activeTimerControls').style.display = "none";
-  }
-
-  function formatTime(secs) {
-    const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-    const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
-    const s = String(secs % 60).padStart(2, '0');
-    return `${h}:${m}:${s}`;
-  }
-
-  function saveWorkSession(task, secs) {
-    let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
-    logs.unshift({ id: 'w_' + Date.now(), task: task, seconds: secs, date: getSystemDateKey(), timeStr: formatTime(secs) });
-    localStorage.setItem('enggLogs', JSON.stringify(logs));
-    renderWorkLogs();
-    debouncePushToFirebase();
-  }
-
-  function renderWorkLogs() {
-    const list = document.getElementById('workLogList');
-    const logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
-    if (!list) return;
-    if (logs.length === 0) {
-      list.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 1rem;">No focus sessions logged today yet.</div>`;
-      return;
-    }
-    list.innerHTML = logs.slice(0, 10).map(l => `
-      <div class="quest-item">
-        <div>
-          <div style="font-weight: 700; color: #fff;">${l.task}</div>
-          <div style="font-size: 0.7rem; color: var(--text-muted);">${l.date}</div>
-        </div>
-        <span class="quest-xp-tag">⏱️ ${l.timeStr}</span>
-      </div>
-    `).join('');
-  }
-  renderWorkLogs();
-
-  /* ================= 10. EOD STANDUP COMMIT ================= */
-  function initiateStandup() {
-    triggerHaptic(30);
-    document.getElementById('standupModal').style.display = 'flex';
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-
-  function submitStandup() {
-    triggerHaptic([40, 60, 40]);
+  function commitEODStandup() {
     const today = getSystemDateKey();
     if (!loggedDates.includes(today)) {
       currentStreak++;
@@ -2265,15 +967,385 @@
       localStorage.setItem('arcStreak', currentStreak);
       localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
     }
-    addXP(100);
-    closeModal('standupModal');
-    renderActiveDayPage();
-    if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 70 });
+    const note = document.getElementById('dailyWinNote').value.trim();
+    if (note) {
+      let notes = JSON.parse(localStorage.getItem('dailyNotes') || '[]');
+      notes.unshift({ date: today, text: note });
+      localStorage.setItem('dailyNotes', JSON.stringify(notes));
+    }
+    renderTodayUI();
+    debouncePush();
+    if (typeof confetti === 'function') confetti({ particleCount: 70, spread: 60 });
     showToast(`🏆 Day Committed! Streak: ${currentStreak} Days.`);
-    debouncePushToFirebase();
   }
 
-  /* ================= 11. FIREBASE CLOUD REALTIME SYNC ================= */
+  /* ================= 3. FITNESS & DIET ================= */
+  function updateFitnessUI() {
+    document.getElementById('stepCountDisplay').innerText = steps.toLocaleString();
+    document.getElementById('waterAmountDisplay').innerText = `${waterLiters.toFixed(1)}L`;
+
+    const cups = Math.min(Math.floor(waterLiters / 0.5), 6);
+    document.querySelectorAll('.water-cup-btn').forEach((c, idx) => {
+      c.classList.toggle('filled', idx < cups);
+    });
+  }
+
+  function quickAddWater(ml = 500) {
+    waterLiters = Math.min(waterLiters + ml / 1000, 4.0);
+    localStorage.setItem('todayWater', waterLiters);
+    updateFitnessUI();
+    showToast(`💧 ${waterLiters.toFixed(1)}L Water Logged`);
+    if (waterLiters >= 3.0) {
+      const b = document.querySelector('input[data-id="wa1"]');
+      if (b && !b.checked) { b.checked = true; localStorage.setItem('wa1', 'true'); renderTodayUI(); }
+    }
+  }
+
+  function setWaterLevel(l) {
+    waterLiters = l;
+    localStorage.setItem('todayWater', waterLiters);
+    updateFitnessUI();
+    showToast(`Hydration: ${l}L`);
+  }
+
+  function addSteps(amt = 500) {
+    steps += amt;
+    localStorage.setItem('todaySteps', steps);
+    updateFitnessUI();
+    showToast(`🏃 ${steps.toLocaleString()} Steps`);
+    if (steps >= 10000) {
+      const b = document.querySelector('input[data-id="wa5"]');
+      if (b && !b.checked) { b.checked = true; localStorage.setItem('wa5', 'true'); renderTodayUI(); }
+    }
+  }
+
+  function initPedometer() {
+    if ('DeviceMotionEvent' in window) {
+      window.addEventListener('devicemotion', (e) => {
+        let acc = e.accelerationIncludingGravity || e.acceleration;
+        if (!acc) return;
+        let mag = Math.sqrt(acc.x*acc.x + acc.y*acc.y + acc.z*acc.z);
+        if (mag > 12.5) addSteps(1);
+      });
+      showToast("Step Sensor Linked.");
+    } else {
+      alert("DeviceMotionEvent not supported on this browser.");
+    }
+  }
+
+  /* 16:8 Fasting Timer */
+  let fastInterval = null, fastSecs = 16 * 3600, isFasting = false;
+  function toggleFast() {
+    const btn = document.getElementById('fastBtn');
+    if (!isFasting) {
+      isFasting = true;
+      btn.innerText = "⏸️ Stop Fast";
+      btn.style.background = "var(--danger)";
+      btn.style.color = "#fff";
+      fastInterval = setInterval(() => {
+        if (fastSecs > 0) {
+          fastSecs--;
+          const h = String(Math.floor(fastSecs / 3600)).padStart(2, '0');
+          const m = String(Math.floor((fastSecs % 3600) / 60)).padStart(2, '0');
+          const s = String(fastSecs % 60).padStart(2, '0');
+          document.getElementById('fastTimerDisplay').innerText = `${h}:${m}:${s}`;
+        }
+      }, 1000);
+      showToast("Fasting window started.");
+    } else {
+      clearInterval(fastInterval);
+      isFasting = false;
+      btn.innerText = "▶️ Start Fasting Window";
+      btn.style.background = "var(--warning)";
+      btn.style.color = "#090d16";
+      showToast("Fasting paused.");
+    }
+  }
+
+  function resetFast() {
+    clearInterval(fastInterval);
+    isFasting = false;
+    fastSecs = 16 * 3600;
+    document.getElementById('fastTimerDisplay').innerText = "16:00:00";
+    document.getElementById('fastBtn').innerText = "▶️ Start Fasting Window";
+  }
+
+  /* ================= 4. SPEECH & MIND ================= */
+  const TOPICS = [
+    "Explain what an API is in 60 seconds without using technical jargon.",
+    "Pitch your startup or app idea in 60 seconds to an investor.",
+    "Why is discipline superior to motivation? Break it down clearly.",
+    "Describe your biggest tech breakthrough and how it works.",
+    "Explain how to stay calm and articulate under social pressure."
+  ];
+  let topicIdx = 0;
+  function nextSpeechTopic() {
+    topicIdx = (topicIdx + 1) % TOPICS.length;
+    document.getElementById('speechTopicBox').innerText = `"${TOPICS[topicIdx]}"`;
+  }
+
+  let speechTimer = null, speechSecs = 60;
+  function toggleSpeechTimer() {
+    const btn = document.getElementById('speechBtn');
+    if (!speechTimer) {
+      speechSecs = 60;
+      btn.innerText = "Stop Speech Drill";
+      btn.style.background = "var(--danger)";
+      btn.style.color = "#fff";
+      speechTimer = setInterval(() => {
+        speechSecs--;
+        document.getElementById('speechTimerDisplay').innerText = `${speechSecs}s`;
+        if (speechSecs <= 0) {
+          clearInterval(speechTimer);
+          speechTimer = null;
+          btn.innerText = "▶️ Start 60s Speech Drill";
+          btn.style.background = "var(--cyan)";
+          btn.style.color = "#090d16";
+          const b = document.querySelector('input[data-id="wa7"]');
+          if (b && !b.checked) { b.checked = true; localStorage.setItem('wa7', 'true'); renderTodayUI(); }
+          alert("60s Speech Complete! Clarity and articulation logged.");
+        }
+      }, 1000);
+    } else {
+      clearInterval(speechTimer);
+      speechTimer = null;
+      btn.innerText = "▶️ Start 60s Speech Drill";
+      btn.style.background = "var(--cyan)";
+      btn.style.color = "#090d16";
+      document.getElementById('speechTimerDisplay').innerText = "60s";
+    }
+  }
+
+  let breathTimer = null, isBreathing = false;
+  function toggleBreathing() {
+    const btn = document.getElementById('breathBtn');
+    const text = document.getElementById('breathInstruction');
+    if (!isBreathing) {
+      isBreathing = true;
+      btn.innerText = "Stop Breathwork";
+      let phase = 0;
+      const cycle = () => {
+        if (!isBreathing) return;
+        if (phase === 0) { text.innerText = "Inhale slowly through nose... (4s)"; phase = 1; breathTimer = setTimeout(cycle, 4000); }
+        else if (phase === 1) { text.innerText = "Hold your breath... (7s)"; phase = 2; breathTimer = setTimeout(cycle, 7000); }
+        else { text.innerText = "Exhale slowly through mouth... (8s)"; phase = 0; breathTimer = setTimeout(cycle, 8000); }
+      };
+      cycle();
+    } else {
+      isBreathing = false;
+      clearTimeout(breathTimer);
+      btn.innerText = "Start 1-Min Breathwork";
+      text.innerText = "Inhale 4s • Hold 7s • Exhale 8s";
+    }
+  }
+
+  /* ================= 5. DEEP WORK TIMER & AMBIENT AUDIO ================= */
+  let focusInterval = null, focusElapsed = 0, focusTargetMinutes = 25, isFocusPaused = false;
+
+  function setPreset(mins) {
+    if (focusInterval) return;
+    focusTargetMinutes = mins;
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('liveTimerDisplay').innerText = mins === 0 ? "00:00" : `${String(mins).padStart(2, '0')}:00`;
+  }
+
+  function toggleFocusTimer() {
+    const btn = document.getElementById('focusBtn');
+    const controls = document.getElementById('activeControlsRow');
+
+    if (!focusInterval && !isFocusPaused) {
+      focusElapsed = 0;
+      let targetSecs = focusTargetMinutes * 60;
+      focusInterval = setInterval(() => {
+        focusElapsed++;
+        if (focusTargetMinutes > 0) {
+          let rem = Math.max(targetSecs - focusElapsed, 0);
+          let m = String(Math.floor(rem / 60)).padStart(2, '0');
+          let s = String(rem % 60).padStart(2, '0');
+          document.getElementById('liveTimerDisplay').innerText = `${m}:${s}`;
+          if (rem <= 0) {
+            clearInterval(focusInterval);
+            saveFocusLog(document.getElementById('focusPillarSelect').value, focusElapsed);
+            resetFocusUI();
+            alert("Focus Sprint Complete!");
+          }
+        } else {
+          let m = String(Math.floor(focusElapsed / 60)).padStart(2, '0');
+          let s = String(focusElapsed % 60).padStart(2, '0');
+          document.getElementById('liveTimerDisplay').innerText = `${m}:${s}`;
+        }
+      }, 1000);
+      btn.innerText = "End & Log Session";
+      btn.style.background = "var(--danger)";
+      btn.style.color = "#fff";
+      controls.style.display = "flex";
+      showToast("Deep work session running.");
+    } else {
+      clearInterval(focusInterval);
+      if (focusElapsed > 10) saveFocusLog(document.getElementById('focusPillarSelect').value, focusElapsed);
+      resetFocusUI();
+    }
+  }
+
+  function togglePauseFocus() {
+    const btn = document.getElementById('pauseBtn');
+    if (!isFocusPaused) {
+      clearInterval(focusInterval);
+      focusInterval = null;
+      isFocusPaused = true;
+      btn.innerText = "▶️ Resume";
+      showToast("Focus paused.");
+    } else {
+      isFocusPaused = false;
+      btn.innerText = "⏸️ Pause";
+      let targetSecs = focusTargetMinutes * 60;
+      focusInterval = setInterval(() => {
+        focusElapsed++;
+        if (focusTargetMinutes > 0) {
+          let rem = Math.max(targetSecs - focusElapsed, 0);
+          let m = String(Math.floor(rem / 60)).padStart(2, '0');
+          let s = String(rem % 60).padStart(2, '0');
+          document.getElementById('liveTimerDisplay').innerText = `${m}:${s}`;
+        } else {
+          let m = String(Math.floor(focusElapsed / 60)).padStart(2, '0');
+          let s = String(focusElapsed % 60).padStart(2, '0');
+          document.getElementById('liveTimerDisplay').innerText = `${m}:${s}`;
+        }
+      }, 1000);
+    }
+  }
+
+  function cancelFocus() {
+    clearInterval(focusInterval);
+    resetFocusUI();
+    showToast("Session cancelled.");
+  }
+
+  function resetFocusUI() {
+    focusInterval = null;
+    isFocusPaused = false;
+    document.getElementById('focusBtn').innerText = "⚡ Start Focus Session";
+    document.getElementById('focusBtn').style.background = "var(--accent)";
+    document.getElementById('focusBtn').style.color = "#090d16";
+    document.getElementById('activeControlsRow').style.display = "none";
+    document.getElementById('liveTimerDisplay').innerText = focusTargetMinutes === 0 ? "00:00" : `${String(focusTargetMinutes).padStart(2, '0')}:00`;
+  }
+
+  function saveFocusLog(task, secs) {
+    let logs = JSON.parse(localStorage.getItem('enggLogs') || '[]');
+    logs.unshift({ id: 'w_' + Date.now(), task: task, seconds: secs, date: getSystemDateKey(), timeStr: `${Math.floor(secs/60)}m ${secs%60}s` });
+    localStorage.setItem('enggLogs', JSON.stringify(logs));
+    renderFocusLogs();
+    debouncePush();
+  }
+
+  function renderFocusLogs() {
+    const list = document.getElementById('focusLogsList');
+    const logs = JSON.parse(localStorage.getItem('enggLogs') || '[]');
+    if (!list) return;
+    const totalSecs = logs.reduce((sum, l) => sum + (l.seconds || 0), 0);
+    document.getElementById('todayTotalFocus').innerText = `${(totalSecs / 3600).toFixed(1)}h logged`;
+
+    if (logs.length === 0) {
+      list.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 0.5rem;">No focus sessions logged yet.</div>`;
+      return;
+    }
+    list.innerHTML = logs.slice(0, 8).map(l => `
+      <div class="habit-item">
+        <div>
+          <div style="font-weight: 600;">${l.task}</div>
+          <div style="font-size: 0.68rem; color: var(--text-muted);">${l.date}</div>
+        </div>
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); font-weight: 700;">${l.timeStr}</span>
+      </div>
+    `).join('');
+  }
+
+  /* Ambient Web Audio */
+  let audioCtx = null, activeAudio = null, audioNode = null;
+  function toggleSound(type) {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    if (activeAudio === type) {
+      if (audioNode) { try { audioNode.stop(); } catch(e) {} }
+      activeAudio = null;
+      document.querySelectorAll('#soundRain, #soundAlpha, #soundWhite').forEach(b => b.classList.remove('success'));
+      showToast("Audio stopped");
+      return;
+    }
+
+    if (audioNode) { try { audioNode.stop(); } catch(e) {} }
+    activeAudio = type;
+    document.querySelectorAll('#soundRain, #soundAlpha, #soundWhite').forEach(b => b.classList.remove('success'));
+    if (type === 'rain') document.getElementById('soundRain').classList.add('success');
+    if (type === 'alpha') document.getElementById('soundAlpha').classList.add('success');
+    if (type === 'white') document.getElementById('soundWhite').classList.add('success');
+
+    if (type === 'rain' || type === 'white') {
+      const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let last = 0.0;
+      for (let i = 0; i < data.length; i++) {
+        const white = Math.random() * 2 - 1;
+        if (type === 'rain') { last = (last + 0.02 * white) / 1.02; data[i] = last * 3.5; }
+        else { data[i] = white * 0.08; }
+      }
+      const src = audioCtx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      const gain = audioCtx.createGain();
+      gain.gain.value = type === 'rain' ? 0.2 : 0.06;
+      src.connect(gain);
+      gain.connect(audioCtx.destination);
+      src.start();
+      audioNode = src;
+      showToast(`Playing ${type === 'rain' ? 'Rain' : 'Noise'}`);
+    } else if (type === 'alpha') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.frequency.value = 200;
+      gain.gain.value = 0.08;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      audioNode = osc;
+      showToast("Playing 40Hz Alpha Frequency");
+    }
+  }
+
+  /* ================= 6. HISTORY, HEATMAP & BACKUP ================= */
+  function renderHeatmap() {
+    const grid = document.getElementById('heatmapGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const start = new Date('2026-09-01T00:00:00');
+    const today = new Date();
+    document.getElementById('heatmapCommitsCount').innerText = `${loggedDates.length} Days Active`;
+
+    for (let i = 0; i < 120; i++) {
+      let d = new Date(start);
+      d.setDate(d.getDate() + i);
+      let dateStr = d.toDateString();
+      let active = loggedDates.includes(dateStr);
+      let future = d > today;
+      grid.innerHTML += `<div class="heat-box ${active ? 'active' : ''}" style="${future ? 'opacity: 0.15;' : ''}" title="${dateStr}"></div>`;
+    }
+  }
+
+  function exportJSONBackup() {
+    const data = JSON.stringify(localStorage, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Winter_Arc_Backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    showToast("JSON Backup downloaded.");
+  }
+
+  /* ================= 7. FIREBASE REALTIME SYNC ================= */
   const firebaseConfig = {
     apiKey: "AIzaSyAy6gYYSEfHknla-34582enmEBNldrVZ48",
     authDomain: "winter-arc-ae25d.firebaseapp.com",
@@ -2284,7 +1356,7 @@
     appId: "1:333346808568:web:7af51c379e8bd27e90510d"
   };
 
-  let rtdb = null, syncDebounce = null;
+  let rtdb = null, pushTimer = null;
   try {
     if (typeof firebase !== 'undefined') {
       firebase.initializeApp(firebaseConfig);
@@ -2292,89 +1364,52 @@
       firebase.auth().signInAnonymously().catch(e => console.warn(e));
 
       rtdb.ref('.info/connected').on('value', snap => {
-        const badge = document.getElementById('cloudStatusBadge');
-        if (badge) badge.innerText = snap.val() === true ? "Cloud Online ✔" : "Offline";
+        const lbl = document.getElementById('cloudStatusLabel');
+        if (lbl) lbl.innerText = snap.val() === true ? "Cloud Online ✔" : "Offline";
       });
 
-      rtdb.ref('winter_arc_os/mobile_state').on('value', snap => {
+      rtdb.ref('winter_arc_os/simple_state').on('value', snap => {
         const d = snap.val();
         if (d) {
           if (d.todaySteps !== undefined) { steps = d.todaySteps; localStorage.setItem('todaySteps', steps); }
           if (d.todayWater !== undefined) { waterLiters = d.todayWater; localStorage.setItem('todayWater', waterLiters); }
           if (d.arcStreak !== undefined) { currentStreak = d.arcStreak; localStorage.setItem('arcStreak', currentStreak); }
-          if (d.userXP !== undefined) { userXP = d.userXP; localStorage.setItem('elite_user_xp', userXP); }
-          updateBodyUI();
-          updateXpUI();
-          renderActiveDayPage();
+          updateFitnessUI();
+          renderTodayUI();
         }
       });
     }
   } catch(e) {}
 
-  function pushToFirebase(manual = false) {
+  function pushToCloud(manual = false) {
     if (!rtdb) return;
     const payload = {
       todaySteps: steps,
       todayWater: waterLiters,
       arcStreak: currentStreak,
-      userXP: userXP,
       loggedDates: loggedDates,
-      enggLogs: JSON.parse(localStorage.getItem('enggLogs')) || [],
+      enggLogs: JSON.parse(localStorage.getItem('enggLogs') || '[]'),
       dailyArchives: getDailyArchives(),
       timestamp: Date.now()
     };
-    rtdb.ref('winter_arc_os/mobile_state').set(payload).then(() => {
+    rtdb.ref('winter_arc_os/simple_state').set(payload).then(() => {
       if (manual) showToast("Backed up to Firebase Cloud! ☁️");
     });
   }
 
-  function debouncePushToFirebase() {
-    clearTimeout(syncDebounce);
-    syncDebounce = setTimeout(() => pushToFirebase(false), 1500);
+  function debouncePush() {
+    clearTimeout(pushTimer);
+    pushTimer = setTimeout(() => pushToCloud(false), 1200);
   }
 
-  function exportData(fmt) {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage, null, 2));
-    const a = document.createElement('a');
-    a.href = dataStr;
-    a.download = `Winter_Arc_Mobile_Backup_${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    showToast("Backup saved.");
+  function manualSync() {
+    pushToCloud(true);
   }
 
-  /* ================= 12. TELEMETRY HEATMAP ================= */
-  function generateAnalytics() {
-    const grid = document.getElementById('heatmapGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    const start = new Date('2026-09-01T00:00:00');
-    const today = new Date();
-    for (let i = 0; i < 122; i++) {
-      let d = new Date(start);
-      d.setDate(d.getDate() + i);
-      let dateStr = d.toDateString();
-      let isLogged = loggedDates.includes(dateStr);
-      let isFuture = d > today;
-      grid.innerHTML += `<div class="heat-box ${isLogged ? 'active' : ''}" style="${isFuture ? 'opacity: 0.15;' : ''}" title="${dateStr}"></div>`;
-    }
-  }
-
-  function showToast(msg) {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `<span>⚡</span> <span>${msg}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => {
-      toast.style.transition = 'opacity 0.3s, transform 0.3s';
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(-10px)';
-      setTimeout(() => toast.remove(), 300);
-    }, 2500);
-  }
-
-  renderActiveDayPage();
+  // Boot Setup
+  renderTodayUI();
+  updateFitnessUI();
+  renderFocusLogs();
 </script>
 </body>
 </html>
