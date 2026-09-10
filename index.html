@@ -1,39 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="emerald">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>2027 Architect | Elite OS</title>
+<title>Winter Arc 2026 // Elite Architect OS</title>
 
-<!-- Firebase SDKs (Compat version for broad browser & file:// protocol support) -->
+<!-- Modern 2026 Typography (Google Fonts) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Canvas Confetti & Icons (Lucide) -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<!-- Firebase SDKs (Compat version for offline & cloud persistence) -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 
 <style>
+  /* ================= 2026 HYPER-OS DESIGN SYSTEM ================= */
   :root {
-    --bg: #020617; --surface: #0f172a; --surface-border: #1e293b;
-    --accent: #10b981; --accent-glow: rgba(16, 185, 129, 0.3);
-    --text-main: #f8fafc; --text-muted: #94a3b8; --danger: #ef4444; --warning: #f59e0b;
-    --info: #3b82f6; --kanban-bg: rgba(0,0,0,0.2);
+    /* Emerald Cyber (Default) */
+    --bg-base: #030712;
+    --bg-radial: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, rgba(3, 7, 18, 0.95) 70%);
+    --surface-1: rgba(15, 23, 42, 0.75);
+    --surface-2: rgba(30, 41, 59, 0.65);
+    --surface-elevated: rgba(30, 41, 59, 0.9);
+    --surface-border: rgba(255, 255, 255, 0.08);
+    --surface-border-hover: rgba(16, 185, 129, 0.4);
+    
+    --accent: #10b981;
+    --accent-light: #34d399;
+    --accent-glow: rgba(16, 185, 129, 0.35);
+    --accent-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --accent-subtle: rgba(16, 185, 129, 0.12);
+    
+    --secondary: #06b6d4;
+    --secondary-glow: rgba(6, 182, 212, 0.3);
+    
+    --danger: #f43f5e;
+    --danger-glow: rgba(244, 63, 94, 0.35);
+    --warning: #f59e0b;
+    --warning-glow: rgba(245, 158, 11, 0.35);
+    --info: #3b82f6;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-highlight: #ffffff;
+    
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Outfit', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    
+    --glass-blur: blur(20px);
+    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+    --shadow-glow: 0 0 25px var(--accent-glow);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-  body { background: var(--bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 1rem; padding-top: 1.5rem; line-height: 1.5; min-height: 100vh; overflow-x: hidden;}
+  /* Arctic Theme */
+  [data-theme="arctic"] {
+    --bg-base: #030a16;
+    --bg-radial: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.18) 0%, rgba(3, 10, 22, 0.98) 70%);
+    --accent: #38bdf8;
+    --accent-light: #7dd3fc;
+    --accent-glow: rgba(56, 189, 248, 0.4);
+    --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+    --accent-subtle: rgba(56, 189, 248, 0.12);
+    --surface-border-hover: rgba(56, 189, 248, 0.4);
+  }
 
-  /* Security Portal Overlay */
+  /* Neon Violet Synth Theme */
+  [data-theme="violet"] {
+    --bg-base: #090314;
+    --bg-radial: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.2) 0%, rgba(9, 3, 20, 0.98) 70%);
+    --accent: #c084fc;
+    --accent-light: #e879f9;
+    --accent-glow: rgba(192, 132, 252, 0.45);
+    --accent-gradient: linear-gradient(135deg, #c084fc 0%, #9333ea 100%);
+    --accent-subtle: rgba(192, 132, 252, 0.14);
+    --surface-border-hover: rgba(192, 132, 252, 0.4);
+  }
+
+  /* Solar Ember Theme */
+  [data-theme="ember"] {
+    --bg-base: #110503;
+    --bg-radial: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.2) 0%, rgba(17, 5, 3, 0.98) 70%);
+    --accent: #f97316;
+    --accent-light: #fb923c;
+    --accent-glow: rgba(249, 115, 22, 0.45);
+    --accent-gradient: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+    --accent-subtle: rgba(249, 115, 22, 0.14);
+    --surface-border-hover: rgba(249, 115, 22, 0.4);
+  }
+
+  /* Global Reset & Base Setup */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    background-image: var(--bg-radial);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 1rem 3rem 1rem;
+    overflow-x: hidden;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Ambient Particle & Grid Canvas */
+  #ambientCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.55;
+  }
+
+  /* Layout Container */
+  .app-container {
+    width: 100%;
+    max-width: 1080px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ================= 2026 SECURITY PORTAL ================= */
   #loginPortalOverlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     z-index: 99999;
-    background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+    background: radial-gradient(circle at 50% 30%, rgba(15, 23, 42, 0.96) 0%, #030712 100%);
+    backdrop-filter: blur(28px);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    backdrop-filter: blur(20px);
-    transition: opacity 0.4s ease, visibility 0.4s ease;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s ease;
   }
+
   #loginPortalOverlay.unlocked {
     opacity: 0;
     visibility: hidden;
@@ -41,287 +173,1381 @@
   }
 
   .login-card {
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(15, 23, 42, 0.85);
     border: 1px solid var(--surface-border);
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(16, 185, 129, 0.15);
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
+    backdrop-filter: var(--glass-blur);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px var(--accent-glow);
+    padding: 2.75rem 2rem;
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     overflow: hidden;
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
   .login-card::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--info), var(--accent), var(--info));
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent-gradient);
+    box-shadow: 0 0 12px var(--accent);
   }
-  .login-icon-wrap {
-    width: 64px;
-    height: 64px;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 50%;
-    display: flex;
+
+  .login-badge {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
+    gap: 6px;
+    background: var(--accent-subtle);
+    border: 1px solid var(--surface-border-hover);
+    color: var(--accent-light);
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
     margin-bottom: 1.25rem;
-    box-shadow: 0 0 20px var(--accent-glow);
-  }
-  .login-title {
-    font-size: 1.2rem;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    color: var(--text-main);
+    letter-spacing: 1px;
     text-transform: uppercase;
   }
-  .login-subtitle {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-    margin-bottom: 1.5rem;
+
+  .login-title {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-highlight);
   }
+
+  .login-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    margin-bottom: 1.75rem;
+  }
+
+  .passcode-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0.75rem;
+  }
+
   .passcode-input {
     width: 100%;
     text-align: center;
-    font-size: 1.8rem;
-    letter-spacing: 10px;
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    letter-spacing: 12px;
     font-weight: 800;
-    padding: 0.8rem;
-    background: #020617;
-    border: 2px solid var(--surface-border);
-    border-radius: 12px;
+    padding: 0.9rem;
+    background: rgba(3, 7, 18, 0.8);
+    border: 1.5px solid var(--surface-border);
+    border-radius: var(--radius-md);
     color: var(--accent);
     outline: none;
-    transition: all 0.2s;
-    margin-bottom: 1rem;
+    transition: all 0.25s ease;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
   }
+
   .passcode-input:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 15px var(--accent-glow);
+    box-shadow: 0 0 20px var(--accent-glow), inset 0 2px 8px rgba(0, 0, 0, 0.5);
   }
+
   .passcode-error {
     color: var(--danger);
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    min-height: 18px;
-    margin-bottom: 1rem;
+    min-height: 20px;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
   }
+
   .keypad-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.6rem;
+    gap: 0.65rem;
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
+
   .key-btn {
-    background: #1e293b;
+    background: rgba(30, 41, 59, 0.6);
     border: 1px solid var(--surface-border);
-    color: var(--text-main);
-    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
     font-weight: 700;
-    padding: 0.85rem 0;
-    border-radius: 10px;
+    padding: 0.9rem 0;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
+    backdrop-filter: blur(10px);
   }
+
   .key-btn:hover {
-    background: #27354a;
-    border-color: var(--accent);
-    transform: scale(1.03);
+    background: rgba(51, 65, 85, 0.8);
+    border-color: var(--surface-border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
+
   .key-btn:active {
     transform: scale(0.95);
     background: var(--accent);
-    color: #000;
+    color: #030712;
   }
+
   .shake-anim {
     animation: shake 0.4s ease-in-out;
   }
+
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-8px); }
-    40%, 80% { transform: translateX(8px); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
   }
 
-  /* Top Navigation & Brand Header */
-  .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1000px; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
-  .brand-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-  .brand-sub { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
-  
-  .header-actions { display: flex; align-items: center; gap: 8px; }
-
-  .cloud-badge { 
-    display: inline-flex; align-items: center; gap: 8px; background: #0f172a; border: 1px solid var(--surface-border); 
-    padding: 0.4rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); 
-    cursor: pointer; transition: all 0.2s ease; user-select: none;
+  /* ================= TOP NAVIGATION BAR ================= */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: var(--surface-1);
+    border: 1px solid var(--surface-border);
+    backdrop-filter: var(--glass-blur);
+    padding: 0.85rem 1.25rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
   }
-  .cloud-badge:hover { border-color: var(--accent); color: var(--text-main); }
-  
-  .lock-btn {
-    display: inline-flex; align-items: center; gap: 5px; background: #0f172a; border: 1px solid var(--surface-border);
-    padding: 0.4rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
-    cursor: pointer; transition: all 0.2s ease;
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .lock-btn:hover { border-color: var(--danger); color: var(--danger); }
 
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; transition: all 0.3s; }
-  .status-dot.online { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
-  .status-dot.syncing { background: var(--warning); animation: pulse 1s infinite; }
-  .status-dot.offline { background: #64748b; }
-  .status-dot.error { background: var(--danger); }
-  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
+  .brand-logo-glow {
+    width: 42px;
+    height: 42px;
+    background: var(--accent-subtle);
+    border: 1px solid var(--surface-border-hover);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    box-shadow: var(--shadow-glow);
+    transition: transform 0.3s ease;
+  }
 
-  /* Layout & Tabs */
-  .nav-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: var(--surface); padding: 0.5rem; border-radius: 12px; border: 1px solid var(--surface-border); width: 100%; max-width: 1000px; overflow-x: auto; scrollbar-width: none;}
-  .nav-tab { flex: 1; padding: 0.75rem; background: transparent; border: none; color: var(--text-muted); font-weight: 600; cursor: pointer; border-radius: 8px; transition: 0.2s; white-space: nowrap; font-size: 0.85rem;}
-  .nav-tab.active { background: #1e293b; color: var(--accent); }
-  .view-section { display: none; width: 100%; max-width: 1000px; grid-template-columns: 1fr; gap: 1.5rem; }
-  .view-section.active { display: grid; }
-  @media (min-width: 768px) { .view-section.active { grid-template-columns: 1fr 1fr; } .full-width { grid-column: 1 / -1; } }
+  .brand-logo-glow:hover {
+    transform: rotate(15deg) scale(1.08);
+  }
 
-  .card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; position: relative;}
-  .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--surface-border); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;}
-  .header-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; }
-  
-  .text-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; transition: 0.2s;}
-  .text-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.05);} 
-  .text-btn.danger { color: var(--danger); } 
-  .text-btn.success { color: var(--accent); } 
-  .text-btn.info { color: var(--info); }
+  .brand-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+    color: var(--text-highlight);
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
 
-  /* Inputs & Buttons */
-  .input-css { width: 100%; padding: 0.8rem; background: #020617; border: 1px solid var(--surface-border); color: white; border-radius: 8px; margin-bottom: 1rem; outline: none; }
-  .input-css:focus { border-color: var(--accent); }
-  .btn { width: 100%; padding: 1rem; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px var(--accent-glow); }
-  .btn:hover { transform: translateY(-2px); } .btn.active { background: var(--danger); color: white; box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
+  .brand-sub {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
 
-  /* Timer, Pedometer & Checklists */
-  .timer-display, .step-display { font-size: 4rem; font-weight: 800; text-align: center; margin: 0.5rem 0; font-variant-numeric: tabular-nums; color: var(--accent); letter-spacing: -2px;}
-  @media (max-width: 400px) { .timer-display, .step-display { font-size: 3.2rem; } }
-  .step-display { color: var(--info); }
-  .scroll-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 350px; overflow-y: auto; }
-  .list-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #1e293b; border-radius: 8px; font-size: 0.9rem; transition: background 0.2s;}
-  .list-item:hover { background: #23334a; }
-  input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 6px; cursor: pointer; position: relative; flex-shrink: 0;}
-  input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
-  input[type="checkbox"]:checked::after { content: '✔'; position: absolute; color: #000; font-size: 12px; font-weight: 800; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
 
-  /* Work Log & Timeline Styles */
+  .pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--surface-border);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+
+  .pill-badge:hover {
+    border-color: var(--surface-border-hover);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: all 0.3s ease;
+  }
+
+  .status-dot.online {
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  .status-dot.syncing {
+    background: var(--warning);
+    box-shadow: 0 0 10px var(--warning);
+    animation: pulse 1s infinite;
+  }
+
+  .status-dot.offline { background: var(--text-muted); }
+  .status-dot.error { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  .icon-btn {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--surface-border);
+    color: var(--text-secondary);
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .icon-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--surface-border-hover);
+    transform: translateY(-1px);
+  }
+
+  .theme-selector {
+    display: flex;
+    gap: 4px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--surface-border);
+    padding: 3px;
+    border-radius: var(--radius-full);
+  }
+
+  .theme-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .theme-dot:hover { transform: scale(1.15); }
+  .theme-dot.active { border-color: #fff; transform: scale(1.1); }
+  .theme-dot.emerald { background: #10b981; }
+  .theme-dot.arctic { background: #38bdf8; }
+  .theme-dot.violet { background: #c084fc; }
+  .theme-dot.ember { background: #f97316; }
+
+  /* ================= MODERN 2026 NAVIGATION TABS ================= */
+  .nav-tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    background: var(--surface-1);
+    padding: 0.4rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--surface-border);
+    backdrop-filter: var(--glass-blur);
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    box-shadow: var(--shadow-card);
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0.8rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    font-size: 0.88rem;
+    letter-spacing: -0.2px;
+  }
+
+  .nav-tab:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .nav-tab.active {
+    background: var(--accent-gradient);
+    color: #030712;
+    box-shadow: 0 4px 18px var(--accent-glow);
+    font-weight: 800;
+  }
+
+  /* ================= SECTION VIEWS & GRID CARDS ================= */
+  .view-section {
+    display: none;
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .view-section.active {
+    display: grid;
+  }
+
+  @media (min-width: 860px) {
+    .view-section.active {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--surface-border);
+    backdrop-filter: var(--glass-blur);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  }
+
+  .card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--surface-border);
+    padding-bottom: 0.85rem;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .header-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-icon {
+    font-size: 1.15rem;
+  }
+
+  .header-title {
+    font-family: var(--font-heading);
+    font-size: 0.92rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    font-weight: 800;
+  }
+
+  .cmd-hint {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* Buttons & Action Links */
+  .text-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--surface-border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .text-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--surface-border-hover);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .text-btn.success { color: var(--accent-light); border-color: rgba(16, 185, 129, 0.3); background: var(--accent-subtle); }
+  .text-btn.success:hover { background: rgba(16, 185, 129, 0.25); }
+
+  .text-btn.info { color: var(--secondary); border-color: rgba(6, 182, 212, 0.3); background: rgba(6, 182, 212, 0.1); }
+  .text-btn.info:hover { background: rgba(6, 182, 212, 0.2); }
+
+  .text-btn.danger { color: var(--danger); border-color: rgba(244, 63, 94, 0.3); background: rgba(244, 63, 94, 0.1); }
+  .text-btn.danger:hover { background: rgba(244, 63, 94, 0.2); }
+
+  .btn {
+    width: 100%;
+    padding: 0.95rem 1.25rem;
+    background: var(--accent-gradient);
+    color: #030712;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 20px var(--accent-glow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: -0.2px;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px var(--accent-glow);
+    filter: brightness(1.05);
+  }
+
+  .btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn.active {
+    background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 20px var(--danger-glow);
+  }
+
+  .input-css {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(3, 7, 18, 0.7);
+    border: 1px solid var(--surface-border);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    margin-bottom: 0.85rem;
+    outline: none;
+    font-size: 0.88rem;
+    transition: all 0.2s ease;
+  }
+
+  .input-css:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+
+  /* ================= HERO COUNTDOWN 2027 MATRIX ================= */
+  .countdown-matrix {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .countdown-box {
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--surface-border);
+    padding: 1.15rem 0.5rem;
+    border-radius: var(--radius-md);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .countdown-box:hover {
+    border-color: var(--surface-border-hover);
+    transform: translateY(-2px);
+  }
+
+  .countdown-val {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text-highlight);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .countdown-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-top: 6px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* Motivational Quote Bar */
+  .quote-bar {
+    margin-top: 1rem;
+    padding: 0.85rem 1.15rem;
+    background: rgba(3, 7, 18, 0.5);
+    border: 1px dashed var(--surface-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .quote-text {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .quote-author {
+    color: var(--accent-light);
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* ================= DAY-BY-DAY PAGE NAVIGATOR ================= */
+  .day-navigator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .day-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .day-badge-display {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--accent-light);
+    letter-spacing: -0.3px;
+  }
+
+  /* ================= 2026 DEEP WORK TIMER COCKPIT ================= */
+  .timer-card {
+    text-align: center;
+  }
+
+  .timer-mode-pills {
+    display: inline-flex;
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--surface-border);
+    padding: 4px;
+    border-radius: var(--radius-full);
+    margin-bottom: 1.25rem;
+    gap: 4px;
+  }
+
+  .timer-mode-btn {
+    padding: 0.4rem 1.15rem;
+    border-radius: var(--radius-full);
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .timer-mode-btn.active {
+    background: var(--surface-2);
+    color: var(--text-highlight);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .timer-visual-wrapper {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    margin: 0.5rem auto 1.25rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .timer-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .timer-circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 8;
+  }
+
+  .timer-circle-progress {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 691;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+  }
+
+  .timer-display-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timer-display {
+    font-family: var(--font-mono);
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-highlight);
+    letter-spacing: -1.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timer-sublabel {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: -4px;
+  }
+
+  .pomodoro-presets {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .preset-chip {
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--surface-border);
+    color: var(--text-secondary);
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .preset-chip:hover, .preset-chip.active {
+    background: var(--accent-subtle);
+    border-color: var(--surface-border-hover);
+    color: var(--accent-light);
+  }
+
+  .ambient-sound-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--surface-border);
+    flex-wrap: wrap;
+  }
+
+  .sound-btn {
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--surface-border);
+    color: var(--text-secondary);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sound-btn.active {
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+    color: var(--accent-light);
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  /* ================= PEDOMETER SENSOR HUD ================= */
+  .step-display {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-align: center;
+    color: var(--secondary);
+    letter-spacing: -2px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin: 0.75rem 0 0.25rem 0;
+  }
+
+  .burndown-bar {
+    background: rgba(3, 7, 18, 0.8);
+    height: 14px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-top: 0.75rem;
+    border: 1px solid var(--surface-border);
+    padding: 2px;
+  }
+
+  .step-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6);
+    border-radius: var(--radius-full);
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 10px var(--secondary-glow);
+  }
+
+  /* ================= PROTOCOLS & HABIT TRACKER ================= */
+  .scroll-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .scroll-list::-webkit-scrollbar {
+    width: 5px;
+  }
+  .scroll-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.15rem;
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+  }
+
+  .list-item:hover {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateX(3px);
+  }
+
+  .list-item.completed {
+    background: var(--accent-subtle);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .list-item.completed span {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  /* Custom Checkbox */
+  input[type="checkbox"] {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--text-muted);
+    border-radius: 7px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    background: rgba(3, 7, 18, 0.8);
+  }
+
+  input[type="checkbox"]:hover {
+    border-color: var(--accent);
+    transform: scale(1.08);
+  }
+
+  input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: '✔';
+    position: absolute;
+    color: #030712;
+    font-size: 13px;
+    font-weight: 900;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Streak Flame Badge */
+  .streak-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(249, 115, 22, 0.15);
+    border: 1px solid rgba(249, 115, 22, 0.35);
+    color: #fb923c;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-full);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+  }
+
+  /* ================= DEEP WORK TIMELINE ================= */
   .work-log-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.85rem 1rem;
-    background: #1e293b;
-    border-radius: 10px;
-    border-left: 3px solid var(--accent);
-    margin-bottom: 0.5rem;
-    transition: transform 0.15s ease, background 0.2s;
-    gap: 0.75rem;
+    padding: 0.95rem 1.25rem;
+    background: rgba(3, 7, 18, 0.6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--surface-border);
+    border-left: 4px solid var(--accent);
+    margin-bottom: 0.55rem;
+    transition: all 0.2s ease;
+    gap: 0.85rem;
   }
+
   .work-log-item:hover {
-    background: #24344d;
-    transform: translateX(2px);
+    background: rgba(30, 41, 59, 0.6);
+    transform: translateX(3px);
   }
-  .work-log-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
-  .work-log-task { font-weight: 700; font-size: 0.9rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .work-log-time { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .work-log-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .work-log-badge {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--accent);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    padding: 0.35rem 0.65rem;
-    border-radius: 6px;
+
+  .work-log-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .work-log-task {
+    font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 0.85rem;
-    font-variant-numeric: tabular-nums;
+    font-size: 0.95rem;
+    color: var(--text-highlight);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .work-log-time {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+  }
+
+  .work-log-badge {
+    background: var(--accent-subtle);
+    color: var(--accent-light);
+    border: 1px solid var(--surface-border-hover);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-weight: 800;
+    font-size: 0.82rem;
+    font-family: var(--font-mono);
     white-space: nowrap;
   }
+
   .delete-log-btn {
     background: transparent;
     border: none;
-    color: #64748b;
+    color: var(--text-muted);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     padding: 4px 6px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     transition: 0.2s;
   }
+
   .delete-log-btn:hover {
     color: var(--danger);
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(244, 63, 94, 0.15);
   }
 
-  /* Kanban Board */
-  .kanban-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; overflow-x: auto; padding-bottom: 1rem; }
-  @media (max-width: 768px) { .kanban-wrapper { grid-template-columns: repeat(3, 260px); } }
-  .kanban-col { background: var(--kanban-bg); border-radius: 12px; padding: 1rem; border: 1px solid var(--surface-border); display: flex; flex-direction: column; gap: 0.75rem; min-height: 400px; }
-  .kanban-header { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center; border-bottom: 2px solid var(--surface-border); padding-bottom: 0.5rem; }
-  .task-card { background: var(--surface); padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border); cursor: grab; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.1s; }
-  .task-card:active { transform: scale(0.98); cursor: grabbing; border-color: var(--accent); }
-  .task-card.dragging { opacity: 0.5; border-style: dashed; }
-  .kanban-col.drag-over { background: rgba(16, 185, 129, 0.05); border-color: var(--accent); }
+  /* ================= 2026 KANBAN SPRINT BOARD ================= */
+  .kanban-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
 
-  /* Content Calendar & Blueprint */
-  .blueprint-card { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--info); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;}
-  .blueprint-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem; }
-  @media (min-width: 768px) { .blueprint-grid { grid-template-columns: 1fr 1fr; } }
-  .blueprint-step { background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; font-size: 0.85rem;}
-  
-  .content-week { margin-bottom: 1.5rem; }
-  .content-week-title { font-size: 0.85rem; font-weight: 700; color: var(--info); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; border-bottom: 1px dashed var(--surface-border); padding-bottom: 0.25rem;}
-  details.content-card { background: rgba(0,0,0,0.2); border-left: 3px solid var(--info); border-radius: 0 8px 8px 0; margin-bottom: 0.75rem; }
-  summary.content-header { padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; list-style: none; outline: none; }
+  @media (max-width: 768px) {
+    .kanban-wrapper {
+      grid-template-columns: repeat(3, 280px);
+    }
+  }
+
+  .kanban-col {
+    background: rgba(3, 7, 18, 0.5);
+    border-radius: var(--radius-lg);
+    padding: 1.15rem;
+    border: 1px solid var(--surface-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    min-height: 480px;
+    transition: all 0.2s ease;
+  }
+
+  .kanban-col.drag-over {
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--surface-border);
+    padding-bottom: 0.65rem;
+  }
+
+  .kanban-count {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    background: var(--surface-2);
+    color: var(--text-muted);
+  }
+
+  .task-card {
+    background: var(--surface-1);
+    padding: 1.1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--surface-border);
+    cursor: grab;
+    font-size: 0.88rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .task-card:hover {
+    border-color: var(--surface-border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .task-card:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+  }
+
+  .task-card.dragging {
+    opacity: 0.4;
+    border: 2px dashed var(--accent);
+  }
+
+  .task-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .task-tag {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .tag-high { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+  .tag-med { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+  .tag-low { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+
+  /* ================= 3. CONTENT & CREATOR GROWTH BLUEPRINT ================= */
+  .blueprint-card {
+    background: radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, rgba(15, 23, 42, 0.85) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 1.75rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  .blueprint-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .blueprint-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .blueprint-step {
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--surface-border);
+    padding: 1.15rem;
+    border-radius: var(--radius-md);
+    font-size: 0.86rem;
+    line-height: 1.6;
+    transition: transform 0.2s;
+  }
+
+  .blueprint-step:hover {
+    transform: translateY(-2px);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  .content-week-title {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.85rem;
+    border-bottom: 1px dashed var(--surface-border);
+    padding-bottom: 0.35rem;
+  }
+
+  details.content-card {
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--surface-border);
+    border-left: 4px solid var(--secondary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin-bottom: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  details.content-card[open] {
+    border-color: rgba(6, 182, 212, 0.4);
+    background: rgba(15, 23, 42, 0.8);
+  }
+
+  summary.content-header {
+    padding: 1.15rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    list-style: none;
+    outline: none;
+  }
+
   summary.content-header::-webkit-details-marker { display: none; }
-  .content-meta { font-size: 0.7rem; color: var(--info); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px;}
-  .content-title { font-size: 0.95rem; font-weight: 600; padding-right: 1rem;}
-  .content-title.done { text-decoration: line-through; color: var(--text-muted); }
-  .reel-script { padding: 0 1rem 1rem 1rem; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--surface-border); margin-top: 0.5rem; padding-top: 1rem; line-height: 1.6;}
-  .reel-script strong { color: var(--text-main); }
-  .reel-script .highlight { background: rgba(16, 185, 129, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; color: var(--accent);}
 
-  /* Analytics & Data Resilience */
-  .heatmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(14px, 1fr)); gap: 4px; margin-top: 1rem; }
-  .heat-box { width: 14px; height: 14px; background: #1e293b; border-radius: 3px; transition: 0.2s;}
-  .heat-box.active { background: var(--accent); box-shadow: 0 0 5px var(--accent-glow); }
-  
-  .burndown-bar { background: #1e293b; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 0.5rem; }
-  .burndown-fill { height: 100%; background: var(--warning); width: 0%; transition: 0.5s; }
-  .step-fill { height: 100%; background: var(--info); width: 0%; transition: 0.5s; }
-  
-  .hourly-chart { display: flex; align-items: flex-end; gap: 4px; height: 100px; margin-top: 1rem; padding-bottom: 20px; border-bottom: 1px solid var(--surface-border); position: relative;}
-  .hourly-bar { flex: 1; background: var(--info); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.5s; position: relative; }
-  .hourly-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 0.6rem; color: var(--text-muted); }
+  .content-meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--secondary);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
 
-  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
-  .modal-content { background: var(--surface); padding: 2rem; border-radius: 16px; border: 1px solid var(--surface-border); width: 100%; max-width: 500px; }
-  #cmdInput { font-size: 1.2rem; background: transparent; border: none; border-bottom: 2px solid var(--accent); border-radius: 0; padding: 1rem 0; box-shadow: none; }
+  .content-title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-highlight);
+  }
 
-  /* Toast Notification */
-  .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-  .toast { background: #0f172a; border: 1px solid var(--surface-border); color: #fff; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.85rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 8px; animation: slideIn 0.2s ease forwards; }
-  @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .content-title.done {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .reel-script {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--surface-border);
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    line-height: 1.7;
+  }
+
+  .reel-script strong { color: var(--text-highlight); }
+  .reel-script .highlight {
+    background: var(--accent-subtle);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    color: var(--accent-light);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  /* ================= 4. TELEMETRY, HEATMAP & ANALYTICS ================= */
+  .telemetry-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .telem-stat-card {
+    background: rgba(3, 7, 18, 0.6);
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--surface-border);
+    transition: transform 0.2s;
+  }
+
+  .telem-stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--surface-border-hover);
+  }
+
+  .telem-stat-val {
+    font-family: var(--font-heading);
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: var(--text-highlight);
+    margin-top: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15px, 1fr));
+    gap: 5px;
+    margin-top: 1rem;
+  }
+
+  .heat-box {
+    width: 100%;
+    aspect-ratio: 1;
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 3px;
+    transition: all 0.2s ease;
+  }
+
+  .heat-box.active {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  .hourly-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 120px;
+    margin-top: 1.25rem;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--surface-border);
+    position: relative;
+  }
+
+  .hourly-bar {
+    flex: 1;
+    background: linear-gradient(180deg, var(--secondary) 0%, rgba(6, 182, 212, 0.2) 100%);
+    border-radius: 4px 4px 0 0;
+    min-height: 3px;
+    transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+
+  .hourly-bar:hover {
+    background: var(--accent);
+  }
+
+  .hourly-label {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-muted);
+  }
+
+  /* Modal Overlays */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 7, 18, 0.85);
+    backdrop-filter: blur(12px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1.5rem;
+  }
+
+  .modal-content {
+    background: var(--surface-elevated);
+    border: 1px solid var(--surface-border);
+    padding: 2.25rem;
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    position: relative;
+    animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Toasts */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--surface-border-hover);
+    backdrop-filter: blur(16px);
+    color: var(--text-highlight);
+    padding: 0.85rem 1.35rem;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    font-weight: 600;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-glow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes toastSlide {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Zen Focus Fullscreen Mode */
+  #zenModeOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99990;
+    background: #030712;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  #zenModeOverlay.active {
+    display: flex;
+  }
 </style>
 </head>
 <body>
 
-<!-- Login Security Portal Overlay -->
+<!-- Ambient Dynamic Background Canvas -->
+<canvas id="ambientCanvas"></canvas>
+
+<!-- ================= 0. SECURITY ACCESS PORTAL ================= -->
 <div id="loginPortalOverlay">
   <div class="login-card" id="loginCard">
-    <div class="login-icon-wrap">🔒</div>
-    <div class="login-title">Elite OS Access</div>
-    <div class="login-subtitle">Winter Arc 2027 Architect Terminal</div>
+    <div class="login-badge">🔒 2026 ARCHITECT ACCESS</div>
+    <div class="login-title">Elite OS Terminal</div>
+    <div class="login-subtitle">Winter Arc Execution Cockpit • Passcode Required</div>
     
-    <input type="password" id="passcodeInput" class="passcode-input" placeholder="••••••" maxlength="10" autocomplete="off" autofocus>
+    <div class="passcode-wrapper">
+      <input type="password" id="passcodeInput" class="passcode-input" placeholder="••••••" maxlength="10" autocomplete="off" autofocus>
+    </div>
     <div class="passcode-error" id="passcodeError"></div>
 
     <div class="keypad-grid">
@@ -339,394 +1565,883 @@
       <button class="key-btn" style="color: var(--warning);" onclick="deletePin()">⌫</button>
     </div>
 
-    <button class="btn" style="margin-top: 0.5rem;" onclick="verifyPasscode()">Unlock System</button>
+    <button class="btn" onclick="verifyPasscode()">⚡ Unlock System</button>
+    <div class="cmd-hint" style="margin-top: 1rem;">Default: <b>112233</b> • Fully offline & cloud synced</div>
   </div>
 </div>
 
-<!-- Top Header Bar -->
-<div class="top-bar">
-  <div class="brand-title">
-    <span>❄️ WINTER ARC</span>
-    <span class="brand-sub">| ELITE OS</span>
+<!-- ================= ZEN FULLSCREEN FOCUS MODE ================= -->
+<div id="zenModeOverlay">
+  <div style="position: absolute; top: 2rem; right: 2rem;">
+    <button class="text-btn danger" onclick="toggleZenMode()">✕ Exit Zen Mode (Esc)</button>
   </div>
-  <div class="header-actions">
-    <div class="cloud-badge" id="cloudBadge" onclick="manualCloudSync()" title="Firebase Cloud Sync Status. Click to force sync.">
-      <span class="status-dot offline" id="statusDot"></span>
-      <span id="cloudStatusText">Connecting Firebase...</span>
+  <div style="text-align: center; max-width: 600px;">
+    <div class="streak-pill" style="margin-bottom: 1.5rem;">🔥 ZEN FOCUS STATE</div>
+    <h1 id="zenTaskName" style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-highlight); margin-bottom: 1rem;">Deep Work Sprint</h1>
+    <div id="zenTimerDisplay" style="font-family: var(--font-mono); font-size: 5.5rem; font-weight: 900; color: var(--accent); letter-spacing: -3px; font-variant-numeric: tabular-nums; margin-bottom: 2rem;">00:00:00</div>
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+      <button class="btn" id="zenPauseBtn" style="background: var(--warning); color: #000; width: auto; padding: 1rem 2rem;" onclick="togglePauseTimer()">⏸️ Pause</button>
+      <button class="btn" style="width: auto; padding: 1rem 2rem;" onclick="toggleTimer(); toggleZenMode();">End Session</button>
     </div>
-    <button class="lock-btn" onclick="lockSystem()" title="Lock Elite OS Portal">
-      <span>🔒</span> <span>Lock</span>
-    </button>
+  </div>
+</div>
+
+<!-- ================= MAIN APPLICATION LAYOUT ================= -->
+<div class="app-container">
+
+  <!-- Top Bar & Brand Header -->
+  <header class="top-bar">
+    <div class="brand-group">
+      <div class="brand-logo-glow">❄️</div>
+      <div class="brand-title">
+        <span>WINTER ARC</span>
+        <span class="brand-sub">2026 ARCHITECT // ELITE OS</span>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Theme Switcher -->
+      <div class="theme-selector" title="Switch 2026 Theme">
+        <div class="theme-dot emerald active" onclick="setTheme('emerald')" title="Cyber Emerald"></div>
+        <div class="theme-dot arctic" onclick="setTheme('arctic')" title="Arctic Frost"></div>
+        <div class="theme-dot violet" onclick="setTheme('violet')" title="Neon Synth"></div>
+        <div class="theme-dot ember" onclick="setTheme('ember')" title="Solar Ember"></div>
+      </div>
+
+      <!-- Sound FX Toggle -->
+      <button class="icon-btn" id="soundToggleBtn" onclick="toggleAudioFeedback()" title="Toggle UI Sound Effects">
+        <span id="soundIcon">🔊</span>
+      </button>
+
+      <!-- Firebase Cloud Status Badge -->
+      <div class="pill-badge" id="cloudBadge" onclick="manualCloudSync()" title="Firebase Realtime Sync Status. Click to force backup/pull.">
+        <span class="status-dot offline" id="statusDot"></span>
+        <span id="cloudStatusText">Connecting Cloud...</span>
+      </div>
+
+      <!-- Lock Terminal -->
+      <button class="icon-btn" onclick="lockSystem()" title="Lock Elite OS Portal">
+        <span>🔒</span> <span>Lock</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('dashboard')">⚡ Execution Cockpit</button>
+    <button class="nav-tab" onclick="switchTab('kanban')">📋 Sprint Kanban</button>
+    <button class="nav-tab" onclick="switchTab('content')">🚀 Creator Growth</button>
+    <button class="nav-tab" onclick="switchTab('analytics')">📊 OS Telemetry</button>
+  </nav>
+
+  <!-- ================= 1. EXECUTION COCKPIT ================= -->
+  <main id="dashboard" class="view-section active">
+    
+    <!-- 2027 Countdown Matrix -->
+    <div class="card full-width">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">🎯</span>
+          <h2 class="header-title">Countdown to 2027 Architect</h2>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span class="streak-pill" id="heroStreakBadge">🔥 0 DAY STREAK</span>
+          <span class="cmd-hint">Press <b>Ctrl+K</b> for Command Palette</span>
+        </div>
+      </div>
+
+      <div class="countdown-matrix">
+        <div class="countdown-box">
+          <div class="countdown-val" id="days">00</div>
+          <div class="countdown-label">Days Remaining</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-val" id="hours">00</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-val" id="minutes">00</div>
+          <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-val" id="seconds">00</div>
+          <div class="countdown-label">Seconds</div>
+        </div>
+      </div>
+
+      <!-- Dynamic Motivational Quote Engine -->
+      <div class="quote-bar">
+        <div class="quote-text" id="quoteDisplay">"The Winter Arc isn't about motivation. It's about ruthless, undeniable execution." — <span class="quote-author">Elite Mindset</span></div>
+        <button class="text-btn info" onclick="rotateQuote()" title="Next Quote">⚡ Refresh</button>
+      </div>
+    </div>
+
+    <!-- Day-by-Day Page Navigator -->
+    <div class="card full-width" style="padding: 1.15rem 1.5rem;">
+      <div class="day-navigator">
+        <div class="day-nav-controls">
+          <button class="text-btn info" onclick="navigateDay(-1)" title="Previous Day">◀ Prev Day</button>
+          <button class="text-btn success" id="todayNavBtn" onclick="goToToday()" title="Jump to Today">⚡ Today</button>
+          <button class="text-btn info" onclick="navigateDay(1)" title="Next Day">Next Day ▶</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span class="day-badge-display" id="activeDayLabel">📅 Today: Tue Sep 01 2026</span>
+          <input type="date" id="datePickerInput" class="input-css" style="margin-bottom: 0; padding: 0.4rem 0.75rem; font-size: 0.8rem; width: auto;" onchange="onPickDate(event)">
+        </div>
+      </div>
+
+      <div id="archiveBanner" style="display: none; background: rgba(6, 182, 212, 0.12); border: 1px solid var(--secondary); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-top: 0.85rem; font-size: 0.85rem; color: var(--secondary); justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <span>📁 <b>Day Archive View:</b> Reviewing tasks and protocols recorded for this specific date.</span>
+        <button class="text-btn success" onclick="goToToday()">⚡ Return to Today</button>
+      </div>
+    </div>
+
+    <!-- Deep Work Cockpit with Circular Ring & Zen Mode -->
+    <div class="card timer-card">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">⏱️</span>
+          <h2 class="header-title">Deep Work Cockpit</h2>
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button class="text-btn info" onclick="toggleZenMode()" title="Fullscreen Zen Focus Mode">🔲 Zen Mode</button>
+          <span class="cmd-hint" id="timerStatusHint" style="color: var(--accent); font-weight: 700;">Ready</span>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="timer-mode-pills">
+        <button class="timer-mode-btn active" id="btnModeStopwatch" onclick="setTimerMode('stopwatch')">Stopwatch</button>
+        <button class="timer-mode-btn" id="btnModePomodoro" onclick="setTimerMode('pomodoro')">Pomodoro</button>
+      </div>
+
+      <!-- Pomodoro Quick Presets -->
+      <div class="pomodoro-presets" id="pomoPresets" style="display: none;">
+        <button class="preset-chip active" onclick="setPomodoroDuration(25)">25 Mins</button>
+        <button class="preset-chip" onclick="setPomodoroDuration(50)">50 Mins</button>
+        <button class="preset-chip" onclick="setPomodoroDuration(90)">90 Mins</button>
+      </div>
+
+      <!-- Circular Visual Timer -->
+      <div class="timer-visual-wrapper">
+        <svg class="timer-svg" viewBox="0 0 240 240">
+          <circle class="timer-circle-bg" cx="120" cy="120" r="110"></circle>
+          <circle class="timer-circle-progress" id="timerProgressCircle" cx="120" cy="120" r="110"></circle>
+        </svg>
+        <div class="timer-display-inner">
+          <div class="timer-display" id="liveTimer">00:00:00</div>
+          <div class="timer-sublabel" id="timerModeLabel">FOCUS SESSION</div>
+        </div>
+      </div>
+
+      <!-- Task Category Selector -->
+      <select class="input-css" id="timerPillar" onchange="handleDropdownChange()">
+        <option value="💻 GSoC / Frontend Sprint">💻 GSoC / Frontend Sprint</option>
+        <option value="☕ Java DSA">☕ Java DSA</option>
+        <option value="👕 Gen AI T-Shirt Design">👕 Gen AI T-Shirt Design</option>
+        <option value="🎬 Content Creation">🎬 Content Creation</option>
+        <option value="📚 College Studies">📚 College Studies</option>
+        <option value="🏢 NEC Team KCites">🏢 NEC Team KCites</option>
+        <option value="🚀 E-Cell IITB Work">🚀 E-Cell IITB Work</option>
+        <option value="🌐 GSA Work">🌐 GSA Work</option>
+        <option value="custom" id="customOptionSelector">✍️ Custom Task...</option>
+      </select>
+      <input type="text" id="customInput" class="input-css" style="display: none;" placeholder="Enter custom focus pillar...">
+
+      <!-- Main Action Controls -->
+      <button class="btn" id="timerBtn" onclick="toggleTimer()">⚡ Initialize Deep Work</button>
+
+      <!-- Active Controls (Pause & Discard) -->
+      <div id="activeTimerControls" style="display: none; gap: 0.75rem; margin-top: 0.75rem; width: 100%;">
+        <button class="btn" id="pauseTimerBtn" style="background: var(--warning); color: #000; flex: 1;" onclick="togglePauseTimer()">⏸️ Pause Session</button>
+        <button class="btn" id="cancelTimerBtn" style="background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: var(--danger); box-shadow: none; width: auto; padding: 0.95rem 1.25rem;" onclick="cancelTimer()" title="Discard session without logging">✕ Cancel</button>
+      </div>
+
+      <!-- Pure Web Audio Ambient Noise Synthesizer -->
+      <div class="ambient-sound-bar">
+        <span class="cmd-hint" style="font-weight: 700;">🎧 FOCUS NOISE:</span>
+        <button class="sound-btn" id="ambientRainBtn" onclick="toggleAmbientSound('rain')">🌧️ Rain</button>
+        <button class="sound-btn" id="ambientBinauralBtn" onclick="toggleAmbientSound('binaural')">🧠 40Hz Alpha</button>
+        <button class="sound-btn" id="ambientWhiteBtn" onclick="toggleAmbientSound('white')">📻 Noise</button>
+      </div>
+    </div>
+
+    <!-- Live Sensor Pedometer -->
+    <div class="card">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">🚶</span>
+          <h2 class="header-title">Live Sensor Pedometer</h2>
+        </div>
+        <div>
+          <button class="text-btn success" id="startPedometerBtn" onclick="initPedometer()">Initialize Sensor</button>
+          <button class="text-btn info" onclick="debugStep(100)">+100 (Simulate)</button>
+        </div>
+      </div>
+
+      <div class="step-display" id="stepCountDisplay">0</div>
+      <div class="cmd-hint" style="text-align: center; margin-bottom: 1rem; font-weight: 700;">DAILY ACTIVE STEPS</div>
+      
+      <div class="burndown-bar">
+        <div class="step-fill" id="stepProgressBar"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; font-family: var(--font-mono);">
+        <span>Current: <b id="stepCurrentLabel" style="color: var(--text-highlight);">0</b></span>
+        <span>Goal: 10,000 steps</span>
+      </div>
+    </div>
+
+    <!-- Winter Arc Daily Protocols & Checklist -->
+    <div class="card full-width">
+      <div class="header-flex">
+        <div>
+          <div class="header-title-wrap">
+            <span class="header-icon">🛡️</span>
+            <h2 class="header-title">Winter Arc Daily Protocols</h2>
+          </div>
+          <div class="cmd-hint" id="dayCompletionScore" style="margin-top: 3px; color: var(--accent-light); font-weight: 700;">0/7 Protocols Completed</div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <button class="text-btn success" onclick="addNewDailyTask()">+ Add Custom Task</button>
+          <button class="text-btn success" onclick="initiateStandup()">⚡ Commit & Log Day</button>
+          <button class="text-btn danger" onclick="resetHabits()">Reset Checklist</button>
+        </div>
+      </div>
+
+      <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.6rem; font-family: var(--font-mono);">Core Non-Negotiables</div>
+      <div class="scroll-list" id="habitList" style="margin-bottom: 1.5rem;">
+        <div class="list-item" id="item-wa1"><span>💧 1. 3L Water per day</span><input type="checkbox" data-id="wa1"></div>
+        <div class="list-item" id="item-wa2"><span>🥗 2. Clean diet (No junk / refined sugar)</span><input type="checkbox" data-id="wa2"></div>
+        <div class="list-item" id="item-wa3"><span>😴 3. 7-8 hours quality deep sleep</span><input type="checkbox" data-id="wa3"></div>
+        <div class="list-item" id="item-wa4"><span>🏋️ 4. 45 min High-Intensity Workout / Gym</span><input type="checkbox" data-id="wa4"></div>
+        <div class="list-item" id="item-wa5"><span>🚶 5. 10,000 active steps daily</span><input type="checkbox" data-id="wa5"></div>
+        <div class="list-item" id="item-wa6"><span>📵 6. Zero phone morning / meal routine</span><input type="checkbox" data-id="wa6"></div>
+        <div class="list-item" id="item-wa7"><span>🙏 7. Nightly Gratitude & Reflection</span><input type="checkbox" data-id="wa7"></div>
+      </div>
+
+      <!-- Custom Daily Objectives For Selected Day -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; border-top: 1px solid var(--surface-border); padding-top: 1rem;">
+        <div style="font-size: 0.75rem; font-weight: 800; color: var(--secondary); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--font-mono);">Custom Daily Targets (<span id="customTaskCount">0</span>)</div>
+      </div>
+      <div class="scroll-list" id="customDailyTaskList">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+
+    <!-- Deep Work Activity Timeline -->
+    <div class="card full-width">
+      <div class="header-flex">
+        <div>
+          <div class="header-title-wrap">
+            <span class="header-icon">📜</span>
+            <h2 class="header-title">Deep Work Session Timeline</h2>
+          </div>
+          <span class="cmd-hint" id="todayFocusTotalSummary" style="color: var(--accent-light); font-weight: 700;">0 sessions • 0.0h focus logged</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select id="workLogFilter" class="input-css" style="margin-bottom: 0; padding: 0.35rem 0.65rem; font-size: 0.75rem; width: auto;" onchange="renderWorkLogs()">
+            <option value="selected">Selected Day</option>
+            <option value="all">All Session History</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="scroll-list" id="workLogList" style="max-height: 320px;">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= 2. SPRINT KANBAN VIEW ================= -->
+  <section id="kanban" class="view-section">
+    <div class="card full-width">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">📋</span>
+          <h2 class="header-title">Sprint Execution Board</h2>
+        </div>
+        <button class="text-btn success" onclick="addNewKanbanModal()">+ Create Task</button>
+      </div>
+
+      <div class="kanban-wrapper">
+        <!-- Column 1: To Do -->
+        <div class="kanban-col" id="col-todo" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+          <div class="kanban-header">
+            <span>To Do</span>
+            <span class="kanban-count" id="count-todo">0</span>
+          </div>
+          <div class="kanban-items" id="items-todo" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+        </div>
+
+        <!-- Column 2: In Progress -->
+        <div class="kanban-col" id="col-active" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+          <div class="kanban-header" style="color: var(--warning);">
+            <span>In Progress</span>
+            <span class="kanban-count" id="count-active">0</span>
+          </div>
+          <div class="kanban-items" id="items-active" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+        </div>
+
+        <!-- Column 3: Shipped -->
+        <div class="kanban-col" id="col-done" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+          <div class="kanban-header" style="color: var(--accent);">
+            <span>Shipped / Done</span>
+            <span class="kanban-count" id="count-done">0</span>
+          </div>
+          <div class="kanban-items" id="items-done" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. CREATOR & CONTENT GROWTH ================= -->
+  <section id="content" class="view-section">
+    
+    <!-- 30-Day Growth Blueprint -->
+    <div class="blueprint-card full-width">
+      <div class="header-title-wrap">
+        <span class="header-icon">🚀</span>
+        <h2 class="header-title" style="color: var(--secondary);">0 to 10,000 Audience Blueprint (30-Day Protocol)</h2>
+      </div>
+      <div class="blueprint-grid">
+        <div class="blueprint-step">
+          <strong style="color: #fff;">Phase 1: The Hook Velocity Test (Days 1-7)</strong><br>
+          Post 1x High-Retention Reel daily. Focus strictly on bold technical breakdowns. Measure hook hold rate (&gt;3s).
+        </div>
+        <div class="blueprint-step">
+          <strong style="color: #fff;">Phase 2: Deep Value & Authority (Days 8-15)</strong><br>
+          Double down on winning hooks. Introduce technical architectures, AI tools, and DSA visualizations. Pure actionable value.
+        </div>
+        <div class="blueprint-step">
+          <strong style="color: #fff;">Phase 3: Algorithmic Scaling (Days 16-22)</strong><br>
+          Increase output to 1x Reel + 1x Story. Use high-contrast code animations and "Expectation vs Reality" formats.
+        </div>
+        <div class="blueprint-step">
+          <strong style="color: #fff;">Phase 4: Community Funnel (Days 23-30)</strong><br>
+          Automated lead magnets: "Comment 'BLUEPRINT' for full GitHub repository." Convert views to deep community subscribers.
+        </div>
+      </div>
+    </div>
+
+    <!-- Case Study Production Calendar -->
+    <div class="card full-width">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">🎬</span>
+          <h2 class="header-title">Viral Engineering Reels & Scripts</h2>
+        </div>
+        <span class="cmd-hint">Click cards to reveal script & copy prompts</span>
+      </div>
+      
+      <!-- Week 1: Meta -->
+      <div class="content-week">
+        <div class="content-week-title">Week 1: Meta & Consumer Internet Scalability</div>
+        
+        <details class="content-card">
+          <summary class="content-header">
+            <div>
+              <div class="content-meta">Reel 1 // M&A Strategy</div>
+              <div class="content-title" id="t-m1">How Zuckerberg Bought The Internet</div>
+            </div>
+            <input type="checkbox" data-content="m1" onchange="toggleContent('m1')" onclick="event.stopPropagation();">
+          </summary>
+          <div class="reel-script">
+            <strong>Hook:</strong> "Mark Zuckerberg didn't just build a social network; he bought out his entire competition."<br><br>
+            <strong>The Breakdown:</strong> Facebook realized early that mobile was their existential threat. Instead of rebuilding, they acquired Instagram to control visual photos, and WhatsApp to lock down global messaging. This formed the highest moat in consumer tech history.<br><br>
+            <strong>Call to Action:</strong> "What app do you think Meta acquires next? Drop your prediction below."<br>
+            <strong>B-Roll & Animation:</strong> <span class="highlight">Screen recording of Instagram & WhatsApp merging into Meta logo with network node graphs.</span>
+            <div style="margin-top: 10px;">
+              <button class="text-btn info" onclick="copyScriptText('How Zuckerberg Bought The Internet')">📋 Copy Script</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="content-card">
+          <summary class="content-header">
+            <div>
+              <div class="content-meta">Reel 2 // Predictive AI</div>
+              <div class="content-title" id="t-m2">The Secret Behind Meta's Targeted Ads</div>
+            </div>
+            <input type="checkbox" data-content="m2" onchange="toggleContent('m2')" onclick="event.stopPropagation();">
+          </summary>
+          <div class="reel-script">
+            <strong>Hook:</strong> "Ever feel like your phone is listening to you? It's not. The algorithm is just that terrifyingly good."<br><br>
+            <strong>The Breakdown:</strong> Meta builds a mathematical twin of you. By analyzing hover duration, scroll velocity, and geolocation intersections with friends, predictive AI projects what you desire before you even search for it.<br><br>
+            <strong>Call to Action:</strong> "Save this reel to protect your digital footprint."<br>
+            <strong>B-Roll:</strong> <span class="highlight">Complex futuristic node network connecting user graph dots.</span>
+            <div style="margin-top: 10px;">
+              <button class="text-btn info" onclick="copyScriptText('The Secret Behind Meta\'s Targeted Ads')">📋 Copy Script</button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Week 2: Gameskraft -->
+      <div class="content-week">
+        <div class="content-week-title">Week 2: Indian Tech Scale & High-Concurrency Systems</div>
+        
+        <details class="content-card">
+          <summary class="content-header">
+            <div>
+              <div class="content-meta">Reel 3 // Market Scale</div>
+              <div class="content-title" id="t-g1">How India Became a Mobile Gaming Giant</div>
+            </div>
+            <input type="checkbox" data-content="g1" onchange="toggleContent('g1')" onclick="event.stopPropagation();">
+          </summary>
+          <div class="reel-script">
+            <strong>Hook:</strong> "India is undergoing a multi-billion dollar real-time mobile revolution."<br><br>
+            <strong>The Breakdown:</strong> Gameskraft cracked scale by building for low-latency WebSocket infrastructure and hyper-localized Tier-2/3 UX, handling millions of live concurrent transactions effortlessly.<br><br>
+            <strong>Call to Action:</strong> "Follow for more Indian unicorn backend teardowns."<br>
+            <div style="margin-top: 10px;">
+              <button class="text-btn info" onclick="copyScriptText('How India Became a Mobile Gaming Giant')">📋 Copy Script</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="content-card">
+          <summary class="content-header">
+            <div>
+              <div class="content-meta">Reel 4 // Cryptographic Trust</div>
+              <div class="content-title" id="t-g2">How Do You Stop Cheaters in Real-Money Games?</div>
+            </div>
+            <input type="checkbox" data-content="g2" onchange="toggleContent('g2')" onclick="event.stopPropagation();">
+          </summary>
+          <div class="reel-script">
+            <strong>Hook:</strong> "How do you prove an online game isn't rigged when thousands of dollars are on the line?"<br><br>
+            <strong>The Breakdown:</strong> Certified Hardware RNGs and zero-tolerance ML bot detection models that evaluate micro-mouse/touch latency to permanently ban automated bots.<br><br>
+            <div style="margin-top: 10px;">
+              <button class="text-btn info" onclick="copyScriptText('How Do You Stop Cheaters in Real-Money Games?')">📋 Copy Script</button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 4. OS TELEMETRY & RESILIENCE ================= -->
+  <section id="analytics" class="view-section">
+    
+    <!-- Data Resilience & Cloud Operations -->
+    <div class="card full-width">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">☁️</span>
+          <h2 class="header-title">Data Resilience & Cloud State</h2>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <input type="file" id="importJson" style="display:none" accept=".json" onchange="importData(event)">
+          <button class="text-btn info" onclick="pullFromFirebase(true)">☁️ Sync From Firebase</button>
+          <button class="text-btn success" onclick="pushToFirebase(true)">☁️ Backup To Firebase</button>
+          <button class="text-btn info" onclick="document.getElementById('importJson').click()">⬆ Restore JSON</button>
+          <button class="text-btn success" onclick="exportData('json')">⬇ Backup JSON</button>
+          <button class="text-btn success" onclick="exportData('csv')">⬇ Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telemetry Metric Cards -->
+    <div class="card full-width">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">📈</span>
+          <h2 class="header-title">OS Telemetry: Sprint Performance</h2>
+        </div>
+        <span class="cmd-hint" id="telemetryStatsSummary">0 Days Committed</span>
+      </div>
+
+      <div class="telemetry-stats-grid">
+        <div class="telem-stat-card">
+          <div class="cmd-hint">TOTAL COMMITS</div>
+          <div class="telem-stat-val" style="color: var(--accent);" id="statTotalCommits">0</div>
+        </div>
+        <div class="telem-stat-card">
+          <div class="cmd-hint">TOTAL STEPS LOGGED</div>
+          <div class="telem-stat-val" style="color: var(--secondary);" id="statTotalSteps">0</div>
+        </div>
+        <div class="telem-stat-card">
+          <div class="cmd-hint">PROTOCOL ADHERENCE</div>
+          <div class="telem-stat-val" style="color: var(--warning);" id="statAvgHabits">0%</div>
+        </div>
+        <div class="telem-stat-card">
+          <div class="cmd-hint">TOTAL DEEP WORK</div>
+          <div class="telem-stat-val" style="color: var(--text-highlight);" id="statTotalDeepWork">0.0h</div>
+        </div>
+      </div>
+
+      <!-- Telemetry Commit History Table -->
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;" id="telemetryTable">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--surface-border); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem;">
+              <th style="padding: 0.75rem 0.85rem;">DATE</th>
+              <th style="padding: 0.75rem 0.85rem;">STREAK</th>
+              <th style="padding: 0.75rem 0.85rem;">STEPS (10K)</th>
+              <th style="padding: 0.75rem 0.85rem;">PROTOCOLS</th>
+              <th style="padding: 0.75rem 0.85rem;">FOCUS TIME</th>
+              <th style="padding: 0.75rem 0.85rem;">WINS / SHIPPED</th>
+            </tr>
+          </thead>
+          <tbody id="telemetryTableBody">
+            <tr><td colspan="6" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits yet. Complete daily protocols and submit EOD Standup.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Hourly Velocity Distribution -->
+    <div class="card full-width">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">⚡</span>
+          <h2 class="header-title">Hourly Focus Velocity (Peak Energy Map)</h2>
+        </div>
+        <span class="cmd-hint" id="peakHourDisplay">Peak: --</span>
+      </div>
+      <div class="hourly-chart" id="hourlyChart"></div>
+    </div>
+
+    <!-- GitHub Style Contribution Heatmap -->
+    <div class="card">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">🔥</span>
+          <h2 class="header-title">Sprint Consistency Heatmap (2026)</h2>
+        </div>
+      </div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+    </div>
+
+    <!-- Macro Sprint Burndown -->
+    <div class="card">
+      <div class="header-flex">
+        <div class="header-title-wrap">
+          <span class="header-icon">🎯</span>
+          <h2 class="header-title">Macro Target Burndown</h2>
+        </div>
+      </div>
+      <div style="margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">
+          <span>💻 Frontend / Open Source (150h)</span>
+          <span id="burnFrontend" style="color: var(--accent-light);">0%</span>
+        </div>
+        <div class="burndown-bar"><div class="step-fill" id="fillFrontend"></div></div>
+      </div>
+      <div style="margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">
+          <span>☕ Java DSA Mastery (100h)</span>
+          <span id="burnJava" style="color: var(--secondary);">0%</span>
+        </div>
+        <div class="burndown-bar"><div class="step-fill" id="fillJava" style="background: linear-gradient(90deg, #f59e0b, #ef4444);"></div></div>
+      </div>
+      <div style="margin-bottom: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">
+          <span>👕 AI Design & E-Commerce (50h)</span>
+          <span id="burnDesign" style="color: var(--accent-light);">0%</span>
+        </div>
+        <div class="burndown-bar"><div class="step-fill" id="fillDesign" style="background: linear-gradient(90deg, #c084fc, #ec4899);"></div></div>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- ================= MODALS & POPUPS ================= -->
+
+<!-- Command Palette Modal -->
+<div class="modal-overlay" id="cmdModal">
+  <div class="modal-content">
+    <div class="header-flex" style="border: none; margin-bottom: 0.5rem;">
+      <h2 class="header-title" style="color: var(--accent-light);">Developer Command Palette</h2>
+      <span class="cmd-hint">Esc to close</span>
+    </div>
+    <input type="text" id="cmdInput" class="input-css" placeholder="e.g., 'zen', 'lock', 'sync', 'backup', 'standup', 'kanban'" autocomplete="off">
+    <div class="cmd-hint" style="line-height: 1.8;">
+      <b>Commands:</b> zen, lock, pause, sync, backup, csv, restore, standup, reset, dashboard, kanban, content, analytics
+    </div>
+  </div>
+</div>
+
+<!-- EOD Daily Standup Commit Modal -->
+<div class="modal-overlay" id="standupModal">
+  <div class="modal-content">
+    <div class="header-flex">
+      <h2 class="header-title" style="color: var(--accent-light); font-size: 1.15rem;">Daily EOD Telemetry Commit</h2>
+      <span class="cmd-hint">Streak Logger</span>
+    </div>
+    <label class="cmd-hint" style="display: block; margin-bottom: 4px; font-weight: 700;">What did you ship / accomplish today?</label>
+    <textarea id="standupWins" class="input-css" style="height: 65px; resize: none;" placeholder="e.g. Solved 3 Hard LeetCode problems & wired up Firebase..."></textarea>
+    
+    <label class="cmd-hint" style="display: block; margin-bottom: 4px; font-weight: 700;">Any roadblocks or distractions?</label>
+    <textarea id="standupBlocks" class="input-css" style="height: 65px; resize: none;" placeholder="e.g. Distracted for 30m during afternoon..."></textarea>
+    
+    <label class="cmd-hint" style="display: block; margin-bottom: 4px; font-weight: 700;">Main Focus Target for tomorrow?</label>
+    <textarea id="standupNext" class="input-css" style="height: 65px; resize: none;" placeholder="e.g. Build out auth module & 10k steps..."></textarea>
+    
+    <button class="btn" onclick="submitStandup()">⚡ Commit Day & Log Streak</button>
+    <button class="btn" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 0.5rem;" onclick="closeModal('standupModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Add Kanban Task Modal -->
+<div class="modal-overlay" id="kanbanModal">
+  <div class="modal-content">
+    <div class="header-flex">
+      <h2 class="header-title" style="color: var(--accent-light);">Create Sprint Task</h2>
+      <span class="cmd-hint">Kanban</span>
+    </div>
+    <label class="cmd-hint" style="display: block; margin-bottom: 4px; font-weight: 700;">Task Description</label>
+    <input type="text" id="kanbanTaskInput" class="input-css" placeholder="e.g. Implement WebSocket reconnection logic..." autocomplete="off">
+    
+    <label class="cmd-hint" style="display: block; margin-bottom: 4px; font-weight: 700;">Priority Level</label>
+    <select id="kanbanPrioritySelect" class="input-css">
+      <option value="high">🔴 High Priority</option>
+      <option value="med" selected>🟡 Medium Priority</option>
+      <option value="low">🟢 Low Priority</option>
+    </select>
+    
+    <button class="btn" onclick="submitNewKanbanTask()">Create Task</button>
+    <button class="btn" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 0.5rem;" onclick="closeModal('kanbanModal')">Cancel</button>
   </div>
 </div>
 
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Modals -->
-<div class="modal-overlay" id="cmdModal">
-  <div class="modal-content" style="background: #020617;">
-    <h2 class="header-title">Developer Command Palette</h2>
-    <input type="text" id="cmdInput" class="input-css" placeholder="e.g., 'lock', 'sync', 'export', 'backup', 'standup'" autocomplete="off">
-    <div class="cmd-hint">Press <b>Esc</b> to close. Type command and press <b>Enter</b>.</div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="standupModal">
-  <div class="modal-content">
-    <h2 class="header-title" style="color: var(--accent); font-size: 1.2rem;">Daily EOD Commit</h2>
-    <label class="cmd-hint">What did you ship/accomplish today?</label>
-    <textarea id="standupWins" class="input-css" style="height: 60px; resize: none;"></textarea>
-    <label class="cmd-hint">Any blocks or distractions?</label>
-    <textarea id="standupBlocks" class="input-css" style="height: 60px; resize: none;"></textarea>
-    <label class="cmd-hint">Main focus for tomorrow?</label>
-    <textarea id="standupNext" class="input-css" style="height: 60px; resize: none;"></textarea>
-    <button class="btn" onclick="submitStandup()">Commit & Log Streak</button>
-    <button class="btn" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 0.5rem;" onclick="closeModal('standupModal')">Cancel</button>
-  </div>
-</div>
-
-<!-- Tabs -->
-<div class="nav-tabs">
-  <button class="nav-tab active" onclick="switchTab('dashboard')">Execution Engine</button>
-  <button class="nav-tab" onclick="switchTab('kanban')">Project Board</button>
-  <button class="nav-tab" onclick="switchTab('content')">Content & Growth</button>
-  <button class="nav-tab" onclick="switchTab('analytics')">OS Telemetry</button>
-</div>
-
-<!-- ================= 1. DASHBOARD VIEW ================= -->
-<div id="dashboard" class="view-section active">
-  <div class="card full-width">
-    <div class="header-flex"><h2 class="header-title">Countdown: 2027</h2><span class="cmd-hint">Press Ctrl+K for Palette</span></div>
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center;">
-      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="days">00</div><div class="cmd-hint">DAYS</div></div>
-      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="hours">00</div><div class="cmd-hint">HRS</div></div>
-      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="minutes">00</div><div class="cmd-hint">MIN</div></div>
-      <div style="background: #1e293b; padding: 1rem 0.5rem; border-radius: 8px;"><div style="font-size: 1.8rem; font-weight: 800; color: white;" id="seconds">00</div><div class="cmd-hint">SEC</div></div>
-    </div>
-  </div>
-
-  <!-- Day Page Navigator (New Day New Page) -->
-  <div class="card full-width" style="padding: 1rem 1.25rem;">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <button class="text-btn info" onclick="navigateDay(-1)" title="Previous Day">◀ Prev Day</button>
-        <button class="text-btn success" id="todayNavBtn" onclick="goToToday()" title="Jump to Today">⚡ Today</button>
-        <button class="text-btn info" onclick="navigateDay(1)" title="Next Day">Next Day ▶</button>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 0.9rem; font-weight: 700; color: var(--accent);" id="activeDayLabel">📅 Today: Tue Sep 01 2026</span>
-        <input type="date" id="datePickerInput" class="input-css" style="margin-bottom: 0; padding: 0.35rem 0.6rem; font-size: 0.8rem; width: auto;" onchange="onPickDate(event)">
-      </div>
-    </div>
-    <div id="archiveBanner" style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--info); border-radius: 8px; padding: 0.6rem 0.85rem; margin-top: 0.75rem; font-size: 0.85rem; color: var(--info); justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-      <span>📁 <b>Day Archive Page:</b> Showing saved tasks & execution for this specific date.</span>
-      <button class="text-btn success" onclick="goToToday()">⚡ Return to Today</button>
-    </div>
-  </div>
-
-  <!-- Deep Work Terminal with Stopwatch, Pomodoro & Pause/Resume -->
-  <div class="card timer-card">
-    <div class="header-flex">
-      <h2 class="header-title">Deep Work Terminal</h2>
-      <span class="cmd-hint" id="timerStatusHint" style="color: var(--accent); font-weight: 700;">Ready</span>
-    </div>
-    
-    <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 0.5rem; font-size: 0.85rem; flex-wrap: wrap;">
-      <label><input type="radio" name="timerMode" value="stopwatch" checked onchange="toggleMode()"> Stopwatch</label>
-      <label><input type="radio" name="timerMode" value="pomodoro" onchange="toggleMode()"> Pomodoro</label>
-    </div>
-
-    <input type="number" id="targetMinutes" class="input-css" style="display: none;" placeholder="Target (mins)" value="90">
-    <div class="timer-display" id="liveTimer">00:00:00</div>
-    
-    <select class="input-css" id="timerPillar" onchange="handleDropdownChange()">
-      <option value="💻 GSoC / Frontend Sprint">💻 GSoC / Frontend Sprint</option>
-      <option value="☕ Java DSA">☕ Java DSA</option>
-      <option value="👕 Gen AI T-Shirt Design">👕 Gen AI T-Shirt Design</option>
-      <option value="🎬 Content Creation">🎬 Content Creation</option>
-      <option value="📚 College Studies">📚 College Studies</option>
-      <option value="🏢 NEC Team KCites">🏢 NEC Team KCites</option>
-      <option value="🚀 E-Cell IITB Work">🚀 E-Cell IITB Work</option>
-      <option value="🌐 GSA Work">🌐 GSA Work</option>
-      <option value="custom" id="customOptionSelector">✍️ Custom Task...</option>
-    </select>
-    <input type="text" id="customInput" class="input-css" style="display: none;" placeholder="Enter custom task...">
-    
-    <button class="btn" id="timerBtn" onclick="toggleTimer()">Initialize Session</button>
-
-    <!-- Pause & Discard Controls when timer is active -->
-    <div id="activeTimerControls" style="display: none; gap: 0.6rem; margin-top: 0.65rem; width: 100%;">
-      <button class="btn" id="pauseTimerBtn" style="background: var(--warning); color: #000; flex: 1; padding: 0.85rem;" onclick="togglePauseTimer()">⏸️ Pause Session</button>
-      <button class="btn" id="cancelTimerBtn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); box-shadow: none; width: auto; padding: 0.85rem 1.2rem;" onclick="cancelTimer()" title="Discard session without logging">✕ Cancel</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="header-flex">
-      <h2 class="header-title">Live Sensor Pedometer</h2>
-      <div>
-        <button class="text-btn success" id="startPedometerBtn" onclick="initPedometer()">Initialize Sensors</button>
-        <button class="text-btn info" onclick="debugStep()">+1 (Test)</button>
-      </div>
-    </div>
-    <div class="step-display" id="stepCountDisplay">0</div>
-    <div class="cmd-hint" style="text-align: center; margin-bottom: 1rem;">DAILY STEPS</div>
-    <div class="burndown-bar"><div class="step-fill" id="stepProgressBar" style="width: 0%;"></div></div>
-    <div style="text-align: right; font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">Goal: 10,000</div>
-  </div>
-
-  <!-- Today's Deep Work Activity Log / Timeline -->
-  <div class="card full-width">
-    <div class="header-flex">
-      <div>
-        <h2 class="header-title">Deep Work Timeline</h2>
-        <span class="cmd-hint" id="todayFocusTotalSummary" style="color: var(--accent); font-weight: 600;">0 sessions • 0.0h focus logged</span>
-      </div>
-      <div style="display: flex; gap: 8px; align-items: center;">
-        <select id="workLogFilter" class="input-css" style="margin-bottom: 0; padding: 0.35rem 0.65rem; font-size: 0.75rem; width: auto;" onchange="renderWorkLogs()">
-          <option value="selected">Selected Day</option>
-          <option value="all">All Session History</option>
-        </select>
-      </div>
-    </div>
-    
-    <div class="scroll-list" id="workLogList" style="max-height: 320px;">
-      <!-- Populated dynamically -->
-    </div>
-  </div>
-
-  <!-- Winter Arc Daily Protocols & Custom Daily Checklist Card -->
-  <div class="card full-width">
-    <div class="header-flex">
-      <div>
-        <h2 class="header-title">Winter Arc: <span id="streakDisplay" style="color: var(--accent);">0 Streak</span></h2>
-        <div class="cmd-hint" id="dayCompletionScore">0/7 Protocols Completed</div>
-      </div>
-      <div style="display: flex; gap: 8px; align-items: center;">
-        <button class="text-btn success" onclick="addNewDailyTask()">+ Add Daily Task</button>
-        <button class="text-btn success" onclick="initiateStandup()">Log Day</button>
-        <button class="text-btn danger" onclick="resetHabits()">Reset</button>
-      </div>
-    </div>
-
-    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Core Daily Protocols</div>
-    <div class="scroll-list" id="habitList" style="margin-bottom: 1.25rem;">
-      <div class="list-item"><span>💧 1. 3L Water per day</span><input type="checkbox" data-id="wa1"></div>
-      <div class="list-item"><span>🍔 2. Clean diet (No junk / sugar)</span><input type="checkbox" data-id="wa2"></div>
-      <div class="list-item"><span>😴 3. 7-8 hours quality sleep</span><input type="checkbox" data-id="wa3"></div>
-      <div class="list-item"><span>🏋️ 4. 45 min Workout / Gym</span><input type="checkbox" data-id="wa4"></div>
-      <div class="list-item"><span>🚶 5. 10,000 steps daily</span><input type="checkbox" data-id="wa5"></div>
-      <div class="list-item"><span>📵 6. No phone during meals / morning</span><input type="checkbox" data-id="wa6"></div>
-      <div class="list-item"><span>🙏 7. Daily Gratitude & Reflection</span><input type="checkbox" data-id="wa7"></div>
-    </div>
-
-    <!-- Custom Daily Tasks For This Day -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; border-top: 1px solid var(--surface-border); padding-top: 0.75rem;">
-      <div style="font-size: 0.75rem; font-weight: 700; color: var(--info); text-transform: uppercase; letter-spacing: 1px;">Daily Custom Targets (<span id="customTaskCount">0</span>)</div>
-    </div>
-    <div class="scroll-list" id="customDailyTaskList">
-      <!-- Populated dynamically per day -->
-    </div>
-  </div>
-</div>
-
-<!-- ================= 2. KANBAN VIEW ================= -->
-<div id="kanban" class="view-section">
-  <div class="card full-width">
-    <div class="header-flex">
-      <h2 class="header-title">Project Sprint Board</h2>
-      <button class="text-btn success" onclick="addNewTask()">+ Add Task</button>
-    </div>
-    <div class="kanban-wrapper">
-      <div class="kanban-col" id="col-todo" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <div class="kanban-header">To Do</div>
-      </div>
-      <div class="kanban-col" id="col-active" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <div class="kanban-header" style="color: var(--warning);">Active</div>
-      </div>
-      <div class="kanban-col" id="col-done" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <div class="kanban-header" style="color: var(--accent);">Shipped</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ================= 3. CONTENT PIPELINE & GROWTH VIEW ================= -->
-<div id="content" class="view-section">
-  
-  <div class="blueprint-card full-width">
-    <h2 class="header-title" style="color: var(--info);">0 to 1,000 Followers Blueprint (30 Days)</h2>
-    <div class="blueprint-grid">
-      <div class="blueprint-step">
-        <strong style="color: #fff;">Phase 1: The Hook Test (Days 1-7)</strong><br>
-        Post 1x Reel daily. Focus strictly on broad tech concepts. Measure which hook format (Questions vs. Statements) retains viewers past 3 seconds.
-      </div>
-      <div class="blueprint-step">
-        <strong style="color: #fff;">Phase 2: Authority & Niche (Days 8-15)</strong><br>
-        Double down on the best-performing format. Introduce detailed carousels breaking down AI tools or DSA concepts. Provide pure value.
-      </div>
-      <div class="blueprint-step">
-        <strong style="color: #fff;">Phase 3: Viral Mechanics (Days 16-22)</strong><br>
-        Increase output. 1x Reel + 1x Story daily. Use trending tech audio. Implement "Tech vs Reality" or "How it actually works" comparison formats.
-      </div>
-      <div class="blueprint-step">
-        <strong style="color: #fff;">Phase 4: Community Building (Days 23-30)</strong><br>
-        Inject CTAs: "DM 'PROMPT' for my free AI design guide." Reply to every comment. Collaborate or tag larger tech pages to capture algorithmic overlap.
-      </div>
-    </div>
-  </div>
-
-  <div class="card full-width">
-    <div class="header-flex">
-      <h2 class="header-title">September Content Calendar</h2>
-      <span class="cmd-hint">Case Study Reels</span>
-    </div>
-    
-    <!-- Week 1: Meta -->
-    <div class="content-week">
-      <div class="content-week-title">Week 1: Meta & Consumer Internet Scalability</div>
-      
-      <details class="content-card">
-        <summary class="content-header">
-          <div><div class="content-meta">Reel 1 | M&A Strategy</div><div class="content-title" id="t-m1">How Zuckerberg Bought The Internet</div></div>
-          <input type="checkbox" data-content="m1" onchange="toggleContent('m1')" onclick="event.stopPropagation();">
-        </summary>
-        <div class="reel-script">
-          <strong>Hook:</strong> "Mark Zuckerberg didn't just build a social network; he bought out his entire competition."<br><br>
-          <strong>The Explanation:</strong> Facebook realized early that the shift to mobile was their biggest threat. Instead of building from scratch, they executed strategic acquisitions. They bought Instagram to dominate visual sharing, and WhatsApp to lock down global messaging. This created an impenetrable defensive moat in consumer internet.<br><br>
-          <strong>Call to Action:</strong> "What app do you think Meta will buy next? Let me know below."<br>
-          <strong>B-Roll:</strong> Screen recording of Instagram and WhatsApp icons merging into the Meta logo.
-        </div>
-      </details>
-
-      <details class="content-card">
-        <summary class="content-header">
-          <div><div class="content-meta">Reel 2 | Algorithms</div><div class="content-title" id="t-m2">The Secret Behind Meta's Targeted Ads</div></div>
-          <input type="checkbox" data-content="m2" onchange="toggleContent('m2')" onclick="event.stopPropagation();">
-        </summary>
-        <div class="reel-script">
-          <strong>Hook:</strong> "Ever feel like your phone is listening to your conversations? It’s not. The algorithm is just that terrifyingly good."<br><br>
-          <strong>The Explanation:</strong> Meta's ad algorithm is a masterpiece of predictive AI. It doesn't listen to your mic; it maps billions of data points—your scroll speed, the posts you hover over for 2 seconds, and the shared locations with your friends. It builds a psychological profile to predict your behavior before you even know what you want to buy.<br><br>
-          <strong>Call to Action:</strong> "Save this reel to remind yourself how the algorithm works."<br>
-          <strong>B-Roll:</strong> A complex network node animation connecting different user profiles.
-        </div>
-      </details>
-    </div>
-
-    <!-- Week 2: Gameskraft -->
-    <div class="content-week">
-      <div class="content-week-title">Week 2: Gameskraft & Indian Gaming</div>
-      
-      <details class="content-card">
-        <summary class="content-header">
-          <div><div class="content-meta">Reel 3 | Market Scale</div><div class="content-title" id="t-g1">How India Became a Mobile Gaming Giant</div></div>
-          <input type="checkbox" data-content="g1" onchange="toggleContent('g1')" onclick="event.stopPropagation();">
-        </summary>
-        <div class="reel-script">
-          <strong>Hook:</strong> "India is going through a massive online gaming revolution, and companies like Gameskraft are leading the charge."<br><br>
-          <strong>The Explanation:</strong> The secret to scaling consumer internet in India isn't just cheap data; it's localization. Gameskraft integrated regional languages and hyper-localized UX to penetrate Tier 2 and Tier 3 cities. Combine that with highly optimized backend engineering to handle millions of concurrent players on low-bandwidth networks, and you have a billion-dollar industry.<br><br>
-          <strong>Call to Action:</strong> "Follow for more breakdowns of Indian tech unicorns."<br>
-          <strong>B-Roll:</strong> Map of India lighting up with server connections, showing regional language text overlays.
-        </div>
-      </details>
-
-      <details class="content-card">
-        <summary class="content-header">
-          <div><div class="content-meta">Reel 4 | Tech Ops & Security</div><div class="content-title" id="t-g2">How Do You Stop Cheaters in Real-Money Games?</div></div>
-          <input type="checkbox" data-content="g2" onchange="toggleContent('g2')" onclick="event.stopPropagation();">
-        </summary>
-        <div class="reel-script">
-          <strong>Hook:</strong> "How do you prove an online game isn't rigged when real money is on the line?"<br><br>
-          <strong>The Explanation:</strong> It's all about cryptographic trust. Companies like Gameskraft use internationally certified Random Number Generators (RNG) to ensure every card dealt or dice rolled is mathematically unpredictable. Furthermore, they deploy AI-driven 'zero-bot' policies that analyze micro-movements to instantly ban automated scripts and ensure fair play.<br><br>
-          <strong>Call to Action:</strong> "Have you ever suspected a bot in your lobby? Drop a 🤖 in the comments."<br>
-          <strong>B-Roll:</strong> Screen recording of a code editor showing a randomizer algorithm, transitioning to a "Certified Fair Play" badge.
-        </div>
-      </details>
-    </div>
-
-  </div>
-</div>
-
-<!-- ================= 4. ANALYTICS & RESILIENCE VIEW ================= -->
-<div id="analytics" class="view-section">
-  <div class="card full-width">
-    <div class="header-flex">
-      <h2 class="header-title">Data Resilience & Cloud Backup</h2>
-      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-        <input type="file" id="importJson" style="display:none" accept=".json" onchange="importData(event)">
-        <button class="text-btn info" onclick="pullFromFirebase(true)">☁️ Sync From Cloud</button>
-        <button class="text-btn success" onclick="pushToFirebase(true)">☁️ Backup To Cloud</button>
-        <button class="text-btn info" onclick="document.getElementById('importJson').click()">⬆ Restore JSON</button>
-        <button class="text-btn success" onclick="exportData('json')">⬇ Backup JSON</button>
-        <button class="text-btn success" onclick="exportData('csv')">⬇ Export CSV</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="card full-width">
-    <div class="header-flex">
-      <h2 class="header-title">OS Telemetry: Sprint Performance & Daily Commits</h2>
-      <span class="cmd-hint" id="telemetryStatsSummary">0 Days Committed</span>
-    </div>
-    <div id="telemetryCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
-      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
-        <div class="cmd-hint">TOTAL SPRINT COMMITS</div>
-        <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-top: 4px;" id="statTotalCommits">0</div>
-      </div>
-      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
-        <div class="cmd-hint">TOTAL STEPS LOGGED</div>
-        <div style="font-size: 1.5rem; font-weight: 800; color: var(--info); margin-top: 4px;" id="statTotalSteps">0</div>
-      </div>
-      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--warning); margin-top: 4px;" id="statAvgHabits">0%</div>
-      <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid var(--surface-border);">
-        <div class="cmd-hint">TOTAL DEEP WORK</div>
-        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 4px;" id="statTotalDeepWork">0.0h</div>
-      </div>
-    </div>
-    
-    <div style="overflow-x: auto;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;" id="telemetryTable">
-        <thead>
-          <tr style="border-bottom: 1px solid var(--surface-border); color: var(--text-muted);">
-            <th style="padding: 0.6rem 0.8rem;">DATE</th>
-            <th style="padding: 0.6rem 0.8rem;">STREAK</th>
-            <th style="padding: 0.6rem 0.8rem;">STEPS (10K)</th>
-            <th style="padding: 0.6rem 0.8rem;">HABITS (7/7)</th>
-            <th style="padding: 0.6rem 0.8rem;">DEEP WORK</th>
-            <th style="padding: 0.6rem 0.8rem;">WINS / SHIP</th>
-          </tr>
-        </thead>
-        <tbody id="telemetryTableBody">
-          <tr><td colspan="6" style="padding: 1rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits yet. Complete daily protocols and submit EOD Standup.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card full-width">
-    <div class="header-flex">
-      <h2 class="header-title">Hourly Focus Distribution (Peak Velocity)</h2>
-      <span class="cmd-hint" id="peakHourDisplay">Peak: --</span>
-    </div>
-    <div class="hourly-chart" id="hourlyChart"></div>
-  </div>
-
-  <div class="card">
-    <div class="header-flex"><h2 class="header-title">Sept-Dec 2026 Sprint Heatmap</h2></div>
-    <div class="heatmap-grid" id="heatmapGrid"></div>
-  </div>
-
-  <div class="card">
-    <h2 class="header-title" style="margin-bottom: 1rem;">Macro Sprint Burndown</h2>
-    <div style="margin-bottom: 1rem;"><div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>💻 Frontend/Open Source (150h)</span><span id="burnFrontend">0%</span></div><div class="burndown-bar"><div class="burndown-fill" id="fillFrontend"></div></div></div>
-    <div style="margin-bottom: 1rem;"><div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>☕ Java DSA (100h)</span><span id="burnJava">0%</span></div><div class="burndown-bar"><div class="burndown-fill" id="fillJava"></div></div></div>
-    <div style="margin-bottom: 1rem;"><div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>👕 AI Design / T-Shirts (50h)</span><span id="burnDesign">0%</span></div><div class="burndown-bar"><div class="burndown-fill" id="fillDesign"></div></div></div>
-  </div>
-</div>
-
+<!-- ================= JAVASCRIPT CORE ENGINE ================= -->
 <script>
-  /* ================= 0. SECURITY ACCESS PORTAL ================= */
+  /* ================= 0. AMBIENT CANVAS PARTICLES ================= */
+  const canvas = document.getElementById('ambientCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class Particle {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.alpha = Math.random() * 0.4 + 0.1;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+        this.reset();
+      }
+    }
+    draw() {
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+  function animateCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateCanvas);
+  }
+  animateCanvas();
+
+  /* ================= 1. THEMES & SOUND FX SYNTHESIS ================= */
+  let soundEnabled = localStorage.getItem('elite_sound_enabled') !== 'false';
+
+  function updateSoundIcon() {
+    const icon = document.getElementById('soundIcon');
+    if (icon) icon.innerText = soundEnabled ? '🔊' : '🔇';
+  }
+  updateSoundIcon();
+
+  function toggleAudioFeedback() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('elite_sound_enabled', soundEnabled);
+    updateSoundIcon();
+    showToast(soundEnabled ? 'Audio Feedback Enabled' : 'Audio Feedback Muted');
+    if (soundEnabled) playSynthChime(523.25, 0.1);
+  }
+
+  // Web Audio Synthesizer
+  let audioCtx = null;
+  function getAudioContext() {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) audioCtx = new AudioContextClass();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playSynthClick() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.04);
+    } catch(e) {}
+  }
+
+  function playSynthChime(freq = 659.25, dur = 0.25) {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + dur);
+    } catch(e) {}
+  }
+
+  // Ambient Focus Sound Generators (Pure Web Audio Nodes)
+  let activeAmbient = null;
+  let ambientNodes = null;
+
+  function toggleAmbientSound(type) {
+    const ctx = getAudioContext();
+    if (!ctx) {
+      alert("Audio context not supported in this browser.");
+      return;
+    }
+
+    if (activeAmbient === type) {
+      // Stop
+      stopAmbientSound();
+      showToast("Ambient sound stopped.");
+      return;
+    }
+
+    stopAmbientSound();
+    activeAmbient = type;
+
+    // Highlight button
+    document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+    if (type === 'rain') document.getElementById('ambientRainBtn')?.classList.add('active');
+    if (type === 'binaural') document.getElementById('ambientBinauralBtn')?.classList.add('active');
+    if (type === 'white') document.getElementById('ambientWhiteBtn')?.classList.add('active');
+
+    if (type === 'white' || type === 'rain') {
+      const bufferSize = ctx.sampleRate * 2;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let lastOut = 0.0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        if (type === 'rain') {
+          // Pink / Brown filtered noise
+          lastOut = (lastOut + (0.02 * white)) / 1.02;
+          data[i] = lastOut * 3.5;
+        } else {
+          // Soft white noise
+          data[i] = white * 0.12;
+        }
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+      const gain = ctx.createGain();
+      gain.gain.value = type === 'rain' ? 0.25 : 0.08;
+
+      if (type === 'rain') {
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1000;
+        noise.connect(filter);
+        filter.connect(gain);
+      } else {
+        noise.connect(gain);
+      }
+
+      gain.connect(ctx.destination);
+      noise.start();
+      ambientNodes = { source: noise, gain: gain };
+      showToast(`Started: ${type === 'rain' ? 'Rain Sounds' : 'White Noise'}`);
+    } else if (type === 'binaural') {
+      // 40Hz Gamma / Deep concentration binaural beat (200Hz left, 240Hz right)
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      gain.gain.value = 0.1;
+
+      osc1.frequency.value = 200;
+      osc2.frequency.value = 240;
+
+      const merger = ctx.createChannelMerger(2);
+      osc1.connect(merger, 0, 0);
+      osc2.connect(merger, 0, 1);
+      merger.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      ambientNodes = { sources: [osc1, osc2], gain: gain };
+      showToast("Started: 40Hz Alpha/Gamma Focus Waves");
+    }
+  }
+
+  function stopAmbientSound() {
+    if (ambientNodes) {
+      try {
+        if (ambientNodes.source) ambientNodes.source.stop();
+        if (ambientNodes.sources) ambientNodes.sources.forEach(s => s.stop());
+      } catch(e) {}
+      ambientNodes = null;
+    }
+    activeAmbient = null;
+    document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('elite_theme', theme);
+    document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+    const activeDot = document.querySelector(`.theme-dot.${theme}`);
+    if (activeDot) activeDot.classList.add('active');
+    playSynthClick();
+  }
+
+  const savedTheme = localStorage.getItem('elite_theme') || 'emerald';
+  setTheme(savedTheme);
+
+  /* ================= 2. PASSCODE & SECURITY PORTAL ================= */
   const PORTAL_PASSCODE = "112233";
 
   function checkPortalAuth() {
@@ -738,7 +2453,7 @@
       overlay.classList.remove('unlocked');
       const input = document.getElementById('passcodeInput');
       input.value = '';
-      setTimeout(() => input.focus(), 100);
+      setTimeout(() => input.focus(), 150);
     }
   }
 
@@ -752,9 +2467,13 @@
       errorEl.innerText = '';
       sessionStorage.setItem('elite_os_auth', 'true');
       document.getElementById('loginPortalOverlay').classList.add('unlocked');
-      showToast("Access Granted: Welcome to Elite OS");
+      playSynthChime(880, 0.3);
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+      }
+      showToast("Access Granted: Welcome to Winter Arc Elite OS");
     } else {
-      errorEl.innerText = "Access Denied: Invalid Security Passcode";
+      errorEl.innerText = "ACCESS DENIED: Invalid Passcode";
       card.classList.remove('shake-anim');
       void card.offsetWidth;
       card.classList.add('shake-anim');
@@ -764,22 +2483,23 @@
   }
 
   function appendPin(digit) {
+    playSynthClick();
     const input = document.getElementById('passcodeInput');
     if (input.value.length < 8) {
       input.value += digit;
-      if (input.value.length === 6) {
-        verifyPasscode();
-      }
+      if (input.value.length === 6) verifyPasscode();
     }
   }
 
   function deletePin() {
+    playSynthClick();
     const input = document.getElementById('passcodeInput');
     input.value = input.value.slice(0, -1);
     document.getElementById('passcodeError').innerText = '';
   }
 
   function clearPin() {
+    playSynthClick();
     const input = document.getElementById('passcodeInput');
     input.value = '';
     document.getElementById('passcodeError').innerText = '';
@@ -795,20 +2515,42 @@
   const passcodeInput = document.getElementById('passcodeInput');
   if (passcodeInput) {
     passcodeInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        verifyPasscode();
-      }
+      if (e.key === 'Enter') verifyPasscode();
     });
     passcodeInput.addEventListener('input', () => {
       document.getElementById('passcodeError').innerText = '';
-      if (passcodeInput.value.length === 6) {
-        verifyPasscode();
-      }
+      if (passcodeInput.value.length === 6) verifyPasscode();
     });
   }
   checkPortalAuth();
 
-  /* ================= FIREBASE CONFIGURATION & INITIALIZATION ================= */
+  /* ================= 3. MOTIVATIONAL QUOTE ENGINE ================= */
+  const QUOTES = [
+    { text: "The Winter Arc isn't about motivation. It's about ruthless, undeniable execution.", author: "Elite Mindset" },
+    { text: "You don't rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
+    { text: "Discipline equals freedom. Wake up with intent, build until you conquer.", author: "Jocko Willink" },
+    { text: "While they celebrate in comfort, you architect your empire in silence.", author: "2027 Protocol" },
+    { text: "Consistency will make you look like a genius in two years.", author: "Naval Ravikant" },
+    { text: "Small daily disciplines repeated with consistency lead to monumental victories.", author: "Robin Sharma" }
+  ];
+
+  let currentQuoteIdx = 0;
+  function rotateQuote() {
+    currentQuoteIdx = (currentQuoteIdx + 1) % QUOTES.length;
+    const q = QUOTES[currentQuoteIdx];
+    const el = document.getElementById('quoteDisplay');
+    if (el) {
+      el.style.opacity = 0;
+      setTimeout(() => {
+        el.innerHTML = `"${q.text}" — <span class="quote-author">${q.author}</span>`;
+        el.style.transition = 'opacity 0.3s ease';
+        el.style.opacity = 1;
+      }, 150);
+    }
+    playSynthClick();
+  }
+
+  /* ================= 4. FIREBASE CLOUD REALTIME SYNC ================= */
   const firebaseConfig = {
     apiKey: "AIzaSyAy6gYYSEfHknla-34582enmEBNldrVZ48",
     authDomain: "winter-arc-ae25d.firebaseapp.com",
@@ -836,7 +2578,7 @@
     setTimeout(() => {
       toast.style.transition = 'opacity 0.3s, transform 0.3s';
       toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
+      toast.style.transform = 'translateY(12px)';
       setTimeout(() => toast.remove(), 300);
     }, duration);
   }
@@ -856,17 +2598,12 @@
       auth = firebase.auth();
       isFirebaseReady = true;
 
-      auth.signInAnonymously().then(cred => {
-        console.log('[Firebase] Signed in as:', cred.user.uid);
-      }).catch(err => {
-        console.warn('[Firebase Auth Note]', err.message);
-      });
+      auth.signInAnonymously().catch(err => console.warn('[Firebase Auth]', err.message));
 
       const connectedRef = rtdb.ref(".info/connected");
       connectedRef.on("value", (snap) => {
         if (snap.val() === true) {
           updateCloudStatusUI('online', 'Cloud Synced');
-          console.log('[Firebase] Realtime Database connected.');
         } else {
           updateCloudStatusUI('offline', 'Local / Offline');
         }
@@ -879,7 +2616,7 @@
           applyCloudData(cloudData);
         }
       }, (error) => {
-        console.error('[Firebase Read Error]', error);
+        console.error('[Firebase Read]', error);
         updateCloudStatusUI('error', 'Cloud Rule Error');
       });
     }
@@ -929,7 +2666,7 @@
       .catch(err => {
         console.error('[Firebase Sync Error]', err);
         updateCloudStatusUI('error', 'Sync Failed');
-        if (manual) alert('Firebase sync failed: ' + err.message + '\nEnsure Realtime Database Rules allow read/write.');
+        if (manual) alert('Firebase sync failed: ' + err.message);
       });
   }
 
@@ -945,41 +2682,31 @@
     isReceivingCloudData = true;
 
     try {
-      if (data.dailyArchives) {
-        localStorage.setItem('dailyArchives', JSON.stringify(data.dailyArchives));
-      }
-
+      if (data.dailyArchives) localStorage.setItem('dailyArchives', JSON.stringify(data.dailyArchives));
       if (data.habits) {
-        Object.keys(data.habits).forEach(id => {
-          localStorage.setItem(id, data.habits[id]);
-        });
+        Object.keys(data.habits).forEach(id => localStorage.setItem(id, data.habits[id]));
       }
-
       if (data.todaySteps !== undefined && data.stepDate === getSystemDateKey()) {
         steps = data.todaySteps;
         localStorage.setItem('todaySteps', steps);
         updateStepUI();
       }
-
       if (data.arcStreak !== undefined) {
         currentStreak = data.arcStreak;
         localStorage.setItem('arcStreak', currentStreak);
-        document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
+        updateStreakDisplays();
       }
       if (data.loggedDates) {
         loggedDates = data.loggedDates;
         localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
       }
-      if (data.lastActiveDate) {
-        localStorage.setItem('lastActiveDate', data.lastActiveDate);
-      }
+      if (data.lastActiveDate) localStorage.setItem('lastActiveDate', data.lastActiveDate);
 
       if (data.kanbanState) {
         kanbanTasks = data.kanbanState;
         localStorage.setItem('kanbanState', JSON.stringify(kanbanTasks));
         renderKanban();
       }
-
       if (data.enggLogs) {
         localStorage.setItem('enggLogs', JSON.stringify(data.enggLogs));
         renderWorkLogs();
@@ -988,13 +2715,8 @@
         localStorage.setItem('customCats', JSON.stringify(data.customCats));
         loadCustomCategories();
       }
-
-      if (data.standupLogs) {
-        localStorage.setItem('standupLogs', JSON.stringify(data.standupLogs));
-      }
-      if (data.telemetryHistory) {
-        localStorage.setItem('telemetryHistory', JSON.stringify(data.telemetryHistory));
-      }
+      if (data.standupLogs) localStorage.setItem('standupLogs', JSON.stringify(data.standupLogs));
+      if (data.telemetryHistory) localStorage.setItem('telemetryHistory', JSON.stringify(data.telemetryHistory));
 
       if (data.contentState) {
         Object.keys(data.contentState).forEach(id => {
@@ -1031,41 +2753,56 @@
           if (manual) showToast('Data successfully pulled from Firebase!');
         } else {
           updateCloudStatusUI('online', 'Connected (Empty)');
-          if (manual) alert('No remote data found in Firebase. Try "Backup To Cloud" first.');
+          if (manual) alert('No remote data found in Firebase. Try "Backup To Firebase" first.');
         }
       })
       .catch(err => {
-        console.error('[Firebase Pull Error]', err);
         updateCloudStatusUI('error', 'Pull Failed');
-        if (manual) alert('Error pulling data from Firebase: ' + err.message);
+        if (manual) alert('Error pulling data: ' + err.message);
       });
   }
 
   function manualCloudSync() {
     if (!isFirebaseReady) {
-      alert("Firebase is currently offline or unreachable. Check your internet connection.");
+      alert("Firebase is currently offline or unreachable.");
       return;
     }
     pushToFirebase(true);
   }
 
-  /* ================= CORE OS ROUTING ================= */
+  /* ================= 5. TAB ROUTING & ZEN MODE ================= */
   function switchTab(tabId) {
+    playSynthClick();
     document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-    if (window.event && window.event.target && window.event.target.classList.contains('nav-tab')) {
-      window.event.target.classList.add('active');
-    } else {
-      const targetBtn = Array.from(document.querySelectorAll('.nav-tab')).find(b => b.getAttribute('onclick')?.includes(tabId));
-      if (targetBtn) targetBtn.classList.add('active');
-    }
+    
+    const targetBtn = Array.from(document.querySelectorAll('.nav-tab')).find(b => b.getAttribute('onclick')?.includes(tabId));
+    if (targetBtn) targetBtn.classList.add('active');
+    
     const targetSection = document.getElementById(tabId);
     if (targetSection) targetSection.classList.add('active');
     if (tabId === 'analytics') generateAnalytics();
   }
-  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-  /* ================= COUNTDOWN TIMER ================= */
+  function closeModal(id) {
+    playSynthClick();
+    document.getElementById(id).style.display = 'none';
+  }
+
+  function toggleZenMode() {
+    playSynthClick();
+    const overlay = document.getElementById('zenModeOverlay');
+    const isZen = overlay.classList.toggle('active');
+    if (isZen) {
+      const taskVal = document.getElementById('timerPillar').value === 'custom' ? document.getElementById('customInput').value.trim() : document.getElementById('timerPillar').value;
+      document.getElementById('zenTaskName').innerText = taskVal || "Deep Work Sprint";
+      document.getElementById('zenTimerDisplay').innerText = document.getElementById('liveTimer').innerText;
+      document.getElementById('zenPauseBtn').innerText = isTimerPaused ? "▶️ Resume" : "⏸️ Pause";
+      showToast("Zen Mode Active (Press Esc to exit)");
+    }
+  }
+
+  /* ================= 6. COUNTDOWN ENGINE ================= */
   const targetDate = new Date("January 1, 2027 00:00:00").getTime();
   
   function updateCountdown() {
@@ -1082,10 +2819,10 @@
     document.getElementById("minutes").innerText = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
     document.getElementById("seconds").innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
   }
-  updateCountdown(); 
+  updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  /* ================= 1. DAY-BY-DAY ARCHIVING & "NEW DAY NEW PAGE" ================= */
+  /* ================= 7. PROTOCOLS & DAY-BY-DAY ARCHIVES ================= */
   const HABIT_IDS = ['wa1', 'wa2', 'wa3', 'wa4', 'wa5', 'wa6', 'wa7'];
   const stepTarget = 10000;
   let steps = parseInt(localStorage.getItem('todaySteps')) || 0;
@@ -1093,9 +2830,12 @@
   let lastStepTime = 0;
   let currentStreak = parseInt(localStorage.getItem('arcStreak')) || 0;
   let loggedDates = JSON.parse(localStorage.getItem('loggedDates')) || [];
-
-  // Active Day Page state
   let viewingDate = new Date();
+
+  function updateStreakDisplays() {
+    const el = document.getElementById('heroStreakBadge');
+    if (el) el.innerText = `🔥 ${currentStreak} DAY STREAK`;
+  }
 
   function getSystemDateKey(dt = new Date()) {
     return dt.toDateString();
@@ -1161,7 +2901,6 @@
       updateStepUI();
       renderActiveDayPage();
       renderWorkLogs();
-      console.log(`[Elite OS] New Day, New Page initialized for date: ${today}`);
       debouncePushToFirebase();
     } else if (!lastDate) {
       localStorage.setItem('stepDate', today);
@@ -1170,6 +2909,7 @@
   }
 
   function navigateDay(offset) {
+    playSynthClick();
     const newDt = new Date(viewingDate);
     newDt.setDate(newDt.getDate() + offset);
     viewingDate = newDt;
@@ -1177,6 +2917,7 @@
   }
 
   function goToToday() {
+    playSynthClick();
     viewingDate = new Date();
     renderActiveDayPage();
   }
@@ -1201,7 +2942,6 @@
     if (datePicker) datePicker.value = getISODateKey(viewingDate);
     if (labelEl) {
       labelEl.innerText = isToday ? `📅 Today: ${selectedKey}` : `📅 ${selectedKey}`;
-      labelEl.style.color = isToday ? 'var(--accent)' : 'var(--info)';
     }
 
     if (bannerEl) bannerEl.style.display = isToday ? 'none' : 'flex';
@@ -1210,13 +2950,15 @@
     const archives = getDailyArchives();
     const dayData = isToday ? null : (archives[selectedKey] || { habits: {}, customTasks: [], steps: 0 });
 
-    // 1. Render Habits for active day
+    // 1. Render Habits
     let completedCount = 0;
     HABIT_IDS.forEach(id => {
       const box = document.querySelector(`input[data-id="${id}"]`);
+      const row = document.getElementById('item-' + id);
       if (box) {
         const val = isToday ? (localStorage.getItem(id) === 'true') : Boolean(dayData?.habits?.[id]);
         box.checked = val;
+        if (row) row.classList.toggle('completed', val);
         if (val) completedCount++;
       }
     });
@@ -1233,11 +2975,11 @@
 
     if (customListEl) {
       if (customTasks.length === 0) {
-        customListEl.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 0.75rem;">No custom daily tasks for this day. Click "+ Add Daily Task" to plan today's specific goals.</div>`;
+        customListEl.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">No custom daily tasks for this day. Click "+ Add Custom Task" to plan today's targets.</div>`;
       } else {
         customListEl.innerHTML = customTasks.map(t => `
-          <div class="list-item">
-            <span style="${t.done ? 'text-decoration: line-through; color: var(--text-muted);' : ''}">${t.text}</span>
+          <div class="list-item ${t.done ? 'completed' : ''}">
+            <span>${t.text}</span>
             <div style="display: flex; align-items: center; gap: 10px;">
               <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleCustomDailyTask('${t.id}')">
               <button class="delete-log-btn" onclick="deleteCustomDailyTask('${t.id}')" title="Remove task">✕</button>
@@ -1250,9 +2992,10 @@
     renderWorkLogs();
   }
 
-  // Handle habit checkbox changes
+  // Handle habit changes
   document.querySelectorAll('#habitList input[type="checkbox"]').forEach(box => {
     box.addEventListener('change', () => {
+      playSynthClick();
       const id = box.dataset.id;
       const todayKey = getSystemDateKey(new Date());
       const selectedKey = getSystemDateKey(viewingDate);
@@ -1268,20 +3011,30 @@
         archives[selectedKey].habits[id] = box.checked;
         saveDailyArchives(archives);
       }
+
+      if (box.checked) {
+        playSynthChime(659.25, 0.2);
+        const allCompleted = HABIT_IDS.every(hid => (isToday ? localStorage.getItem(hid) === 'true' : archives[selectedKey]?.habits?.[hid]));
+        if (allCompleted && typeof confetti === 'function') {
+          confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+          showToast("🏆 ALL 7 DAILY PROTOCOLS COMPLETED!");
+        }
+      }
+
       renderActiveDayPage();
       debouncePushToFirebase();
     });
   });
 
   function resetHabits() {
+    if (!confirm("Reset today's habit checklist?")) return;
+    playSynthClick();
     const todayKey = getSystemDateKey(new Date());
     const selectedKey = getSystemDateKey(viewingDate);
     const isToday = selectedKey === todayKey;
 
     if (isToday) {
-      HABIT_IDS.forEach(id => {
-        localStorage.setItem(id, 'false');
-      });
+      HABIT_IDS.forEach(id => localStorage.setItem(id, 'false'));
       saveCurrentDaySnapshot();
     } else {
       const archives = getDailyArchives();
@@ -1295,9 +3048,10 @@
   }
 
   function addNewDailyTask() {
-    const text = prompt("Enter custom objective/task for this day:");
+    const text = prompt("Enter daily objective or target:");
     if (!text || !text.trim()) return;
 
+    playSynthClick();
     const todayKey = getSystemDateKey(new Date());
     const selectedKey = getSystemDateKey(viewingDate);
     const isToday = selectedKey === todayKey;
@@ -1318,9 +3072,11 @@
     }
     renderActiveDayPage();
     debouncePushToFirebase();
+    showToast("Daily target added.");
   }
 
   function toggleCustomDailyTask(taskId) {
+    playSynthClick();
     const todayKey = getSystemDateKey(new Date());
     const selectedKey = getSystemDateKey(viewingDate);
     const isToday = selectedKey === todayKey;
@@ -1342,6 +3098,7 @@
   }
 
   function deleteCustomDailyTask(taskId) {
+    playSynthClick();
     const todayKey = getSystemDateKey(new Date());
     const selectedKey = getSystemDateKey(viewingDate);
     const isToday = selectedKey === todayKey;
@@ -1362,27 +3119,33 @@
     debouncePushToFirebase();
   }
 
-  /* ================= PEDOMETER SENSORS & LOGIC ================= */
+  /* ================= 8. LIVE SENSOR PEDOMETER ================= */
   function updateStepUI() {
     document.getElementById('stepCountDisplay').innerText = steps.toLocaleString();
+    const curLabel = document.getElementById('stepCurrentLabel');
+    if (curLabel) curLabel.innerText = steps.toLocaleString();
+
     let pct = Math.min((steps / stepTarget) * 100, 100);
     const bar = document.getElementById('stepProgressBar');
-    bar.style.width = pct + '%';
-    if (steps >= stepTarget) {
-      bar.style.background = 'var(--accent)';
-      const stepBox = document.querySelector('input[data-id="wa5"]');
-      if (stepBox && !stepBox.checked) {
-        stepBox.checked = true;
-        localStorage.setItem('wa5', 'true');
-        saveCurrentDaySnapshot();
-        debouncePushToFirebase();
+    if (bar) {
+      bar.style.width = pct + '%';
+      if (steps >= stepTarget) {
+        const stepBox = document.querySelector('input[data-id="wa5"]');
+        if (stepBox && !stepBox.checked) {
+          stepBox.checked = true;
+          localStorage.setItem('wa5', 'true');
+          saveCurrentDaySnapshot();
+          debouncePushToFirebase();
+          renderActiveDayPage();
+          if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60 });
+          showToast("🏃 10,000 Step Goal Achieved!");
+        }
       }
-    } else {
-      bar.style.background = 'var(--info)';
     }
   }
 
-  function debugStep(increment = 1) {
+  function debugStep(increment = 100) {
+    playSynthClick();
     steps += increment;
     localStorage.setItem('todaySteps', steps);
     updateStepUI();
@@ -1391,29 +3154,28 @@
   }
 
   function initPedometer() {
+    playSynthClick();
     const btn = document.getElementById('startPedometerBtn');
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-      alert("Note: Mobile hardware sensors require HTTPS. Use the test button for local browser testing.");
-    }
-
     if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
       DeviceMotionEvent.requestPermission().then(permissionState => {
         if (permissionState === 'granted') {
           window.addEventListener('devicemotion', handleMotion);
           btn.innerText = "Sensors Active";
           btn.style.color = "var(--accent)";
+          showToast("Motion sensors linked successfully.");
         } else {
-          alert("Sensor permission denied by user.");
+          alert("Motion sensor permission denied.");
         }
       }).catch(err => {
-        alert("Permission request failed. Ensure you are on an HTTPS connection.");
+        alert("Sensor error. Note: Hardware sensors require HTTPS on mobile browsers.");
       });
     } else if ('DeviceMotionEvent' in window) {
       window.addEventListener('devicemotion', handleMotion);
       btn.innerText = "Sensors Active";
       btn.style.color = "var(--accent)";
+      showToast("Motion sensors active.");
     } else { 
-      alert("DeviceMotionEvent API not supported on this browser/device."); 
+      alert("DeviceMotionEvent is not supported on this browser."); 
     }
   }
 
@@ -1435,92 +3197,66 @@
     lastAccel = mag;
   }
 
-  // Run on Boot
+  // Boot Setup
   checkDailyMidnightReset();
   updateStepUI();
   renderActiveDayPage();
-  document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
-
+  updateStreakDisplays();
   setInterval(checkDailyMidnightReset, 30000);
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) checkDailyMidnightReset();
-  });
 
-  /* ================= 2. MICRO-KANBAN BOARD ================= */
-  let kanbanTasks = JSON.parse(localStorage.getItem('kanbanState')) || { todo: [], active: [], done: [] };
-
-  function renderKanban() {
-    ['todo', 'active', 'done'].forEach(colId => {
-      const col = document.getElementById('col-' + colId);
-      if (!col) return;
-      col.innerHTML = col.firstElementChild.outerHTML; 
-      (kanbanTasks[colId] || []).forEach(task => {
-        const div = document.createElement('div');
-        div.className = 'task-card';
-        div.draggable = true;
-        div.innerText = task.text;
-        div.id = task.id;
-        div.ondragstart = drag;
-        col.appendChild(div);
-      });
-    });
-  }
-
-  function addNewTask() {
-    const text = prompt("Enter new task:");
-    if (text) {
-      if (!kanbanTasks.todo) kanbanTasks.todo = [];
-      kanbanTasks.todo.push({ id: 'task_' + Date.now(), text: text });
-      saveKanban();
-    }
-  }
-  function saveKanban() {
-    localStorage.setItem('kanbanState', JSON.stringify(kanbanTasks));
-    renderKanban();
-    debouncePushToFirebase();
-  }
-  function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-    ev.target.classList.add('dragging');
-  }
-  function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
-  
-  function drop(ev) {
-    ev.preventDefault();
-    document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
-    const taskId = ev.dataTransfer.getData("text");
-    const targetCol = ev.currentTarget.id.replace('col-', '');
-    let movedTask = null;
-    ['todo', 'active', 'done'].forEach(c => {
-      if (!kanbanTasks[c]) kanbanTasks[c] = [];
-      const idx = kanbanTasks[c].findIndex(t => t.id === taskId);
-      if (idx > -1) { movedTask = kanbanTasks[c].splice(idx, 1)[0]; }
-    });
-    if (movedTask) {
-      if (!kanbanTasks[targetCol]) kanbanTasks[targetCol] = [];
-      kanbanTasks[targetCol].push(movedTask);
-      saveKanban();
-    }
-  }
-  renderKanban(); 
-
-  /* ================= 3. TIMER & WORK LOG TIMELINE (WITH PAUSE / RESUME) ================= */
+  /* ================= 9. 2026 DEEP WORK COCKPIT ================= */
   let interval = null, elapsedSeconds = 0, currentTask = "";
   let isPomodoro = false;
+  let pomodoroMinutes = 25;
   let isTimerPaused = false;
   let sessionStartTime = null;
 
-  function toggleMode() {
+  function setTimerMode(mode) {
     if (interval || isTimerPaused) {
       alert("Please end or reset the active session before switching modes.");
       return;
     }
-    isPomodoro = document.querySelector('input[name="timerMode"]:checked').value === 'pomodoro';
-    document.getElementById('targetMinutes').style.display = isPomodoro ? 'block' : 'none';
-    document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
+    playSynthClick();
+    isPomodoro = mode === 'pomodoro';
+    document.getElementById('btnModeStopwatch').classList.toggle('active', !isPomodoro);
+    document.getElementById('btnModePomodoro').classList.toggle('active', isPomodoro);
+    document.getElementById('pomoPresets').style.display = isPomodoro ? 'flex' : 'none';
+    document.getElementById('timerModeLabel').innerText = isPomodoro ? `${pomodoroMinutes}M POMODORO` : "FOCUS SESSION";
+    
+    updateTimerDisplayUI();
+  }
+
+  function setPomodoroDuration(mins) {
+    if (interval || isTimerPaused) return;
+    playSynthClick();
+    pomodoroMinutes = mins;
+    document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('timerModeLabel').innerText = `${pomodoroMinutes}M POMODORO`;
+    updateTimerDisplayUI();
+  }
+
+  function updateTimerDisplayUI() {
+    let totalSecs = isPomodoro ? pomodoroMinutes * 60 : elapsedSeconds;
+    let displaySecs = isPomodoro ? Math.max(pomodoroMinutes * 60 - elapsedSeconds, 0) : elapsedSeconds;
+    
+    const timeStr = formatTime(displaySecs);
+    document.getElementById("liveTimer").innerText = timeStr;
+    const zenDisplay = document.getElementById("zenTimerDisplay");
+    if (zenDisplay) zenDisplay.innerText = timeStr;
+
+    // Update circular SVG dashoffset
+    const circle = document.getElementById('timerProgressCircle');
+    if (circle) {
+      const circumference = 691;
+      let ratio = isPomodoro ? (elapsedSeconds / (pomodoroMinutes * 60)) : ((elapsedSeconds % 3600) / 3600);
+      ratio = Math.min(Math.max(ratio, 0), 1);
+      circle.style.strokeDashoffset = circumference - (ratio * circumference);
+    }
   }
 
   function handleDropdownChange() {
+    playSynthClick();
     document.getElementById('customInput').style.display = document.getElementById('timerPillar').value === 'custom' ? 'block' : 'none';
   }
 
@@ -1545,18 +3281,20 @@
 
   function togglePauseTimer() {
     if (!interval && !isTimerPaused) return;
+    playSynthClick();
 
     const pauseBtn = document.getElementById("pauseTimerBtn");
+    const zenPauseBtn = document.getElementById("zenPauseBtn");
     const hintEl = document.getElementById("timerStatusHint");
     const timerDisplay = document.getElementById("liveTimer");
 
     if (!isTimerPaused) {
-      // Pause
       clearInterval(interval);
       interval = null;
       isTimerPaused = true;
       pauseBtn.innerText = "▶️ Resume Session";
       pauseBtn.style.background = "var(--accent)";
+      if (zenPauseBtn) zenPauseBtn.innerText = "▶️ Resume";
       if (hintEl) {
         hintEl.innerText = "Paused";
         hintEl.style.color = "var(--warning)";
@@ -1564,30 +3302,27 @@
       timerDisplay.style.color = "var(--warning)";
       showToast("Session Paused ⏸️");
     } else {
-      // Resume
       isTimerPaused = false;
       pauseBtn.innerText = "⏸️ Pause Session";
       pauseBtn.style.background = "var(--warning)";
+      if (zenPauseBtn) zenPauseBtn.innerText = "⏸️ Pause";
       if (hintEl) {
         hintEl.innerText = "Running";
         hintEl.style.color = "var(--accent)";
       }
-      timerDisplay.style.color = "var(--accent)";
+      timerDisplay.style.color = "var(--text-highlight)";
 
-      let targetSecs = isPomodoro ? parseInt(document.getElementById('targetMinutes').value || 0) * 60 : 0;
+      let targetSecs = isPomodoro ? pomodoroMinutes * 60 : 0;
       interval = setInterval(() => {
         elapsedSeconds++;
-        if (isPomodoro) {
-          let remaining = targetSecs - elapsedSeconds;
-          document.getElementById("liveTimer").innerText = formatTime(remaining);
-          if (remaining <= 0) {
-            clearInterval(interval);
-            saveSession(currentTask, elapsedSeconds, sessionStartTime, new Date());
-            resetTimerUI();
-            alert("Target Complete!");
-          }
-        } else {
-          document.getElementById("liveTimer").innerText = formatTime(elapsedSeconds);
+        updateTimerDisplayUI();
+        if (isPomodoro && elapsedSeconds >= targetSecs) {
+          clearInterval(interval);
+          playSynthChime(880, 0.6);
+          saveSession(currentTask, elapsedSeconds, sessionStartTime, new Date());
+          resetTimerUI();
+          if (typeof confetti === 'function') confetti({ particleCount: 70, spread: 80 });
+          alert("Pomodoro Target Complete! Take a short break.");
         }
       }, 1000);
       showToast("Session Resumed ▶️");
@@ -1596,16 +3331,17 @@
 
   function cancelTimer() {
     if (!confirm("Discard and cancel this active session without logging?")) return;
+    playSynthClick();
     clearInterval(interval);
     resetTimerUI();
     showToast("Session discarded.");
   }
 
   function toggleTimer() {
+    playSynthClick();
     const btn = document.getElementById("timerBtn"); 
     const controls = document.getElementById("activeTimerControls");
     const hintEl = document.getElementById("timerStatusHint");
-    const timerDisplay = document.getElementById("liveTimer");
 
     if (!interval && !isTimerPaused) {
       sessionStartTime = new Date();
@@ -1614,25 +3350,22 @@
       elapsedSeconds = 0;
       isTimerPaused = false;
       
-      let targetSecs = isPomodoro ? parseInt(document.getElementById('targetMinutes').value || 0) * 60 : 0;
+      let targetSecs = isPomodoro ? pomodoroMinutes * 60 : 0;
 
       interval = setInterval(() => {
         elapsedSeconds++;
-        if (isPomodoro) {
-          let remaining = targetSecs - elapsedSeconds;
-          document.getElementById("liveTimer").innerText = formatTime(remaining);
-          if (remaining <= 0) {
-            clearInterval(interval);
-            saveSession(currentTask, elapsedSeconds, sessionStartTime, new Date());
-            resetTimerUI();
-            alert("Target Complete!");
-          }
-        } else {
-          document.getElementById("liveTimer").innerText = formatTime(elapsedSeconds);
+        updateTimerDisplayUI();
+        if (isPomodoro && elapsedSeconds >= targetSecs) {
+          clearInterval(interval);
+          playSynthChime(880, 0.6);
+          saveSession(currentTask, elapsedSeconds, sessionStartTime, new Date());
+          resetTimerUI();
+          if (typeof confetti === 'function') confetti({ particleCount: 70, spread: 80 });
+          alert("Pomodoro Sprint Finished!");
         }
       }, 1000);
 
-      btn.innerText = "End & Log Session";
+      btn.innerText = "⚡ End & Log Session";
       btn.className = "btn active";
       controls.style.display = "flex";
       const pauseBtn = document.getElementById("pauseTimerBtn");
@@ -1642,7 +3375,7 @@
         hintEl.innerText = "Running";
         hintEl.style.color = "var(--accent)";
       }
-      timerDisplay.style.color = "var(--accent)";
+      playSynthChime(523.25, 0.2);
     } else {
       clearInterval(interval);
       const sessionEndTime = new Date();
@@ -1659,9 +3392,10 @@
     interval = null;
     isTimerPaused = false;
     sessionStartTime = null;
-    document.getElementById("liveTimer").innerText = isPomodoro ? formatTime(parseInt(document.getElementById('targetMinutes').value || 0) * 60) : "00:00:00";
-    document.getElementById("liveTimer").style.color = "var(--accent)";
-    document.getElementById("timerBtn").innerText = "Initialize Session";
+    elapsedSeconds = 0;
+    updateTimerDisplayUI();
+    document.getElementById("liveTimer").style.color = "var(--text-highlight)";
+    document.getElementById("timerBtn").innerText = "⚡ Initialize Deep Work";
     document.getElementById("timerBtn").className = "btn";
     document.getElementById("activeTimerControls").style.display = "none";
     const hintEl = document.getElementById("timerStatusHint");
@@ -1714,11 +3448,12 @@
     saveCurrentDaySnapshot();
     if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
     debouncePushToFirebase();
-    showToast(`Logged: ${task} (${formatDurationText(seconds)}) at ${startClockStr}`);
+    showToast(`Logged: ${task} (${formatDurationText(seconds)})`);
   }
 
   function deleteWorkLog(logId) {
-    if (!confirm("Are you sure you want to remove this work session log?")) return;
+    if (!confirm("Remove this work session entry?")) return;
+    playSynthClick();
     let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
     logs = logs.filter(l => l.id !== logId && String(l.id) !== String(logId));
     localStorage.setItem('enggLogs', JSON.stringify(logs));
@@ -1757,7 +3492,7 @@
     if (displayedLogs.length === 0) {
       listEl.innerHTML = `
         <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem;">
-          ${filter === 'selected' ? `🚀 No deep work sessions logged for ${selectedDateKey}.` : 'No historical work sessions found.'}
+          ${filter === 'selected' ? `🚀 No deep work logged for ${selectedDateKey}.` : 'No historical work sessions found.'}
         </div>
       `;
       return;
@@ -1785,10 +3520,10 @@
             <div class="work-log-time">
               <span>📅 ${dateDisplay}</span>
               <span>•</span>
-              <span style="color: var(--text-main); font-weight: 500;">🕒 ${clockDisplay}</span>
+              <span style="color: var(--text-primary); font-weight: 600;">🕒 ${clockDisplay}</span>
             </div>
           </div>
-          <div class="work-log-meta">
+          <div style="display: flex; align-items: center; gap: 8px;">
             <div class="work-log-badge">⏱️ ${durationDisplay}</div>
             <button class="delete-log-btn" onclick="deleteWorkLog('${l.id}')" title="Delete entry">✕</button>
           </div>
@@ -1810,12 +3545,125 @@
   }
   loadCustomCategories();
 
-  /* ================= 4. AGILE STANDUP & OS TELEMETRY COMMITS ================= */
+  /* ================= 10. KANBAN SPRINT BOARD ================= */
+  let kanbanTasks = JSON.parse(localStorage.getItem('kanbanState')) || { 
+    todo: [
+      { id: 'task_1', text: 'Architect Firebase Auth & Sync State', priority: 'high' },
+      { id: 'task_2', text: 'Optimize Web Audio Noise generator', priority: 'med' }
+    ], 
+    active: [
+      { id: 'task_3', text: 'Winter Arc 2026 UI/UX Polish', priority: 'high' }
+    ], 
+    done: [
+      { id: 'task_4', text: 'Implement Local Pedometer Sensors', priority: 'low' }
+    ] 
+  };
+
+  function renderKanban() {
+    ['todo', 'active', 'done'].forEach(colId => {
+      const itemsContainer = document.getElementById('items-' + colId);
+      const countEl = document.getElementById('count-' + colId);
+      if (!itemsContainer) return;
+      
+      const tasks = kanbanTasks[colId] || [];
+      if (countEl) countEl.innerText = tasks.length;
+
+      itemsContainer.innerHTML = tasks.map(task => {
+        const priority = task.priority || 'med';
+        const tagClass = priority === 'high' ? 'tag-high' : priority === 'low' ? 'tag-low' : 'tag-med';
+        return `
+          <div class="task-card" id="${task.id}" draggable="true" ondragstart="drag(event)">
+            <div>${task.text}</div>
+            <div class="task-meta-row">
+              <span class="task-tag ${tagClass}">${priority}</span>
+              <button class="delete-log-btn" onclick="deleteKanbanTask('${task.id}')" title="Delete task">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+  }
+
+  function addNewKanbanModal() {
+    playSynthClick();
+    document.getElementById('kanbanModal').style.display = 'flex';
+    document.getElementById('kanbanTaskInput').value = '';
+    setTimeout(() => document.getElementById('kanbanTaskInput').focus(), 100);
+  }
+
+  function submitNewKanbanTask() {
+    const text = document.getElementById('kanbanTaskInput').value.trim();
+    const priority = document.getElementById('kanbanPrioritySelect').value;
+    if (!text) return;
+
+    if (!kanbanTasks.todo) kanbanTasks.todo = [];
+    kanbanTasks.todo.push({ id: 'task_' + Date.now(), text: text, priority: priority });
+    closeModal('kanbanModal');
+    saveKanban();
+    showToast("Sprint task created.");
+  }
+
+  function deleteKanbanTask(taskId) {
+    playSynthClick();
+    ['todo', 'active', 'done'].forEach(c => {
+      if (kanbanTasks[c]) {
+        kanbanTasks[c] = kanbanTasks[c].filter(t => t.id !== taskId);
+      }
+    });
+    saveKanban();
+  }
+
+  function saveKanban() {
+    localStorage.setItem('kanbanState', JSON.stringify(kanbanTasks));
+    renderKanban();
+    debouncePushToFirebase();
+  }
+
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+    ev.target.classList.add('dragging');
+  }
+
+  function allowDrop(ev) { 
+    ev.preventDefault(); 
+    ev.currentTarget.classList.add('drag-over'); 
+  }
+
+  function dragLeave(ev) {
+    ev.currentTarget.classList.remove('drag-over');
+  }
+  
+  function drop(ev) {
+    ev.preventDefault();
+    document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+    const taskId = ev.dataTransfer.getData("text");
+    const targetCol = ev.currentTarget.id.replace('col-', '');
+    let movedTask = null;
+
+    ['todo', 'active', 'done'].forEach(c => {
+      if (!kanbanTasks[c]) kanbanTasks[c] = [];
+      const idx = kanbanTasks[c].findIndex(t => t.id === taskId);
+      if (idx > -1) { movedTask = kanbanTasks[c].splice(idx, 1)[0]; }
+    });
+
+    if (movedTask) {
+      if (!kanbanTasks[targetCol]) kanbanTasks[targetCol] = [];
+      kanbanTasks[targetCol].push(movedTask);
+      saveKanban();
+      playSynthClick();
+      if (targetCol === 'done' && typeof confetti === 'function') {
+        confetti({ particleCount: 40, spread: 50 });
+      }
+    }
+  }
+  renderKanban();
+
+  /* ================= 11. STANDUP COMMITS & TELEMETRY ================= */
   function initiateStandup() {
+    playSynthClick();
     const today = getSystemDateKey();
     if (loggedDates.includes(today)) {
-      alert("Day already committed to Telemetry History for today!");
-      return;
+      if (!confirm("Day already committed to Telemetry for today. Update commit?")) return;
     }
     document.getElementById('standupModal').style.display = 'flex';
   }
@@ -1832,6 +3680,7 @@
   }
 
   function submitStandup() {
+    playSynthClick();
     const today = getSystemDateKey();
     const wins = document.getElementById('standupWins').value.trim() || 'Daily targets crushed.';
     const blocks = document.getElementById('standupBlocks').value.trim() || 'None reported.';
@@ -1846,11 +3695,20 @@
     const todayFocusSecs = calculateTodayFocusSeconds();
 
     let telemetryHistory = JSON.parse(localStorage.getItem('telemetryHistory')) || [];
+    const isNewDayCommit = !loggedDates.includes(today);
+
+    if (isNewDayCommit) {
+      currentStreak++;
+      loggedDates.push(today);
+      localStorage.setItem('arcStreak', currentStreak);
+      localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
+    }
+
     const dailyTelemetryRecord = {
       id: 'telem_' + Date.now(),
       date: today,
       timestamp: new Date().toISOString(),
-      streak: currentStreak + 1,
+      streak: currentStreak,
       steps: steps,
       stepGoalMet: steps >= stepTarget,
       habitsCompleted: completedHabits,
@@ -1867,12 +3725,7 @@
     telemetryHistory.unshift(dailyTelemetryRecord);
     localStorage.setItem('telemetryHistory', JSON.stringify(telemetryHistory));
 
-    currentStreak++;
-    loggedDates.push(today);
-    localStorage.setItem('arcStreak', currentStreak);
-    localStorage.setItem('loggedDates', JSON.stringify(loggedDates));
-    document.getElementById('streakDisplay').innerText = `${currentStreak} Streak`;
-
+    updateStreakDisplays();
     closeModal('standupModal');
     saveCurrentDaySnapshot();
     document.getElementById('standupWins').value = '';
@@ -1880,13 +3733,15 @@
     document.getElementById('standupNext').value = '';
 
     debouncePushToFirebase();
-    showToast(`Day committed! Sprint Streak: ${currentStreak} Days.`);
+    if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
+    showToast(`🏆 Day committed! Winter Arc Streak: ${currentStreak} Days.`);
     if (document.getElementById('analytics').classList.contains('active')) generateAnalytics();
   }
 
-  /* ================= 5. TELEMETRY, BURNDOWN, HEATMAP & TABLE ================= */
   function generateAnalytics() {
     const telemetryHistory = JSON.parse(localStorage.getItem('telemetryHistory')) || [];
+    
+    // 1. Heatmap
     const grid = document.getElementById('heatmapGrid');
     if (grid) {
       grid.innerHTML = ''; 
@@ -1899,11 +3754,12 @@
         let dateStr = d.toDateString();
         let isLogged = loggedDates.includes(dateStr) || telemetryHistory.some(t => t.date === dateStr);
         let isFuture = d > today;
-        let opacityStyle = isFuture ? 'opacity: 0.1;' : '';
+        let opacityStyle = isFuture ? 'opacity: 0.15;' : '';
         grid.innerHTML += `<div class="heat-box ${isLogged ? 'active' : ''}" style="${opacityStyle}" title="${dateStr}"></div>`;
       }
     }
 
+    // 2. Metric Counters
     const totalCommits = telemetryHistory.length;
     const totalStepsLogged = telemetryHistory.reduce((sum, item) => sum + (item.steps || 0), 0);
     const avgHabitScore = totalCommits > 0 ? Math.round(telemetryHistory.reduce((sum, item) => sum + (item.habitScorePct || 100), 0) / totalCommits) : 0;
@@ -1915,32 +3771,34 @@
     if (document.getElementById('statTotalDeepWork')) document.getElementById('statTotalDeepWork').innerText = `${(totalDeepWorkSecs / 3600).toFixed(1)}h`;
     if (document.getElementById('telemetryStatsSummary')) document.getElementById('telemetryStatsSummary').innerText = `${totalCommits} Sprint Days Committed`;
 
+    // 3. Table Rows
     const tableBody = document.getElementById('telemetryTableBody');
     if (tableBody) {
       if (telemetryHistory.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" style="padding: 1.25rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits logged yet. Complete daily protocols and submit EOD Standup.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No EOD telemetry commits logged yet. Complete daily protocols and submit EOD Standup.</td></tr>`;
       } else {
         tableBody.innerHTML = telemetryHistory.map(row => {
           const stepBadge = row.steps >= 10000 
-            ? `<span style="background: rgba(16, 185, 129, 0.2); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-weight: 700;">${row.steps.toLocaleString()} ✔</span>`
-            : `<span style="color: var(--text-muted);">${row.steps.toLocaleString()}</span>`;
-          const habitBadge = `<span style="color: var(--accent); font-weight: 600;">${row.habitsCompleted}/${row.totalHabits} (${row.habitScorePct || 100}%)</span>`;
+            ? `<span style="background: var(--accent-subtle); color: var(--accent-light); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-family: var(--font-mono);">${row.steps.toLocaleString()} ✔</span>`
+            : `<span style="color: var(--text-muted); font-family: var(--font-mono);">${row.steps.toLocaleString()}</span>`;
+          const habitBadge = `<span style="color: var(--accent-light); font-weight: 700; font-family: var(--font-mono);">${row.habitsCompleted}/${row.totalHabits} (${row.habitScorePct || 100}%)</span>`;
           const deepWorkDisplay = row.deepWorkFormatted || `${Math.floor((row.deepWorkSeconds || 0)/3600)}h ${Math.floor(((row.deepWorkSeconds || 0)%3600)/60)}m`;
 
           return `
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-              <td style="padding: 0.6rem 0.8rem; font-weight: 600; white-space: nowrap;">${row.date}</td>
-              <td style="padding: 0.6rem 0.8rem; color: var(--accent);">🔥 ${row.streak}</td>
-              <td style="padding: 0.6rem 0.8rem;">${stepBadge}</td>
-              <td style="padding: 0.6rem 0.8rem;">${habitBadge}</td>
-              <td style="padding: 0.6rem 0.8rem; color: var(--info); font-family: monospace;">${deepWorkDisplay}</td>
-              <td style="padding: 0.6rem 0.8rem; color: var(--text-main); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${row.wins}">${row.wins}</td>
+              <td style="padding: 0.75rem 0.85rem; font-weight: 700; white-space: nowrap;">${row.date}</td>
+              <td style="padding: 0.75rem 0.85rem; color: #fb923c; font-weight: 800;">🔥 ${row.streak}</td>
+              <td style="padding: 0.75rem 0.85rem;">${stepBadge}</td>
+              <td style="padding: 0.75rem 0.85rem;">${habitBadge}</td>
+              <td style="padding: 0.75rem 0.85rem; color: var(--secondary); font-family: var(--font-mono); font-weight: 700;">${deepWorkDisplay}</td>
+              <td style="padding: 0.75rem 0.85rem; color: var(--text-primary); max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${row.wins}">${row.wins}</td>
             </tr>
           `;
         }).join('');
       }
     }
 
+    // 4. Hourly Peak Chart
     let logs = JSON.parse(localStorage.getItem('enggLogs')) || [];
     let cats = { "💻 GSoC / Frontend Sprint": 0, "☕ Java DSA": 0, "👕 Gen AI T-Shirt Design": 0 };
     let hourlyData = new Array(24).fill(0); 
@@ -1976,12 +3834,13 @@
         let label = (i % 4 === 0) ? `<div class="hourly-label">${i}:00</div>` : '';
         chart.innerHTML += `<div class="hourly-bar" style="height: ${heightPct}%;">${label}</div>`;
       }
-      document.getElementById('peakHourDisplay').innerText = maxHourVal > 0 ? `Peak Focus: ${peakHour}:00` : `Peak: --`;
+      document.getElementById('peakHourDisplay').innerText = maxHourVal > 0 ? `Peak Energy: ${peakHour}:00` : `Peak: --`;
     }
   }
 
-  /* ================= 6. DATA RESILIENCE & BACKUPS ================= */
+  /* ================= 12. DATA EXPORT & IMPORT ================= */
   function exportData(format) {
+    playSynthClick();
     const dataObj = {
       enggLogs: JSON.parse(localStorage.getItem('enggLogs') || '[]'),
       standupLogs: JSON.parse(localStorage.getItem('standupLogs') || '[]'),
@@ -1999,8 +3858,9 @@
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
       const link = document.createElement("a");
       link.href = dataStr;
-      link.download = `Elite_OS_Telemetry_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `Elite_OS_Telemetry_2026_${new Date().toISOString().split('T')[0]}.json`;
       link.click();
+      showToast("JSON Backup downloaded.");
     } else if (format === 'csv') {
       let csv = "Type,Date,Streak,Steps,HabitScore,DeepWorkSecs,Notes\n";
       (dataObj.telemetryHistory || []).forEach(t => {
@@ -2011,8 +3871,9 @@
       });
       const link = document.createElement("a");
       link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-      link.download = `Elite_OS_Telemetry_${new Date().toISOString().split('T')[0]}.csv`;
+      link.download = `Elite_OS_Telemetry_2026_${new Date().toISOString().split('T')[0]}.csv`;
       link.click();
+      showToast("CSV Export downloaded.");
     }
   }
 
@@ -2035,7 +3896,7 @@
         if (dataObj.lastActiveDate) localStorage.setItem('lastActiveDate', dataObj.lastActiveDate);
 
         pushToFirebase();
-        alert("OS State and Telemetry History Restored Successfully! Reloading...");
+        alert("OS State Restored Successfully! Reloading...");
         location.reload();
       } catch (err) {
         alert("Invalid Backup File! Could not parse JSON.");
@@ -2044,7 +3905,7 @@
     reader.readAsText(file);
   }
 
-  /* ================= 7. CONTENT PIPELINE CHECKBOXES ================= */
+  /* ================= 13. CONTENT PIPELINE CHECKBOXES & COPY ================= */
   const contentBoxes = document.querySelectorAll('input[data-content]');
   contentBoxes.forEach(box => {
     const id = box.dataset.content;
@@ -2055,15 +3916,24 @@
   });
 
   function toggleContent(id) {
+    playSynthClick();
     const box = document.querySelector(`input[data-content="${id}"]`);
     if (!box) return;
     localStorage.setItem('content_' + id, box.checked);
     const titleEl = document.getElementById('t-' + id);
     if (titleEl) titleEl.classList.toggle('done', box.checked);
+    if (box.checked && typeof confetti === 'function') confetti({ particleCount: 30, spread: 50 });
     debouncePushToFirebase();
   }
 
-  /* ================= 8. COMMAND PALETTE & KEYBOARD SHORTCUTS ================= */
+  function copyScriptText(title) {
+    playSynthClick();
+    navigator.clipboard.writeText(`Script: ${title}\n\nCheck Winter Arc Content Calendar for full production breakdown.`).then(() => {
+      showToast("Script outline copied to clipboard!");
+    });
+  }
+
+  /* ================= 14. COMMAND PALETTE & KEYBOARD SHORTCUTS ================= */
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
@@ -2077,6 +3947,9 @@
     } else if (e.key === 'Escape') {
       closeModal('cmdModal');
       closeModal('standupModal');
+      closeModal('kanbanModal');
+      const zenOverlay = document.getElementById('zenModeOverlay');
+      if (zenOverlay.classList.contains('active')) zenOverlay.classList.remove('active');
     }
   });
 
@@ -2088,6 +3961,8 @@
         closeModal('cmdModal');
         if (val === 'lock' || val === 'logout') {
           lockSystem();
+        } else if (val === 'zen') {
+          toggleZenMode();
         } else if (val === 'pause') {
           togglePauseTimer();
         } else if (val === 'sync') {
@@ -2101,15 +3976,17 @@
         } else if (val === 'standup' || val === 'log') {
           initiateStandup();
         } else if (val === 'reset') {
-          if (confirm("Reset today's habits?")) resetHabits();
+          resetHabits();
         } else if (val === 'analytics' || val === 'telemetry') {
           switchTab('analytics');
         } else if (val === 'kanban') {
           switchTab('kanban');
+        } else if (val === 'content') {
+          switchTab('content');
         } else if (val === 'dashboard') {
           switchTab('dashboard');
         } else {
-          alert(`Command '${val}' not recognized. Available: lock, pause, sync, backup, csv, restore, standup, reset, analytics, kanban, dashboard`);
+          alert(`Command '${val}' not recognized. Available: zen, lock, pause, sync, backup, csv, restore, standup, reset, analytics, kanban, content, dashboard`);
         }
       }
     });
